@@ -5,8 +5,8 @@ import { BrowserRouter, Routes, Route } from 'react-router-dom';
 // import NotFound from './NotFound';
 
 import { Header, Footer } from './components';
-import Temp from './Temp.js';
-// import Main from './pages/Main';
+import Temp from './Temp';
+import MainPage from './pages/main/MainPage';
 
 function App() {
   return (
@@ -15,7 +15,7 @@ function App() {
         <Header />
 
         <Routes>
-          <Route path="/" element={<Temp />}></Route>
+          <Route path="/" element={<MainPage />}></Route>
         </Routes>
 
         <Footer />
