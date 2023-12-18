@@ -10,12 +10,12 @@ import Main from './pages/main/Main';
 import Info from './pages/info/Info';
 
 function App() {
-  const [isLogin, setIsLogin] = useState(false);
+  const [isLogin, setIsLogin] = useState(true); // 개발 중 편의를 위해 true로 설정
 
   return (
     <div className="App">
       <BrowserRouter>
-        <Header />
+        <Header isLogin={isLogin} setIsLogin={setIsLogin} />
 
         <Routes>
           {/* 로그인 O -> Main, 로그인 X -> Info(소개페이지) */}

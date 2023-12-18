@@ -32,9 +32,19 @@ function Header(props) {
                     <a href="#" className={``} >메뉴2</a>
                     <a href="#" className={``} >메뉴3</a>
                 </div>
-                <div>
-                    <a href={process.env.PUBLIC_URL+'/login'} className={``}>로그인</a>
-                </div>
+                {
+                    props.isLogin ?
+                    <div className="flex items-center gap-[2em]">
+                        <a href="" className="" >--위</a>
+                        <a href="" className="" >초기화 찬스 --개</a>
+                        <a href="" className="" >포인트 --점</a>
+                        <a href="#" className="" onClick="">로그아웃</a>
+                    </div>
+                    :
+                    <div>
+                        <a href={process.env.PUBLIC_URL+'/login'} className={``}>로그인</a>
+                    </div>
+                }
             </div>
         </div>
     );
