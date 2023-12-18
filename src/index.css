@@ -2,6 +2,54 @@
 @tailwind components;
 @tailwind utilities;
 
+:root {
+  --color-primary-100: #F1FCFD;
+  --color-primary-200: #E4F9FC;
+  --color-primary-300: #D5F0F7;
+  --color-primary-400: #C6E5F0;
+  --color-primary-500: #B1D5E7;
+  --color-primary-600: #81ABC6;
+  --color-primary-700: #5982A6;
+  --color-primary-800: #385D85;
+  --color-primary-900: #21416E;
+  --color-success-100: #D6FBD4;
+  --color-success-200: #AAF8AD;
+  --color-success-300: #7BEA8B;
+  --color-success-400: #57D575;
+  --color-success-500: #28BA59;
+  --color-success-600: #1D9F55;
+  --color-success-700: #148550;
+  --color-success-800: #0C6B48;
+  --color-success-900: #075943;
+  --color-info-100: #DFE3FE;
+  --color-info-200: #BFC7FE;
+  --color-info-300: #9FAAFE;
+  --color-info-400: #8694FD;
+  --color-info-500: #5F6FFC;
+  --color-info-600: #4552D8;
+  --color-info-700: #2F3AB5;
+  --color-info-800: #1E2692;
+  --color-info-900: #121878;
+  --color-warning-100: #FFF6D0;
+  --color-warning-200: #FFEBA1;
+  --color-warning-300: #FFDD73;
+  --color-warning-400: #FFCF50;
+  --color-warning-500: #FFB916;
+  --color-warning-600: #DB9710;
+  --color-warning-700: #B7790B;
+  --color-warning-800: #935C07;
+  --color-warning-900: #7A4804;
+  --color-danger-100: #FFE7E1;
+  --color-danger-200: #FFCAC4;
+  --color-danger-300: #FFA7A7;
+  --color-danger-400: #FF919B;
+  --color-danger-500: #FF6D88;
+  --color-danger-600: #DB4F76;
+  --color-danger-700: #B73667;
+  --color-danger-800: #932257;
+  --color-danger-900: #7A144E;
+}
+
 body {
   margin: 0;
   font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen',
