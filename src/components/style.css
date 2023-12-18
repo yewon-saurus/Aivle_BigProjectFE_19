@@ -1,0 +1,18 @@
+.sidebar {
+    background-color: var(--color-primary-500);
+    position: fixed;
+    top: 0;
+    bottom: 0;
+    left: 0;
+    transition: 0.4s ease;
+    color: #202020;
+    height: 100%;
+    z-index: -40;
+    padding-top: 1.25rem;
+}
+
+.content {
+    padding: 3em 40px 0 3em;
+    position: relative;
+    width: 100%;
+}

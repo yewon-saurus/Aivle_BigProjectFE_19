@@ -1,7 +1,14 @@
-import { useEffect, useState } from "react";
+import style from "./style.css";
+import Sidebar from "./Sidebar";
+import { useEffect, useState, useRef } from "react";
+import { LuMenu } from "react-icons/lu";
 
 function Header(props) {
+    const SIDEBAR_WIDTH = 320;
+
     const [isScroll, setIsScroll] = useState(0);
+    const [isOpen, setOpen] = useState(false);
+    const [xPosition, setX] = useState(SIDEBAR_WIDTH);
 
     useEffect(() => {
         window.addEventListener('scroll', handleScroll);
@@ -19,18 +26,32 @@ function Header(props) {
             setIsScroll(1);
         }
     };
+    
+    // button 클릭 시 토글
+    const toggleMenu = () => {
+        if (xPosition > 0) {
+            setX(0);
+            setOpen(true);
+        } else {
+            setX(SIDEBAR_WIDTH);
+            setOpen(false);
+        }
+    };
 
     return (
-        <div className={`${isScroll === 1 ? 'top-0 z-50 sticky' : ''} w-full flex justify-center mb-2`}>
-            <div className="w-[90%] flex justify-between items-center py-2">
+        <div className={`${isScroll === 1 ? 'top-0 sticky' : ''} w-full flex justify-center mb-2 z-50 bg-white`}>
+            <div className="w-[100%] flex justify-between items-center px-4 py-2">
                 <div className="flex items-center gap-[1em]">
+                    <div className="pt-[7px]">
+                        <button onClick={() => toggleMenu()} className="toggle-button" >
+                            <LuMenu size={30} color="var(--color-primary-600)" />
+                        </button>
+                        <Sidebar width={SIDEBAR_WIDTH} isOpen={isOpen} setOpen={setOpen} setX={setX} xPosition={xPosition} />
+                    </div>
                     <a href={process.env.PUBLIC_URL + "/"} className="flex items-center gap-2 mr-5">
                         <img className="w-10 h-10" src={process.env.PUBLIC_URL + '/logo192.png'} />
                         <h1 className="text-xl">문해력</h1>
                     </a>
-                    <a href="#" className={``}>메뉴1</a>
-                    <a href="#" className={``} >메뉴2</a>
-                    <a href="#" className={``} >메뉴3</a>
                 </div>
                 {
                     props.isLogin ?
