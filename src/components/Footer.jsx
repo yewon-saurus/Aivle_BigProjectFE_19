@@ -1,3 +1,5 @@
+import { FaGithub } from "react-icons/fa";
+
 function Footer(props) {
     return (
         <div className={`w-full flex justify-center mt-auto`}>
@@ -14,8 +16,7 @@ function Footer(props) {
                 {/* Footer 우측 */}
                 <div className="flex justify-end items-center gap-3 md:w-auto w-full">
                     <a href="#" target="_blank">
-                        {/* <FaGithub size={30} /> */}
-                        여기에깃허브아이콘
+                        <FaGithub size={30} />
                     </a>
                 </div>
             </div>
