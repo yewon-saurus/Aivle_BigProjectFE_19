@@ -28,26 +28,28 @@ function Header(props) {
                         <button onClick={() => toggleMenu()} >
                             <LuMenu size={30} color="var(--color-primary-600)" />
                         </button>
-                        <Sidebar width={SIDEBAR_WIDTH} isOpen={isOpen} setOpen={setOpen} setX={setX} xPosition={xPosition} />
+                        <Sidebar width={SIDEBAR_WIDTH} isLogin={props.isLogin} isOpen={isOpen} setOpen={setOpen} setX={setX} xPosition={xPosition} />
                     </div>
                     <a href={process.env.PUBLIC_URL + "/"} className="flex items-center gap-2 mr-5">
                         <img className="w-10 h-10" src={process.env.PUBLIC_URL + '/logo192.png'} />
                         <h1 className="text-xl">문해력</h1>
                     </a>
                 </div>
-                {
-                    props.isLogin ?
-                    <div className="flex items-center gap-[2em]">
-                        <a href="" className="" >--위</a>
-                        <a href="" className="" >초기화 찬스 --개</a>
-                        <a href="" className="" >포인트 --점</a>
-                        <a href="#" className="" onClick="">로그아웃</a>
-                    </div>
-                    :
-                    <div>
-                        <a href={process.env.PUBLIC_URL+'/login'} className={``}>로그인</a>
-                    </div>
-                }
+                <div className="lg:flex hidden">
+                    {
+                        props.isLogin ?
+                        <div className="flex items-center gap-[2em]">
+                            <a href="" className="" >--위</a>
+                            <a href="" className="" >초기화 찬스 --개</a>
+                            <a href="" className="" >포인트 --점</a>
+                            <a href="#" className="" onClick="">로그아웃</a>
+                        </div>
+                        :
+                        <div>
+                            <a href={process.env.PUBLIC_URL+'/login'} className={``}>로그인</a>
+                        </div>
+                    }
+                </div>
             </div>
         </div>
     );
