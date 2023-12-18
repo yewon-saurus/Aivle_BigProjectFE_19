@@ -1,5 +1,5 @@
 .sidebar {
-    background-color: var(--color-primary-500);
+    background-color: #ffffff;
     position: fixed;
     top: 0;
     bottom: 0;
@@ -7,8 +7,7 @@
     transition: 0.4s ease;
     color: #202020;
     height: 100%;
-    z-index: -40;
-    padding-top: 1.25rem;
+    z-index: -1;
 }
 
 .content {

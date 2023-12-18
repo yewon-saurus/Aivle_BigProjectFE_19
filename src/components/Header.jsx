@@ -6,26 +6,8 @@ import { LuMenu } from "react-icons/lu";
 function Header(props) {
     const SIDEBAR_WIDTH = 320;
 
-    const [isScroll, setIsScroll] = useState(0);
     const [isOpen, setOpen] = useState(false);
     const [xPosition, setX] = useState(SIDEBAR_WIDTH);
-
-    useEffect(() => {
-        window.addEventListener('scroll', handleScroll);
-
-        return () => {
-            window.removeEventListener('scroll', handleScroll);
-        }
-    }, []);
-
-    const handleScroll = () => {
-        const scrollPosition = window.pageYOffset;
-        if (scrollPosition === 0) {
-            setIsScroll(0);
-        } else {
-            setIsScroll(1);
-        }
-    };
     
     // button 클릭 시 토글
     const toggleMenu = () => {
@@ -39,11 +21,11 @@ function Header(props) {
     };
 
     return (
-        <div className={`${isScroll === 1 ? 'top-0 sticky' : ''} w-full flex justify-center mb-2 z-50 bg-white`}>
+        <div className={`w-full flex justify-center mb-2 bg-white z-50 top-0 sticky`}>
             <div className="w-[100%] flex justify-between items-center px-4 py-2">
                 <div className="flex items-center gap-[1em]">
                     <div className="pt-[7px]">
-                        <button onClick={() => toggleMenu()} className="toggle-button" >
+                        <button onClick={() => toggleMenu()} >
                             <LuMenu size={30} color="var(--color-primary-600)" />
                         </button>
                         <Sidebar width={SIDEBAR_WIDTH} isOpen={isOpen} setOpen={setOpen} setX={setX} xPosition={xPosition} />
