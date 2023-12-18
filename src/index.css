@@ -51,7 +51,16 @@
 }
 
 .page {
+  min-height: 90vh;
+  padding: 1.25rem;
+  width: 100%;
   background-color: var(--color-primary-200);
+}
+
+@media (min-width: 768px) {
+  .page {
+      padding: 5rem/* 80px */;
+  }
 }
 
 body {

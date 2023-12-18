@@ -2,8 +2,13 @@ import React from 'react';
 
 const Main = () => {
     return (
-        <div className='page min-h-screen p-5 md:p-20'>
-            메인 페이지 입니다.
+        <div className='flex'>
+            <div className='w-0 lg:w-[400px]'>
+                hi
+            </div>
+            <div className='page'>
+                메인 페이지 입니다.
+            </div>
         </div>
     );
 };

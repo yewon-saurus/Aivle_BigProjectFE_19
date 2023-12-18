@@ -25,9 +25,11 @@ function Header(props) {
             <div className="w-[100%] flex justify-between items-center px-4 py-2">
                 <div className="flex items-center gap-[1em]">
                     <div className="pt-[7px]">
-                        <button onClick={() => toggleMenu()} >
-                            <LuMenu size={30} color="var(--color-primary-600)" />
-                        </button>
+                        <div className="lg:hidden flex">
+                            <button onClick={() => toggleMenu()} >
+                                <LuMenu size={30} color="var(--color-primary-600)" />
+                            </button>
+                        </div>
                         <Sidebar width={SIDEBAR_WIDTH} isLogin={props.isLogin} isOpen={isOpen} setOpen={setOpen} setX={setX} xPosition={xPosition} />
                     </div>
                     <a href={process.env.PUBLIC_URL + "/"} className="flex items-center gap-2 mr-5">
