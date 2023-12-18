@@ -4,18 +4,22 @@ import React, { Component, useEffect, useState } from 'react';
 import { BrowserRouter, Routes, Route } from 'react-router-dom';
 // import NotFound from './NotFound';
 
-import { Header, Footer } from './components';
+import { Header, Footer, PrivateRoute } from './components';
 import Temp from './Temp';
-import MainPage from './pages/main/MainPage';
+import Main from './pages/main/Main';
+import Info from './pages/info/Info';
 
 function App() {
+  const [isLogin, setIsLogin] = useState(false);
+
   return (
     <div className="App">
       <BrowserRouter>
         <Header />
 
         <Routes>
-          <Route path="/" element={<MainPage />}></Route>
+          {/* 로그인 O -> Main, 로그인 X -> Info(소개페이지) */}
+          <Route path="/" element={<PrivateRoute isThatTrue={isLogin} isTrue={<Main />} isFalse={<Info />} />}></Route>
         </Routes>
 
         <Footer />
