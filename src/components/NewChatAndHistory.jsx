@@ -1,6 +1,8 @@
 import style from "./style.css";
 import React, {useEffect, useRef, useState} from "react";
 
+import { IoIosAddCircleOutline } from "react-icons/io";
+
 const tempHistory = [
     {
         "solved_day": "2023-12-19 10:21:56",
@@ -21,7 +23,51 @@ const tempHistory = [
 
 const NewChatAndHistory = () => {
     return (
-        <div>
+        <div className="my-3">
+            <div className="px-3">
+                {/* new chat */}
+                <button className="bg-[var(--color-primary-200)] hover:bg-[var(--color-primary-300)] w-full rounded-2xl mt-6 lg:my-0 px-6 py-3">
+                    <div className="flex text-left text-[var(--color-info-500)]">
+                        <IoIosAddCircleOutline size={25} />
+                        <span>&nbsp;&nbsp;새 채팅</span>
+                    </div>
+                </button>
+            </div>
+            <div className="mt-6">
+                {/* history list */}
+                <div className="px-3 text-left text-[var(--color-info-900)]">
+                    최근
+                </div>
+                <div className="history">
+                    <div>hi</div>
+                    <div>hi</div>
+                    <div>hi</div>
+                    <div>hi</div>
+                    <div>hi</div>
+                    <div>hi</div>
+                    <div>hi</div>
+                    <div>hi</div>
+                    <div>hi</div>
+                    <div>hi</div>
+                    <div>hi</div>
+                    <div>hi</div>
+                    <div>hi</div>
+                    <div>hi</div>
+                    <div>hi</div>
+                    <div>hi</div>
+                    <div>hi</div>
+                    <div>hi</div>
+                    <div>hi</div>
+                    <div>hi</div>
+                    <div>hi</div>
+                    <div>hi</div>
+                    <div>hi</div>
+                    <div>hi</div>
+                    <div>hi</div>
+                    <div>hi</div>
+                    <div>hell</div>
+                </div>
+            </div>
         </div>
     );
 }
