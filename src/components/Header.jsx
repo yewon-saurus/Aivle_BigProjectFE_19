@@ -44,10 +44,10 @@ function Header(props) {
                     {
                         props.isLogin ?
                         <div className="flex items-center gap-[2em]">
-                            <a href="" className="flex" ><FaRankingStar size={25} /><span>&nbsp;&nbsp;--위</span></a>
-                            <a href="" className="" >찬스 --개</a>
-                            <a href="" className="" >포인트 --점</a> 
-                            <a href="#" className="flex" onClick=""><IoMdLogOut size={25} /><span>&nbsp;&nbsp;로그아웃</span></a>
+                            <a href="" className="flex hover:text-[var(--color-primary-600)]" ><FaRankingStar style={{width: '20px', height: 'auto',}} /><span>&nbsp;&nbsp;--위</span></a>
+                            <a href="" className="hover:text-[var(--color-primary-600)]" >찬스 --개</a>
+                            <a href="" className="hover:text-[var(--color-primary-600)]" >포인트 --점</a> 
+                            <a href="#" className="flex hover:text-[var(--color-warning-600)]" onClick=""><IoMdLogOut style={{width: '20px', height: 'auto',}} /><span>&nbsp;&nbsp;로그아웃</span></a>
                         </div>
                         :
                         <div>

@@ -16,7 +16,7 @@ const Sidebar = (props) => {
                         <table className="w-[100%] text-right">
                             <tr>
                                 <td colspan="2">
-                                    <a href="#" onClick="" className="flex justify-end">
+                                    <a href="#" onClick="" className="flex justify-end hover:text-[var(--color-warning-600)]">
                                         <IoMdLogOut size={25} />
                                         <span>&nbsp;&nbsp;로그아웃</span>
                                     </a>
@@ -24,7 +24,7 @@ const Sidebar = (props) => {
                             </tr>
                             <tr>
                                 <td colspan="2">
-                                    <a href="" className="flex justify-end">
+                                    <a href="" className="flex justify-end hover:text-[var(--color-primary-600)]">
                                         <FaRankingStar size={25} />
                                         <span>&nbsp;&nbsp;--위</span>
                                     </a>
@@ -32,13 +32,13 @@ const Sidebar = (props) => {
                             </tr>
                             <tr>
                                 <td>
-                                    <a href="" className="flex justify-end" >
+                                    <a href="" className="flex justify-end hover:text-[var(--color-primary-600)]" >
                                         {/* <FaRegLightbulb size={25} /> */}
                                         <span>&nbsp;&nbsp;찬스 --개</span>
                                     </a>
                                 </td>
                                 <td>
-                                    <a href="" className="flex justify-end" >
+                                    <a href="" className="flex justify-end hover:text-[var(--color-primary-600)]" >
                                         {/* <FaCoins size={25} /> */}
                                         <span>&nbsp;&nbsp;포인트 --점</span>
                                     </a>
