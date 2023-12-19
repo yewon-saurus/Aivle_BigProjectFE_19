@@ -27,7 +27,7 @@ function Header(props) {
         <div className={`w-full flex justify-center bg-white z-50 top-0 sticky`}>
             <div className="w-[100%] flex justify-between items-center px-4 py-2">
                 <div className="flex items-center gap-[1em]">
-                    <div className="pt-[7px] lg:hidden">
+                    <div className="lg:hidden">
                         <div className="flex">
                             <button onClick={() => toggleMenu()} >
                                 <LuMenu size={30} color="var(--color-primary-600)" />
