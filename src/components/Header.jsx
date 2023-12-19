@@ -1,10 +1,13 @@
 import style from "./style.css";
 import Sidebar from "./Sidebar";
 import { useEffect, useState, useRef } from "react";
+
 import { LuMenu } from "react-icons/lu";
+import { IoMdLogOut } from "react-icons/io";
+import { FaRankingStar } from "react-icons/fa6";
 
 function Header(props) {
-    const SIDEBAR_WIDTH = 320;
+    const SIDEBAR_WIDTH = 360;
 
     const [isOpen, setOpen] = useState(false);
     const [xPosition, setX] = useState(SIDEBAR_WIDTH);
@@ -21,11 +24,11 @@ function Header(props) {
     };
 
     return (
-        <div className={`w-full flex justify-center mb-2 bg-white z-50 top-0 sticky`}>
+        <div className={`w-full flex justify-center bg-white z-50 top-0 sticky`}>
             <div className="w-[100%] flex justify-between items-center px-4 py-2">
                 <div className="flex items-center gap-[1em]">
-                    <div className="pt-[7px]">
-                        <div className="lg:hidden flex">
+                    <div className="pt-[7px] lg:hidden">
+                        <div className="flex">
                             <button onClick={() => toggleMenu()} >
                                 <LuMenu size={30} color="var(--color-primary-600)" />
                             </button>
@@ -41,10 +44,10 @@ function Header(props) {
                     {
                         props.isLogin ?
                         <div className="flex items-center gap-[2em]">
-                            <a href="" className="" >--위</a>
-                            <a href="" className="" >초기화 찬스 --개</a>
-                            <a href="" className="" >포인트 --점</a>
-                            <a href="#" className="" onClick="">로그아웃</a>
+                            <a href="" className="flex" ><FaRankingStar size={25} /><span>&nbsp;&nbsp;--위</span></a>
+                            <a href="" className="" >찬스 --개</a>
+                            <a href="" className="" >포인트 --점</a> 
+                            <a href="#" className="flex" onClick=""><IoMdLogOut size={25} /><span>&nbsp;&nbsp;로그아웃</span></a>
                         </div>
                         :
                         <div>

@@ -1,10 +1,11 @@
 import React from 'react';
+import NewChatAndHistory from '../../components/NewChatAndHistory';
 
 const Main = () => {
     return (
         <div className='flex'>
             <div className='w-0 lg:w-[400px]'>
-                hi
+                <NewChatAndHistory />
             </div>
             <div className='page'>
                 메인 페이지 입니다.

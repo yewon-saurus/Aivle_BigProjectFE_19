@@ -1,6 +1,9 @@
 import style from "./style.css";
 import React, {useEffect, useRef, useState} from "react";
+import NewChatAndHistory from "./NewChatAndHistory";
+
 import { IoMdLogOut } from "react-icons/io";
+import { FaRankingStar } from "react-icons/fa6";
 
 const Sidebar = (props) => {
     return (
@@ -12,16 +15,34 @@ const Sidebar = (props) => {
                         props.isLogin ?
                         <table className="w-[100%] text-right">
                             <tr>
-                                <td></td>
-                                <td><a href="#" className="" onClick="">로그아웃</a><br /></td>
+                                <td colspan="2">
+                                    <a href="#" onClick="" className="flex justify-end">
+                                        <IoMdLogOut size={25} />
+                                        <span>&nbsp;&nbsp;로그아웃</span>
+                                    </a>
+                                </td>
                             </tr>
                             <tr>
-                                <td></td>
-                                <td><a href="" className="" >--위</a><br /></td>
+                                <td colspan="2">
+                                    <a href="" className="flex justify-end">
+                                        <FaRankingStar size={25} />
+                                        <span>&nbsp;&nbsp;--위</span>
+                                    </a>
+                                </td>
                             </tr>
                             <tr>
-                                <td><a href="" className="" >찬스 --개</a></td>
-                                <td><a href="" className="" >포인트 --점</a></td>
+                                <td>
+                                    <a href="" className="flex justify-end" >
+                                        {/* <FaRegLightbulb size={25} /> */}
+                                        <span>&nbsp;&nbsp;찬스 --개</span>
+                                    </a>
+                                </td>
+                                <td>
+                                    <a href="" className="flex justify-end" >
+                                        {/* <FaCoins size={25} /> */}
+                                        <span>&nbsp;&nbsp;포인트 --점</span>
+                                    </a>
+                                </td>
                             </tr>
                         </table>
                         :
@@ -31,8 +52,7 @@ const Sidebar = (props) => {
                     }
                 </div>
                 <div>
-                    <div>hi</div>
-                    <div>hi</div>
+                    <NewChatAndHistory />
                 </div>
             </div>
         </div>
