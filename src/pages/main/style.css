@@ -1,25 +1,41 @@
 .messages-list {
     position: absolute;
-    top: 0;
-    /* background-color: black; */
-    width: inherit;
-    height: 90%;
+    top: 63px;
+    width: 100%;
+    height: calc(90% - 63px);
+    padding: 0;
+    overflow-y: scroll;
+}
+
+.message {
+    max-width: 80%;
+    width: fit-content;
+    border-radius: 20px;
+    margin: 10px;
+    padding: 10px 20px;
+    text-align: left;
+    clear: both;
+    word-wrap: break-word;
 }
 
 .user-message {
-
+    background-color: #ffffff;
+    float: right;
 }
 
 .ai-message {
-
+    background-color: var(--color-info-400);
+    color: #ffffff;
+    float: left;
 }
 
 .control {
     position: absolute;
     bottom: 0;
-    /* background-color: red; */
     width: inherit;
     height: 10%;
+    background-color: black;
+    color: white;
 }
 
 .message-form {
@@ -27,5 +43,15 @@
 }
 
 .message-input {
+    color: black;
+}
 
+@media (min-width: 1024px) {
+    .messages-list {
+        width: calc(100% - 400px);
+        padding: 0 2em 0 2em;
+    }
+    .message {
+        max-width: 60%;
+    }
 }

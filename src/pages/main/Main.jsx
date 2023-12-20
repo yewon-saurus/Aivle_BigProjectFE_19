@@ -1,10 +1,13 @@
 import style from "./style.css";
-import React, {useState, useEffect} from 'react';
+import React, {useState, useEffect, useRef} from 'react';
 import Typing from 'react-kr-typing-anim';
 import GoToLatestAndQuizList from '../../components/GoToLatestAndQuizList';
 
 const Main = () => {
-    const [messages, setMessages] = useState([]); // 모든 채팅 메시지 저장
+    const scrollRef = useRef();
+    const messageFormRef = useRef();
+
+    const [messages, setMessages] = useState([{ text: `어서오세요. ${'반가워요.'}`, isUser: false, isTyping: true, id: Date.now() }]); // 모든 채팅 메시지 저장
     const [currentTypingId, setCurrentTypingId] = useState(null); // 현재 AI가 타이핑하는 메시지 추적
 
     const handleSendMessage = (message) => {
@@ -26,6 +29,11 @@ const Main = () => {
     };
 
     useEffect(() => {
+        // scrollRef.current.scrollTop = scrollRef.current.scrollHeight;
+        scrollRef.current.scrollIntoView({behavior: "smooth", block: "end"});
+    }, [messages]);
+
+    useEffect(() => {
         if (currentTypingId === null) {
             const nextTypingMessage = messages.find (
                 (msg) => !msg.isUser && msg.isTyping
@@ -33,6 +41,7 @@ const Main = () => {
             if (nextTypingMessage) {
                 setCurrentTypingId(nextTypingMessage.id);
             }
+            messageFormRef.current.focus(); // AI의 응답이 끝난 후 입력창으로 자동 포커싱
         }
     }, [messages, currentTypingId]);
 
@@ -40,17 +49,19 @@ const Main = () => {
         <div className="messages-list">
             {messages.map((message) =>
             message.isTyping && message.id === currentTypingId ? (
-                <div className={message.isUser ? 'user-message' : 'ai-message'}>
+                <div className={`message ${message.isUser ? 'user-message' : 'ai-message'}`}>
                     <Typing key={message.id} Tag='div' speed={50} onDone={() => onEndTyping(message.id)}>
                         {message.text}
                     </Typing>
+                    <div ref={scrollRef}></div>
                 </div>
             ) : (
                 <div
                     key={message.id}
-                    className={message.isUser ? 'user-message' : 'ai-message'}
+                    className={`message ${message.isUser ? 'user-message' : 'ai-message'}`}
                 >
                     {message.text}
+                    <div ref={scrollRef}></div>
                 </div>
             )
             )}
@@ -69,14 +80,13 @@ const Main = () => {
         return (
             <form className="message-form" onSubmit={handleSubmit}>
                 <input
+                    ref={messageFormRef}
                     type="text"
                     className="message-input"
                     value={message}
                     onChange={(e) => setMessage(e.target.value)}
                 />
-                <button className="send-button" type="submit">
-                    Send
-                </button>
+                <input className="send-button" type="submit" value={"send"} />
             </form>
         );
     };
