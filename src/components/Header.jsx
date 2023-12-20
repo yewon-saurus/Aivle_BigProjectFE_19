@@ -24,7 +24,7 @@ function Header(props) {
     };
 
     return (
-        <div className={`w-full flex justify-center bg-white z-50 top-0 sticky`}>
+        <div className={`w-full flex justify-center bg-white z-50 top-0 fixed`}>
             <div className="w-[100%] flex justify-between items-center px-4 py-2">
                 <div className="flex items-center gap-[1em]">
                     <div className="lg:hidden">

@@ -29,7 +29,7 @@ const GoToLatestAndQuizList = () => {
     const [quizlist, setQuizlist] = useState(temp); // 개발 중 임시 데이터로 초기화
 
     return (
-        <div className="my-3">
+        <div>
             <div className="mt-6 px-3">
                 {/* new chat */}
                 <div className="text-left text-[var(--color-info-900)]">

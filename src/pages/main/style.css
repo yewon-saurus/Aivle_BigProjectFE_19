@@ -1,5 +1,9 @@
 .messages-list {
-
+    position: absolute;
+    top: 0;
+    /* background-color: black; */
+    width: inherit;
+    height: 90%;
 }
 
 .user-message {
@@ -10,8 +14,16 @@
 
 }
 
-.message-form {
+.control {
+    position: absolute;
+    bottom: 0;
+    /* background-color: red; */
+    width: inherit;
+    height: 10%;
+}
 
+.message-form {
+    
 }
 
 .message-input {

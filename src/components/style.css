@@ -28,6 +28,6 @@ table td {
 
 @media (min-width: 1024px) {
     .history {
-        height: calc(100vh - 200px);
+        height: calc(100vh - 224px);
     }
 }

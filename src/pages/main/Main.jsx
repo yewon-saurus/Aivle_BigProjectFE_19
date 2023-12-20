@@ -68,22 +68,22 @@ const Main = () => {
         
         return (
             <form className="message-form" onSubmit={handleSubmit}>
-            <input
-                type="text"
-                className="message-input"
-                value={message}
-                onChange={(e) => setMessage(e.target.value)}
-            />
-            <button className="send-button" type="submit">
-                Send
-            </button>
+                <input
+                    type="text"
+                    className="message-input"
+                    value={message}
+                    onChange={(e) => setMessage(e.target.value)}
+                />
+                <button className="send-button" type="submit">
+                    Send
+                </button>
             </form>
         );
     };
     
     return (
         <div className='flex'>
-            <div className='w-0 lg:w-[400px]'>
+            <div className='w-0 lg:w-[400px] pt-[63px]'>
                 <GoToLatestAndQuizList />
             </div>
             <div className='page'>
@@ -95,16 +95,16 @@ const Main = () => {
                         onEndTyping={handleEndTyping}
                     />
                 </div>
-                <div>
-                    {/* 양 방향 화살표 버튼 + fixed 된 프롬프트 창 */}
+                <div className="control">
+                    {/* fixed 된 프롬프트 창 + 양 방향 화살표 버튼 */}
+                    <div>
+                        {/* 프롬프트 창 */}
+                        <MessageForm onSendMessage={handleSendMessage} />
+                    </div>
                     <div>
                         {/* 양 방향 화살표 버튼(이전 회차, 다음 회차) */}
                         <div>⬅️</div>
                         <div>➡️</div>
-                    </div>
-                    <div>
-                        {/* 프롬프트 창 */}
-                        <MessageForm onSendMessage={handleSendMessage} />
                     </div>
                 </div>
             </div>
