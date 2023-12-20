@@ -1,6 +1,6 @@
 import style from "./style.css";
 import React, {useEffect, useRef, useState} from "react";
-import NewChatAndHistory from "./NewChatAndHistory";
+import GoToLatestAndQuizList from "./GoToLatestAndQuizList";
 
 import { IoMdLogOut } from "react-icons/io";
 import { FaRankingStar } from "react-icons/fa6";
@@ -52,7 +52,7 @@ const Sidebar = (props) => {
                     }
                 </div>
                 <div>
-                    <NewChatAndHistory />
+                    <GoToLatestAndQuizList />
                 </div>
             </div>
         </div>
