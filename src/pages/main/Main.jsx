@@ -1,13 +1,29 @@
 import style from "./style.css";
-import React, {useState, useEffect, useRef} from 'react';
+import React, {useState, useEffect, useRef } from 'react';
+import { useParams } from 'react-router-dom';
 import { MessageForm, MessageList } from './components';
 import GoToLatestAndQuizList from '../../components/GoToLatestAndQuizList';
 
 const Main = () => {
+    const params = useParams();
+    if (params.key === undefined) console.log(params.key + " main"); // TODO: latest round로 바로 접속 가능하도록 redirect 가능?
+    else console.log(params.key + " quiz");
+
     const scrollRef = useRef();
     const messageFormRef = useRef();
 
-    const [messages, setMessages] = useState([{ text: `어서오세요. ${'반가워요.'}`, isUser: false, isTyping: true, id: Date.now() }]); // 모든 채팅 메시지 저장
+    const currentRound = {
+        "round": 1,
+        "solved_date": "2023-12-19 10:21:56",
+        "words": ["있으매", "마음", "놓다", "인생", "하늘"],
+        "sentence": "네가 있으매 마음이 놓인다.",
+    }; // TODO: 임시 데이터.. 실제 서비스 시에는 SELECT round, solved_date, words, sentence FROM 퀴즈 WHERE round = {params.key}; 이런 식으로 받아온 데이터를 넣어주면 되겠다
+
+    const [roundData, setRoundData] = useState(currentRound);
+    const [messages, setMessages] = useState([
+        { text: `어서오세요. ${params.key}회차 학습에 입장하셨습니다.\n\n${params.key}회차에서 학습 할 단어는\n[${roundData.words.map(word => ' ' + word)} ]\n입니다.`,
+        isUser: false, isTyping: true, id: Date.now() },
+    ]); // 모든 채팅 메시지 저장
     
     return (
         <div className='flex'>

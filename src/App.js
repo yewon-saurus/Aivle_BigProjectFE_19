@@ -22,6 +22,7 @@ function App() {
         <Routes>
           {/* 로그인 O -> Main, 로그인 X -> Info(소개페이지) */}
           <Route path="/" element={<PrivateRoute isThatTrue={isLogin} isTrue={<Main />} isFalse={<Info />} />}></Route>
+          <Route path="/quiz/:key" element={<PrivateRoute isThatTrue={isLogin} isTrue={<Main />} isFalse={<Info />} />}></Route>
           <Route path="/login" element={<LoginPage />} />
           <Route path="/signup" element={<SignupPage />} />
           <Route path="/home" element={<Main />} />

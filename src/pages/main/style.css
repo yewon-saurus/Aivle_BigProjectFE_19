@@ -15,7 +15,8 @@
     padding: 10px 20px;
     text-align: left;
     clear: both;
-    word-wrap: break-word;
+    /* word-wrap: break-word; */
+    white-space: pre-wrap;
 }
 
 .user-message {
@@ -47,7 +48,7 @@
 }
 
 .message-input {
-    width: 90%;
+    width: 95%;
     padding: 10px 20px;
     border-radius: 20px;
 }

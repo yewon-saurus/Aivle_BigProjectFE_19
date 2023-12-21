@@ -3,30 +3,31 @@ import QuizItem from "./QuizItem";
 
 import { MdHistory } from "react-icons/md";
 
-const temp = [
-    {
-        "round": 1,
-        "solved_date": "2023-12-19 10:21:56",
-        "word": ["있으매", "마음", "놓다", "인생", "하늘"],
-        "sentence": "네가 있으매 마음이 놓인다.",
-    },
-    {
-        "round": 2,
-        "solved_date": "2023-12-19 11:45:12",
-        "word": ["개방정", "그만", "떨다", "펼치다", "당신"],
-        "sentence": "개방정 그만 떨어! 깨방정이 아니라 개방정이었다는 사실 아셨나요?",
-    },
-    {
-        "round": 3,
-        "solved_date": null,
-        "word": ["웬일", "분석", "선물", "시작", "문제"],
-        "sentence": null,
-    },
-];
 
 const GoToLatestAndQuizList = () => {
-    const [latest, setLatest] = useState(temp[1]); // 개발 중 임시 데이터
-    const [quizlist, setQuizlist] = useState(temp); // 개발 중 임시 데이터로 초기화
+    const list = [
+        {
+            "round": 1,
+            "solved_date": "2023-12-19 10:21:56",
+            "words": ["있으매", "마음", "놓다", "인생", "하늘"],
+            "sentence": "네가 있으매 마음이 놓인다.",
+        },
+        {
+            "round": 2,
+            "solved_date": "2023-12-19 11:45:12",
+            "words": ["개방정", "그만", "떨다", "펼치다", "당신"],
+            "sentence": "개방정 그만 떨어! 깨방정이 아니라 개방정이었다는 사실 아셨나요?",
+        },
+        {
+            "round": 3,
+            "solved_date": null,
+            "words": ["웬일", "분석", "선물", "시작", "문제"],
+            "sentence": null,
+        },
+    ]; // SELECT round, solved_date, words, sentence FROM 퀴즈 where username={로그인중인사용자};
+    
+    const [latest, setLatest] = useState(list[1]); // 개발 중 임시 데이터
+    const [quizlist, setQuizlist] = useState(list); // 개발 중 임시 데이터로 초기화
 
     return (
         <div>

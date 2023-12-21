@@ -34,20 +34,20 @@ const MessageList = ({ messages, setMessages, scrollRef, messageFormRef }) => {
         <div className="messages-list">
         {messages.map((message) =>
         message.isTyping && message.id === currentTypingId ? (
-            <div className={`message ${message.isUser ? 'user-message' : 'ai-message'}`}>
-                <Typing key={message.id} Tag='div' speed={50} onDone={() => handleEndTyping(message.id)}>
+            <pre className={`message ${message.isUser ? 'user-message' : 'ai-message'}`}>
+                <Typing key={message.id} Tag='pre' speed={50} onDone={() => handleEndTyping(message.id)}>
                     {message.text}
                 </Typing>
                 <div ref={scrollRef}></div>
-            </div>
+            </pre>
         ) : (
-            <div
+            <pre
                 key={message.id}
                 className={`message ${message.isUser ? 'user-message' : 'ai-message'}`}
             >
                 {message.text}
                 <div ref={scrollRef}></div>
-            </div>
+            </pre>
         )
         )}
     </div>
