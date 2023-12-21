@@ -8,6 +8,8 @@ import { Header, Footer, PrivateRoute } from './components';
 import Temp from './Temp';
 import Main from './pages/main/Main';
 import Info from './pages/info/Info';
+import LoginPage from './pages/account/LoginPage/LoginPage';
+import SignupPage from './pages/account/SignupPage/SignupPage';
 
 function App() {
   const [isLogin, setIsLogin] = useState(true); // 개발 중 편의를 위해 true로 설정
@@ -20,6 +22,9 @@ function App() {
         <Routes>
           {/* 로그인 O -> Main, 로그인 X -> Info(소개페이지) */}
           <Route path="/" element={<PrivateRoute isThatTrue={isLogin} isTrue={<Main />} isFalse={<Info />} />}></Route>
+          <Route path="/login" element={<LoginPage />} />
+          <Route path="/signup" element={<SignupPage />} />
+          <Route path="/home" element={<Main />} />
         </Routes>
 
         <Footer />
