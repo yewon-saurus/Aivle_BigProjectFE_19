@@ -5,7 +5,7 @@ import Description from './Description'
 
 function LoginPage() {
   return (
-    <div>
+    <div style={{padding:'63px'}}>
         <section style={{ width: '100%', height: '100vh', display: 'flex', flexDirection: 'column' }} >
 
             <div style= {{ flex: '1', display:'flex' }}>
