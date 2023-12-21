@@ -26,15 +26,13 @@ const Main = () => {
                 </div>
                 <div className="control">
                     {/* fixed 된 프롬프트 창 + 양 방향 화살표 버튼 */}
-                    <div>
-                        {/* 프롬프트 창 */}
-                        <MessageForm setMessages={setMessages} messageFormRef={messageFormRef} />
-                    </div>
-                    <div>
+                    {/* 프롬프트 창 */}
+                    <MessageForm setMessages={setMessages} messageFormRef={messageFormRef} />
+                    {/* <div> */}
                         {/* 양 방향 화살표 버튼(이전 회차, 다음 회차) */}
-                        <div>⬅️</div>
-                        <div>➡️</div>
-                    </div>
+                        {/* <div>⬅️</div> */}
+                        {/* <div>➡️</div> */}
+                    {/* </div> */}
                 </div>
             </div>
         </div>

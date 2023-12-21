@@ -1,5 +1,7 @@
 import React, { useState } from 'react';
 
+import { IoSend } from "react-icons/io5";
+
 const MessageForm = ({ setMessages, messageFormRef }) => {
     const [message, setMessage] = useState('');
     
@@ -20,14 +22,17 @@ const MessageForm = ({ setMessages, messageFormRef }) => {
     
     return (
         <form className="message-form" onSubmit={handleSubmit}>
+            {/* TODO: 텍스트 길이 초과로 줄 바뀔 때마다, textarea가 늘어나고 줄 바꿈 되면 좋겠는데.. */}
             <input
                 ref={messageFormRef}
-                type="text"
+                type="textarea"
                 className="message-input"
                 value={message}
                 onChange={(e) => setMessage(e.target.value)}
             />
-            <input className="send-button" type="submit" value={"send"} />
+            <button className="send-button" type="submit">
+                <IoSend size={25} />
+            </button>
         </form>
     );
 };

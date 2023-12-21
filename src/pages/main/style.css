@@ -33,17 +33,36 @@
     position: absolute;
     bottom: 0;
     width: inherit;
-    height: 10%;
-    background-color: black;
-    color: white;
+    /* height: 10%; */
 }
 
 .message-form {
-    
+    display: flex;
+    justify-content: space-evenly;
+    align-items: center;
+    background-color: var(--color-primary-500);
+    padding: 10px;
+    margin: 10px;
+    border-radius: 10px;
 }
 
 .message-input {
-    color: black;
+    width: 90%;
+    padding: 10px 20px;
+    border-radius: 20px;
+}
+
+.send-button {
+    height: inherit;
+    padding: 10px;
+    margin-left: 10px;
+    background-color: var(--color-primary-600);
+    border-radius: 9999px;
+    color: #ffffff;
+}
+
+.message-input {
+    resize: vertical;
 }
 
 @media (min-width: 1024px) {
