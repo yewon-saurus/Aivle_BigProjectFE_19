@@ -1,7 +1,6 @@
 // tailwind.config.js
 const {nextui} = require("@nextui-org/react");
 
-
 /** @type {import('tailwindcss').Config} */
 export const content = [
   "./src/**/*.{html,js,jsx}",
