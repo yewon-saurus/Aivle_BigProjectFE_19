@@ -20,7 +20,7 @@ const Main = () => {
 
     const [roundData, setRoundData] = useState(currentRound);
     const [messages, setMessages] = useState([
-        { text: `어서오세요.\n${params.id}단계 학습에 입장하셨습니다.\n\n${params.id}단계에서 학습하실 단어는\n" ${roundData.word} "\n입니다.`,
+        { text: `어서오세요.\n${params.key}단계 학습에 입장하셨습니다.\n\n${params.key}단계에서 학습하실 단어는\n" ${roundData.word} "\n입니다.`,
         isUser: false, isTyping: true, id: Date.now() },
     ]); // 모든 채팅 메시지 저장
 
