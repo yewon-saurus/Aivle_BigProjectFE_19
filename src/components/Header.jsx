@@ -1,16 +1,19 @@
 import style from "./style.css";
-import Sidebar from "./Sidebar";
-import { useEffect, useState, useRef } from "react";
+import { Sidebar, ConfirmPopup } from "./";
+import { useState } from "react";
+import { useNavigate } from 'react-router-dom';
 
 import { LuMenu } from "react-icons/lu";
 import { IoMdLogOut } from "react-icons/io";
 import { FaRankingStar } from "react-icons/fa6";
 
 function Header(props) {
-    const SIDEBAR_WIDTH = 360;
+    const nav = useNavigate();
 
+    const SIDEBAR_WIDTH = 360;
     const [isOpen, setOpen] = useState(false);
     const [xPosition, setX] = useState(SIDEBAR_WIDTH);
+    const [logoutPopup, setLogoutPopup] = useState({ open: false, title: "", message: "" }); // 로그아웃 팝업
     
     // button 클릭 시 토글
     const toggleMenu = () => {
@@ -23,8 +26,20 @@ function Header(props) {
         }
     };
 
+    const onClickLogout = () => {
+        setLogoutPopup({ open: !(logoutPopup.open), title: '로그아웃', message: '로그아웃 하시겠습니까?' });
+    }
+    const handleConfirm = () => {
+        sessionStorage.removeItem('aivle19_username');
+        sessionStorage.removeItem('aivle19_token');
+        props.setIsLogin(false);
+        nav('/');
+    }
+
     return (
         <div className={`w-full flex justify-center bg-white z-50 top-0 fixed`}>
+            {logoutPopup.open && <ConfirmPopup onOpenAlert={onClickLogout} onConfirm={handleConfirm} title={logoutPopup.title} message={logoutPopup.message} />}
+
             <div className="w-[100%] flex justify-between items-center px-4 py-2">
                 <div className="flex items-center gap-[1em]">
                     <div className="lg:hidden">
@@ -33,7 +48,8 @@ function Header(props) {
                                 <LuMenu size={30} color="var(--color-primary-600)" />
                             </button>
                         </div>
-                        <Sidebar width={SIDEBAR_WIDTH} isLogin={props.isLogin} isOpen={isOpen} setOpen={setOpen} setX={setX} xPosition={xPosition} />
+                        <Sidebar width={SIDEBAR_WIDTH} isLogin={props.isLogin} isOpen={isOpen} setOpen={setOpen} setX={setX} xPosition={xPosition}
+                            onClickLogout={onClickLogout} />
                     </div>
                     <a href={process.env.PUBLIC_URL + "/"} className="flex items-center gap-2 mr-5">
                         <img className="w-10 h-10" src={process.env.PUBLIC_URL + '/logo192.png'} />
@@ -47,11 +63,11 @@ function Header(props) {
                             <a href="" className="flex hover:text-[var(--color-primary-600)]" ><FaRankingStar style={{width: '20px', height: 'auto',}} /><span>&nbsp;&nbsp;--위</span></a>
                             <a href="" className="hover:text-[var(--color-primary-600)]" >찬스 --개</a>
                             <a href="" className="hover:text-[var(--color-primary-600)]" >포인트 --점</a> 
-                            <a href="#" className="flex hover:text-[var(--color-warning-600)]" onClick=""><IoMdLogOut style={{width: '20px', height: 'auto',}} /><span>&nbsp;&nbsp;로그아웃</span></a>
+                            <a href="#" className="flex hover:text-[var(--color-warning-600)]" onClick={onClickLogout}><IoMdLogOut style={{width: '20px', height: 'auto',}} /><span>&nbsp;&nbsp;로그아웃</span></a>
                         </div>
                         :
                         <div>
-                            <a href={process.env.PUBLIC_URL+'/login'} className={``}>로그인</a>
+                            <a href={process.env.PUBLIC_URL+'/login'} className="hover:text-[var(--color-primary-600)]">로그인</a>
                         </div>
                     }
                 </div>

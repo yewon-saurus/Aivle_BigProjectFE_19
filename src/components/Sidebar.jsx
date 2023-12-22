@@ -1,5 +1,6 @@
 import style from "./style.css";
 import React, {useEffect, useRef, useState} from "react";
+import { useNavigate } from 'react-router-dom';
 import GoToLatestAndQuizList from "./GoToLatestAndQuizList";
 
 import { IoMdLogOut } from "react-icons/io";
@@ -16,7 +17,7 @@ const Sidebar = (props) => {
                         <table className="w-[100%] text-right">
                             <tr>
                                 <td colspan="2">
-                                    <a href="#" onClick="" className="flex justify-end hover:text-[var(--color-warning-600)]">
+                                    <a href="#" onClick={props.onClickLogout} className="flex justify-end hover:text-[var(--color-warning-600)]">
                                         <IoMdLogOut size={25} />
                                         <span>&nbsp;&nbsp;로그아웃</span>
                                     </a>
@@ -46,13 +47,19 @@ const Sidebar = (props) => {
                             </tr>
                         </table>
                         :
-                        <div>
-                            <a href={process.env.PUBLIC_URL+'/login'} className={``}>로그인</a>
+                        <div className="w-[100%] text-right p-[10px]">
+                            <a href={process.env.PUBLIC_URL+'/login'} className="hover:text-[var(--color-primary-600)]">로그인</a>
                         </div>
                     }
                 </div>
                 <div>
-                    <GoToLatestAndQuizList />
+                    {
+                        props.isLogin ? <GoToLatestAndQuizList />
+                        : <div className="w-[100%] text-right p-[10px] text-sm">
+                            <div>로그인 정보가 없습니다.</div>
+                            <div>로그인하고 서비스를 이용해 보세요.</div>
+                        </div>
+                    }
                 </div>
             </div>
         </div>

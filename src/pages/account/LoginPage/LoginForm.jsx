@@ -3,7 +3,7 @@ import axios from 'axios';
 import { useNavigate } from 'react-router-dom';
 
 
-function LoginForm() {
+function LoginForm({setIsLogin}) {
 
     const [Id, setId] = useState("")
     const [Password, setPassword] = useState("")
@@ -32,7 +32,10 @@ function LoginForm() {
         axios.post(url, req, config)
             .then(res => {
                 console.log("Login success");
-                nav('/home');
+                sessionStorage.setItem('aivle19_username', req.username);
+                sessionStorage.setItem('aivle19_token', res.data.token);
+                setIsLogin(true);
+                nav('/');
             }).catch(err => {
                 // 에러 처리
                 console.log(err.response.data.message);

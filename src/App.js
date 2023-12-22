@@ -13,7 +13,7 @@ import SignupPage from './pages/account/SignupPage/SignupPage';
 import RankPage from './pages/rank/RankPage';
 
 function App() {
-  const [isLogin, setIsLogin] = useState(true); // 개발 중 편의를 위해 true로 설정
+  const [isLogin, setIsLogin] = useState(false); // 개발 중 편의를 위해 true로 설정
 
   return (
     <div className="App">
@@ -25,7 +25,7 @@ function App() {
           {/* 로그인 O -> Main, 로그인 X -> Info(소개페이지) */}
           <Route path="/" element={<PrivateRoute isThatTrue={isLogin} isTrue={<Main />} isFalse={<Info />} />}></Route>
           <Route path="/quiz/:key" element={<PrivateRoute isThatTrue={isLogin} isTrue={<Main />} isFalse={<Info />} />}></Route>
-          <Route path="/login" element={<LoginPage />} />
+          <Route path="/login" element={<LoginPage setIsLogin={setIsLogin} />} />
           <Route path="/signup" element={<SignupPage />} />
           <Route path="/home" element={<Main />} />
           <Route path="/rank" element={<RankPage />} />
