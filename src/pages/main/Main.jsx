@@ -23,6 +23,7 @@ const Main = () => {
         { text: `어서오세요.\n${params.key}단계 학습에 입장하셨습니다.\n\n${params.key}단계에서 학습하실 단어는\n" ${roundData.word} "\n입니다.`,
         isUser: false, isTyping: true, id: Date.now() },
     ]); // 모든 채팅 메시지 저장
+    const [currentTypingId, setCurrentTypingId] = useState(null); // 현재 AI가 타이핑하는 메시지 추적
 
     useEffect(() => {
         if (params.key === undefined) {
@@ -43,6 +44,8 @@ const Main = () => {
                 <div>
                     {/* 대화 형식으로 나타난 학습 로그 */}
                     <MessageList
+                        currentTypingId={currentTypingId}
+                        setCurrentTypingId={setCurrentTypingId}
                         messages={messages}
                         setMessages={setMessages}
                         scrollRef={scrollRef}
@@ -52,7 +55,11 @@ const Main = () => {
                 <div className="control">
                     {/* fixed 된 프롬프트 창 + 양 방향 화살표 버튼 */}
                     {/* 프롬프트 창 */}
-                    <MessageForm setMessages={setMessages} messageFormRef={messageFormRef} />
+                    <MessageForm
+                        currentTypingId={currentTypingId}
+                        setMessages={setMessages}
+                        messageFormRef={messageFormRef}
+                    />
                     {/* <div> */}
                         {/* 양 방향 화살표 버튼(이전 회차, 다음 회차) */}
                         {/* <div>⬅️</div> */}

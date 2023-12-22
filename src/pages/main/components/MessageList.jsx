@@ -1,9 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import Typing from 'react-kr-typing-anim';
 
-const MessageList = ({ messages, setMessages, scrollRef, messageFormRef }) => {
-    const [currentTypingId, setCurrentTypingId] = useState(null); // 현재 AI가 타이핑하는 메시지 추적
-
+const MessageList = ({ currentTypingId, setCurrentTypingId, messages, setMessages, scrollRef, messageFormRef }) => {
     useEffect(() => {
         // scrollRef.current.scrollTop = scrollRef.current.scrollHeight;
         scrollRef.current.scrollIntoView({behavior: "smooth", block: "end"});

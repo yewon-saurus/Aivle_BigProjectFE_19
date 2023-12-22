@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 
 import { IoSend } from "react-icons/io5";
 
-const MessageForm = ({ setMessages, messageFormRef }) => {
+const MessageForm = ({ currentTypingId, setMessages, messageFormRef }) => {
     const [message, setMessage] = useState('');
     
     const handleSendMessage = (message) => {
@@ -30,7 +30,7 @@ const MessageForm = ({ setMessages, messageFormRef }) => {
                 value={message}
                 onChange={(e) => setMessage(e.target.value)}
             />
-            <button className="send-button" type="submit">
+            <button className="send-button disabled:grayscale" type="submit" disabled={currentTypingId}>
                 <IoSend size={25} />
             </button>
         </form>
