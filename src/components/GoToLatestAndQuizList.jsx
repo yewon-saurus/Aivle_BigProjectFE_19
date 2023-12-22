@@ -39,7 +39,7 @@ const GoToLatestAndQuizList = () => {
                 <div className="text-left text-[var(--color-info-900)]">
                     이어서 학습하기
                 </div>
-                <a className="flex gap-2 text-left bg-[var(--color-primary-200)] hover:bg-[var(--color-primary-300)] w-full rounded-full lg:my-0 px-6 py-3 text-[var(--color-info-500)]"
+                <a className="flex gap-2 text-left bg-[var(--color-primary-100)] hover:bg-[var(--color-primary-200)] w-full rounded-full lg:my-0 px-6 py-3 text-[var(--color-primary-500)]"
                     href={process.env.PUBLIC_URL + "/"}>
                     <MdHistory size={25} />
                     <span className="truncate">{latest.id + "회차: " + latest.word}</span>

@@ -9,7 +9,7 @@ import { FaRankingStar } from "react-icons/fa6";
 const Sidebar = (props) => {
     return (
     <div>
-        <div ref={props.side} className={`${props.isOpen === true? 'drop-shadow-[25px_25px_100px_var(--color-primary-500)]' :'drop-shadow-none'} sidebar`} style={{ width: `${props.width}px`, height: '100%',  transform: `translatex(${-props.xPosition}px)`}}>
+        <div ref={props.side} className={`${props.isOpen === true? 'drop-shadow-[25px_25px_100px_var(--color-primary-900)]' :'drop-shadow-none'} sidebar`} style={{ width: `${props.width}px`, height: '100%',  transform: `translatex(${-props.xPosition}px)`}}>
             <div className="content">
                 <div className="lg:hidden">
                     {
@@ -17,7 +17,7 @@ const Sidebar = (props) => {
                         <table className="w-[100%] text-right">
                             <tr>
                                 <td colspan="2">
-                                    <a href="#" onClick={props.onClickLogout} className="flex justify-end hover:text-[var(--color-warning-600)]">
+                                    <a href="#" onClick={props.onClickLogout} className="flex justify-end hover:text-[var(--color-warning-500)]">
                                         <IoMdLogOut size={25} />
                                         <span>&nbsp;&nbsp;로그아웃</span>
                                     </a>
@@ -25,7 +25,7 @@ const Sidebar = (props) => {
                             </tr>
                             <tr>
                                 <td colspan="2">
-                                    <a href="" className="flex justify-end hover:text-[var(--color-primary-600)]">
+                                    <a href="" className="flex justify-end hover:text-[var(--color-primary-500)]">
                                         <FaRankingStar size={25} />
                                         <span>&nbsp;&nbsp;--위</span>
                                     </a>
@@ -33,13 +33,13 @@ const Sidebar = (props) => {
                             </tr>
                             <tr>
                                 <td>
-                                    <a href="" className="flex justify-end hover:text-[var(--color-primary-600)]" >
+                                    <a href="" className="flex justify-end hover:text-[var(--color-primary-500)]" >
                                         {/* <FaRegLightbulb size={25} /> */}
                                         <span>&nbsp;&nbsp;찬스 --개</span>
                                     </a>
                                 </td>
                                 <td>
-                                    <a href="" className="flex justify-end hover:text-[var(--color-primary-600)]" >
+                                    <a href="" className="flex justify-end hover:text-[var(--color-primary-500)]" >
                                         {/* <FaCoins size={25} /> */}
                                         <span>&nbsp;&nbsp;포인트 --점</span>
                                     </a>
@@ -48,7 +48,7 @@ const Sidebar = (props) => {
                         </table>
                         :
                         <div className="w-[100%] text-right p-[10px]">
-                            <a href={process.env.PUBLIC_URL+'/login'} className="hover:text-[var(--color-primary-600)]">로그인</a>
+                            <a href={process.env.PUBLIC_URL+'/login'} className="hover:text-[var(--color-primary-500)]">로그인</a>
                         </div>
                     }
                 </div>

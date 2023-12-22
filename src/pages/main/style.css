@@ -20,7 +20,7 @@
 }
 
 .user-message {
-    background-color: var(--color-info-400);
+    background-color: var(--color-primary-500);
     color: #ffffff;
     float: right;
 }
@@ -41,7 +41,7 @@
     display: flex;
     justify-content: space-evenly;
     align-items: center;
-    background-color: var(--color-primary-500);
+    background-color: var(--color-primary-400);
     padding: 10px;
 }
 
@@ -55,19 +55,22 @@
     height: inherit;
     padding: 10px;
     margin-left: 10px;
-    background-color: var(--color-primary-600);
+    background-color: var(--color-primary-500);
     border-radius: 9999px;
     color: #ffffff;
     border: #ffffff 1px solid;
+    transition-property: color, background-color, border-color, text-decoration-color, fill, stroke;
+    transition-timing-function: ease;
+    transition-duration: 250ms;
 }
 
 .send-button:disabled {
-    --tw-grayscale: grayscale(100%);
+    --tw-grayscale: grayscale(50%);
     filter: var(--tw-blur) var(--tw-brightness) var(--tw-contrast) var(--tw-grayscale) var(--tw-hue-rotate) var(--tw-invert) var(--tw-saturate) var(--tw-sepia) var(--tw-drop-shadow);
     background-color: var(--color-primary-100);
     border-radius: 9999px;
-    color: var(--color-primary-300);
-    border: var(--color-primary-300) 1px solid;
+    color: var(--color-primary-200);
+    border: var(--color-primary-200) 1px solid;
 }
 
 .message-input {
