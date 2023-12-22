@@ -13,7 +13,16 @@ import SignupPage from './pages/account/SignupPage/SignupPage';
 import RankPage from './pages/rank/RankPage';
 
 function App() {
-  const [isLogin, setIsLogin] = useState(false); // 개발 중 편의를 위해 true로 설정
+  const [isLogin, setIsLogin] = useState(false);
+
+  useEffect(() => {
+    if (sessionStorage.aivle19_username !== undefined) {
+      setIsLogin(true);
+    }
+    else {
+      setIsLogin(false);
+    }
+  }, [isLogin]);
 
   return (
     <div className="App">
