@@ -7,22 +7,25 @@ import { MdHistory } from "react-icons/md";
 const GoToLatestAndQuizList = () => {
     const list = [
         {
-            "round": 1,
+            "id": 1,
+            "word": "가설",
+            "meanig": "어떤 사실을 설명하",
             "solved_date": "2023-12-19 10:21:56",
-            "words": ["있으매", "마음", "놓다", "인생", "하늘"],
-            "sentence": "네가 있으매 마음이 놓인다.",
+            "username": "yewon",
         },
         {
-            "round": 2,
-            "solved_date": "2023-12-19 11:45:12",
-            "words": ["개방정", "그만", "떨다", "펼치다", "당신"],
-            "sentence": "개방정 그만 떨어! 깨방정이 아니라 개방정이었다는 사실 아셨나요?",
+            "id": 2,
+            "word": "각인되다",
+            "meanig": "머릿속에 새겨 넣듯어쩌구",
+            "solved_date": "2023-12-12 10:21:57",
+            "username": "yewon",
         },
         {
-            "round": 3,
+            "id": 3,
+            "word": "감안하다",
+            "meanig": "고찰하다",
             "solved_date": null,
-            "words": ["웬일", "분석", "선물", "시작", "문제"],
-            "sentence": null,
+            "username": "yewon",
         },
     ]; // SELECT round, solved_date, words, sentence FROM 퀴즈 where username={로그인중인사용자};
     
@@ -39,7 +42,7 @@ const GoToLatestAndQuizList = () => {
                 <button className="bg-[var(--color-primary-200)] hover:bg-[var(--color-primary-300)] w-full rounded-full lg:my-0 px-6 py-3">
                     <div className="flex gap-2 text-left text-[var(--color-info-500)]">
                         <MdHistory size={25} />
-                        <span className="truncate">{latest.round + "회차: " + latest.sentence}</span>
+                        <span className="truncate">{latest.id + "회차: " + latest.word}</span>
                     </div>
                 </button>
             </div>

@@ -6,24 +6,33 @@ import GoToLatestAndQuizList from '../../components/GoToLatestAndQuizList';
 
 const Main = () => {
     const params = useParams();
-    if (params.key === undefined) console.log(params.key + " main"); // TODO: latest round로 바로 접속 가능하도록 redirect 가능?
-    else console.log(params.key + " quiz");
 
     const scrollRef = useRef();
     const messageFormRef = useRef();
 
     const currentRound = {
-        "round": 1,
+        "id": 1,
+        "word": "가설",
+        "meanig": "어떤 사실을 설명하",
         "solved_date": "2023-12-19 10:21:56",
-        "words": ["있으매", "마음", "놓다", "인생", "하늘"],
-        "sentence": "네가 있으매 마음이 놓인다.",
+        "username": "yewon",
     }; // TODO: 임시 데이터.. 실제 서비스 시에는 SELECT round, solved_date, words, sentence FROM 퀴즈 WHERE round = {params.key}; 이런 식으로 받아온 데이터를 넣어주면 되겠다
 
     const [roundData, setRoundData] = useState(currentRound);
     const [messages, setMessages] = useState([
-        { text: `어서오세요. ${params.key}회차 학습에 입장하셨습니다.\n\n${params.key}회차에서 학습 할 단어는\n[${roundData.words.map(word => ' ' + word)} ]\n입니다.`,
+        { text: `어서오세요.\n${params.id}단계 학습에 입장하셨습니다.\n\n${params.id}단계에서 학습하실 단어는\n" ${roundData.word} "\n입니다.`,
         isUser: false, isTyping: true, id: Date.now() },
     ]); // 모든 채팅 메시지 저장
+
+    useEffect(() => {
+        if (params.key === undefined) {
+            console.log(params.key + " main"); // TODO: latest solved word로 바로 접속 가능하도록 redirect 가능?
+            // TODO: session storage에 latest solved word의 id(PK) 저장 해놓고, params.key === undefined면 아무튼 최근 문제로 nav 처리합시다
+        }
+        else {
+            console.log(params.key + " quiz");
+        }
+    }, []);
     
     return (
         <div className='flex'>
