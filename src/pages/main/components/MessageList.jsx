@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useEffect } from 'react';
 import Typing from 'react-kr-typing-anim';
 
 const MessageList = ({ currentTypingId, setCurrentTypingId, messages, setMessages, scrollRef, messageFormRef }) => {
@@ -15,7 +15,7 @@ const MessageList = ({ currentTypingId, setCurrentTypingId, messages, setMessage
             if (nextTypingMessage) {
                 setCurrentTypingId(nextTypingMessage.id);
             }
-            messageFormRef.current.focus(); // AI의 응답이 끝난 후 입력창으로 자동 포커싱
+            // messageFormRef.current.focus(); // AI의 응답이 끝난 후 입력창으로 자동 포커싱
         }
     }, [messages, currentTypingId]);
 
@@ -30,25 +30,32 @@ const MessageList = ({ currentTypingId, setCurrentTypingId, messages, setMessage
 
     return (
         <div className="messages-list">
-        {messages.map((message) =>
-        message.isTyping && message.id === currentTypingId ? (
-            <pre className={`message ${message.isUser ? 'user-message' : 'ai-message'}`}>
-                <Typing key={message.id} Tag='pre' speed={50} onDone={() => handleEndTyping(message.id)}>
+            {messages.map((message) =>
+                <div
+                    key={message.id}
+                    className={`message ${message.isUser ? 'user-message' : 'ai-message'}`}
+                >
                     {message.text}
-                </Typing>
-                <div ref={scrollRef}></div>
-            </pre>
-        ) : (
-            <pre
-                key={message.id}
-                className={`message ${message.isUser ? 'user-message' : 'ai-message'}`}
-            >
-                {message.text}
-                <div ref={scrollRef}></div>
-            </pre>
-        )
-        )}
-    </div>
+                    <div className='relative -bottom-5' ref={scrollRef}></div>
+                </div>
+            // message.isTyping && message.id === currentTypingId ? (
+            //     <div className={`message ${message.isUser ? 'user-message' : 'ai-message'}`}>
+            //         <Typing key={message.id} Tag='div' speed={50} onDone={() => handleEndTyping(message.id)}>
+            //             {message.text}
+            //         </Typing>
+            //         <div ref={scrollRef}></div>
+            //     </div>
+            // ) : (
+            //     <div
+            //         key={message.id}
+            //         className={`message ${message.isUser ? 'user-message' : 'ai-message'}`}
+            //     >
+            //         {message.text}
+            //         <div ref={scrollRef}></div>
+            //     </div>
+            // )
+            )}
+        </div>
     );
 };
 

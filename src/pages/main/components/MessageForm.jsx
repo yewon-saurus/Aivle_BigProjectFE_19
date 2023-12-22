@@ -57,9 +57,11 @@ const MessageForm = ({ roundData, currentTypingId, setMessages, messageFormRef }
                 case roundData.word:
                     // TODO: 여기서 /study/quiz에 request, setQuiz(response.data.questions[0]);
                     // console.log(quiz.answers.map((ele) => ele.answer));
-                    addAiMessage(`다음은 "${roundData.word}"를 사용한 문장입니다.\n\n"${quiz.Sentence}"\n\n${quiz.question}
-다음 <보기> 중 가장 적절한 답안을 입력해 주세요.\n
-<보기>${quiz.answers.map((ele, idx) => '\n- ' + ele.answer).join('')}`);
+                    addAiMessage(
+                        `다음은 "${roundData.word}"를 사용한 문장입니다.\n\n"${quiz.Sentence}"\n\n${quiz.question}
+                        다음 <보기> 중 가장 적절한 답안을 입력해 주세요.\n
+                        <보기>${quiz.answers.map((ele, idx) => '\n- ' + ele.answer).join('')}`
+                    );
                     break;
                 default: console.log("user input judge module .. default");
             }
@@ -75,7 +77,7 @@ const MessageForm = ({ roundData, currentTypingId, setMessages, messageFormRef }
                 value={message}
                 onChange={(e) => setMessage(e.target.value)}
             />
-            <button className="send-button disabled:grayscale" type="submit" disabled={currentTypingId}>
+            <button className="send-button" type="submit" disabled={currentTypingId || message === ''}>
                 <IoSend size={25} />
             </button>
         </form>

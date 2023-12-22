@@ -15,18 +15,18 @@
     padding: 10px 20px;
     text-align: left;
     clear: both;
-    /* word-wrap: break-word; */
-    white-space: pre-wrap;
+    word-wrap: break-all;
+    white-space: pre-line;
 }
 
 .user-message {
-    background-color: #ffffff;
+    background-color: var(--color-info-400);
+    color: #ffffff;
     float: right;
 }
 
 .ai-message {
-    background-color: var(--color-info-400);
-    color: #ffffff;
+    background-color: #ffffff;
     float: left;
 }
 
@@ -43,8 +43,6 @@
     align-items: center;
     background-color: var(--color-primary-500);
     padding: 10px;
-    margin: 10px;
-    border-radius: 10px;
 }
 
 .message-input {
@@ -60,6 +58,16 @@
     background-color: var(--color-primary-600);
     border-radius: 9999px;
     color: #ffffff;
+    border: #ffffff 1px solid;
+}
+
+.send-button:disabled {
+    --tw-grayscale: grayscale(100%);
+    filter: var(--tw-blur) var(--tw-brightness) var(--tw-contrast) var(--tw-grayscale) var(--tw-hue-rotate) var(--tw-invert) var(--tw-saturate) var(--tw-sepia) var(--tw-drop-shadow);
+    background-color: var(--color-primary-100);
+    border-radius: 9999px;
+    color: var(--color-primary-300);
+    border: var(--color-primary-300) 1px solid;
 }
 
 .message-input {
@@ -73,5 +81,10 @@
     }
     .message {
         max-width: 60%;
+    }
+
+    .message-form {
+        margin: 10px;
+        border-radius: 10px;
     }
 }
