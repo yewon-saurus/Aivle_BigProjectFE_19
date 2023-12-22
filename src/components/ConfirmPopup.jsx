@@ -17,7 +17,7 @@ function ConfirmPopup({ onOpenAlert, onConfirm, title, message }) {
                     <button onClick={onOpenAlert} className="bg-gray-200 hover:bg-gray-300 px-4 py-2 rounded text-black text-lg">
                         취소
                     </button>
-                    <button onClick={onClickConfirm} className="bg-[var(--color-warning-700)] bg-[var(--color-warning-500)] px-4 py-2 rounded text-white text-lg">
+                    <button onClick={onClickConfirm} className="bg-[var(--color-warning-700)] hover:bg-[var(--color-warning-600)] px-4 py-2 rounded text-white text-lg">
                         확인
                     </button>
                 </div>
