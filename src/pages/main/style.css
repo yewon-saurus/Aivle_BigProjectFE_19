@@ -1,3 +1,10 @@
+@font-face {
+    font-family: 'D2Coding';
+    src: url('https://cdn.jsdelivr.net/gh/projectnoonnu/noonfonts_three@1.0/D2Coding.woff') format('woff');
+    font-weight: normal;
+    font-style: normal;
+}
+
 .messages-list {
     position: absolute;
     top: 63px;
@@ -17,6 +24,7 @@
     clear: both;
     word-wrap: break-all;
     white-space: pre-line;
+    font-family: 'D2Coding';
 }
 
 .user-message {
