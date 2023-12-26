@@ -53,9 +53,13 @@ function SignupForm() {
             password: Password,
         };
 
+
         try {
-          const response = await axios.post('http://127.0.0.1:8000/accounts/signup/', req
-           );
+          const response = await axios.post('http://127.0.0.1:8000/accounts/signup/', req, {
+            headers: {
+                'Content-Type': 'application/json'
+            }
+          });
             console.log('Sign-up successful');
             nav('/login')
         } catch (error) {
