@@ -19,14 +19,14 @@ const MessageList = ({ currentTypingId, setCurrentTypingId, messages, setMessage
         }
     }, [messages, currentTypingId]);
 
-    const handleEndTyping = (id) => {
-        setMessages((prevMessages) =>
-            prevMessages.map((msg) =>
-                msg.id === id ? { ...msg, isTyping: false } : msg
-            )
-        );
-        setCurrentTypingId(null); // 타이핑 애니메이션 종료됐다? -> 더 이상 타이핑 중인 메시지가 없다
-    };
+    // const handleEndTyping = (id) => {
+    //     setMessages((prevMessages) =>
+    //         prevMessages.map((msg) =>
+    //             msg.id === id ? { ...msg, isTyping: false } : msg
+    //         )
+    //     );
+    //     setCurrentTypingId(null); // 타이핑 애니메이션 종료됐다? -> 더 이상 타이핑 중인 메시지가 없다
+    // };
 
     return (
         <div className="messages-list">

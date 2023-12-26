@@ -28,8 +28,16 @@ const Main = () => {
     const [roundData, setRoundData] = useState(currentRound2);
     const [messages, setMessages] = useState([
         {
-            text: `어서오세요.\n${params.key}단계 학습에 입장하셨습니다.\n\n이번에 학습하실 단어는 "${roundData.word}" 입니다.\n\n입력창에 "${roundData.word}"를 입력하시면 학습이 시작됩니다.`,
-            isUser: false, isTyping: true, id: Date.now()
+            text: `어서오세요.\n${params.key}단계 학습에 입장하셨습니다.`,
+            isUser: false, isTyping: false, id: Date.now()
+        },
+        {
+            text: `이번에 학습하실 단어는 "${roundData.word}" 입니다.`,
+            isUser: false, isTyping: false, id: Date.now()
+        },
+        {
+            text: `입력창에 "${roundData.word}"를 입력하시면 학습이 시작됩니다.`,
+            isUser: false, isTyping: false, id: Date.now()
         },
     ]); // 모든 채팅 메시지 저장
     const [currentTypingId, setCurrentTypingId] = useState(null); // 현재 AI가 타이핑하는 메시지 추적

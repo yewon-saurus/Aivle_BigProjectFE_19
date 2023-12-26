@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import { delay } from '../../../hooks/delay';
 
 import { IoSend } from "react-icons/io5";
 
@@ -45,27 +46,27 @@ const MessageForm = ({ roundData, currentTypingId, setMessages, messageFormRef }
         setMessage('');
     };
     
-    const addAiMessage = (aiSay) => {
+    const addAiMessage = (aiSay, isTyping=false) => {
         setMessages((prevMessages) => [
             ...prevMessages, // 이전 메시지들
-            { text: `${aiSay}`, isUser: false, isTyping: true, id: Date.now() },
+            { text: `${aiSay}`, isUser: false, isTyping: isTyping, id: Date.now() },
         ]);
     }
     
-        const userInputJudge = () => {
-            switch (message) {
-                case roundData.word:
-                    // TODO: 여기서 /study/quiz에 request, setQuiz(response.data.questions[0]);
-                    // console.log(quiz.answers.map((ele) => ele.answer));
-                    addAiMessage(
-                        `다음은 "${roundData.word}"를 사용한 문장입니다.\n\n"${quiz.Sentence}"\n\n${quiz.question}
-                        다음 <보기> 중 가장 적절한 답안을 입력해 주세요.\n
-                        <보기>${quiz.answers.map((ele, idx) => '\n- ' + ele.answer).join('')}`
-                    );
-                    break;
-                default: console.log("user input judge module .. default");
-            }
+    const userInputJudge = async () => {
+        switch (message) {
+            case roundData.word:
+                // TODO: 여기서 /study/quiz에 request, setQuiz(response.data.questions[0]);
+                // console.log(quiz.answers.map((ele) => ele.answer));
+                addAiMessage(`다음은 "${roundData.word}"를 사용한 문장입니다.\n\n"${quiz.Sentence}"`);
+                await delay();
+                addAiMessage(`${quiz.question}\n다음 <보기> 중 가장 적절한 답안을 입력해 주세요.`);
+                await delay();
+                addAiMessage(`<보기>${quiz.answers.map((ele) => '\n- ' + ele.answer).join('')}`);
+                break;
+            default: console.log("user input judge module .. default");
         }
+    }
     
     return (
         <form className="message-form" onSubmit={handleSubmit}>
@@ -77,7 +78,7 @@ const MessageForm = ({ roundData, currentTypingId, setMessages, messageFormRef }
                 value={message}
                 onChange={(e) => setMessage(e.target.value)}
             />
-            <button className="send-button" type="submit" disabled={currentTypingId || message === ''}>
+            <button className="send-button" type="submit" disabled={message === ''}>
                 <IoSend size={25} />
             </button>
         </form>
