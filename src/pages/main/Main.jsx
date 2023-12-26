@@ -36,7 +36,7 @@ const Main = () => {
             isUser: false, isTyping: false, id: Date.now()
         },
         {
-            text: `입력창에 "${roundData.word}"를 입력하시면 학습이 시작됩니다.`,
+            text: `입력창에 "${roundData.word}"를 입력하시면 단어 퀴즈가 시작됩니다.`,
             isUser: false, isTyping: false, id: Date.now()
         },
     ]); // 모든 채팅 메시지 저장
