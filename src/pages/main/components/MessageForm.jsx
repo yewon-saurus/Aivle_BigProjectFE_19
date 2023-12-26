@@ -26,7 +26,7 @@ const question = {
     ]
 };
 
-const MessageForm = ({ roundData, currentTypingId, setMessages, messageFormRef }) => {
+const MessageForm = ({ roundData, setMessages, messageFormRef }) => {
     const [message, setMessage] = useState('');
     const [quiz, setQuiz] = useState(question);
     const [aiIsTalking, setAiIsTalking] = useState(false);
@@ -120,6 +120,11 @@ const MessageForm = ({ roundData, currentTypingId, setMessages, messageFormRef }
         await delay();
         addAiMessage(`'쓰기' 과정을 진행합니다. 다음 주어지는 문장들을 수기로 작성해 보시고, 사진을 업로드 해주세요.`);
         setAiIsTalking(false);
+
+        setMessages((prevMessages) => [
+            ...prevMessages,
+            { isUser: false, mode: 'handwriting' },
+        ]);
     }
     
     const endOfLearning = async () => {

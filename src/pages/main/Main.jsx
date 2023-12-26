@@ -40,7 +40,6 @@ const Main = () => {
             isUser: false, isTyping: false, id: Date.now()
         },
     ]); // 모든 채팅 메시지 저장
-    const [currentTypingId, setCurrentTypingId] = useState(null); // 현재 AI가 타이핑하는 메시지 추적
 
     useEffect(() => {
         modeJudge();
@@ -65,12 +64,8 @@ const Main = () => {
                 <div>
                     {/* 대화 형식으로 나타난 학습 로그 */}
                     <MessageList
-                        currentTypingId={currentTypingId}
-                        setCurrentTypingId={setCurrentTypingId}
                         messages={messages}
-                        setMessages={setMessages}
                         scrollRef={scrollRef}
-                        messageFormRef={messageFormRef}
                     />
                 </div>
                 <div className="control">
@@ -78,7 +73,6 @@ const Main = () => {
                     {/* 프롬프트 창 */}
                     <MessageForm
                         roundData={roundData}
-                        currentTypingId={currentTypingId}
                         setMessages={setMessages}
                         messageFormRef={messageFormRef}
                     />
