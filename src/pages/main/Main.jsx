@@ -25,6 +25,7 @@ const Main = () => {
     const scrollRef = useRef();
     const messageFormRef = useRef();
     
+    const [step, setStep] = useState(0); // Step 1: 퀴즈 풀기, Step 2: 퀴즈 정답자 안내 단계, Step 3: 쓰기, Step 4: 소리내어 읽기
     const [roundData, setRoundData] = useState(currentRound2);
     const [messages, setMessages] = useState([
         {
@@ -66,6 +67,8 @@ const Main = () => {
                     <MessageList
                         messages={messages}
                         scrollRef={scrollRef}
+                        step={step}
+                        setStep={setStep}
                     />
                 </div>
                 <div className="control">
@@ -75,6 +78,8 @@ const Main = () => {
                         roundData={roundData}
                         setMessages={setMessages}
                         messageFormRef={messageFormRef}
+                        step={step}
+                        setStep={setStep}
                     />
                     {/* <div> */}
                         {/* 양 방향 화살표 버튼(이전 회차, 다음 회차) */}

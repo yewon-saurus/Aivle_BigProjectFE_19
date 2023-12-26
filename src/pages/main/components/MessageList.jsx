@@ -1,7 +1,8 @@
 import React, { useEffect } from 'react';
+import { MessageItem } from './';
 import Typing from 'react-kr-typing-anim';
 
-const MessageList = ({ messages, scrollRef }) => {
+const MessageList = ({ messages, scrollRef, step, setStep }) => {
     useEffect(() => {
         // scrollRef.current.scrollTop = scrollRef.current.scrollHeight;
         scrollRef.current.scrollIntoView({behavior: "smooth", block: "end"});
@@ -14,7 +15,7 @@ const MessageList = ({ messages, scrollRef }) => {
                     key={message.id}
                     className={`message ${message.isUser ? 'user-message' : 'ai-message'}`}
                 >
-                    {message.text}
+                    <MessageItem message={message} step={step} setStep={setStep} />
                     <div className='relative -bottom-5' ref={scrollRef}></div>
                 </div>
             )}
