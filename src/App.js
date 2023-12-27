@@ -11,7 +11,10 @@ import Info from './pages/info/Info';
 import LoginPage from './pages/account/LoginPage/LoginPage';
 import SignupPage from './pages/account/SignupPage/SignupPage';
 import RankPage from './pages/rank/RankPage';
-import MyPage from './pages/account/MyPage/MyPage';
+import MyInfo from './pages/account/MyPage/MyInfo';
+import Profile from './pages/account/MyPage/Profile';
+import InfoUpdate from './pages/account/MyPage/InfoUpdate';
+
 
 function App() {
   const [isLogin, setIsLogin] = useState(false);
@@ -39,7 +42,9 @@ function App() {
           <Route path="/signup" element={<SignupPage />} />
           <Route path="/home" element={<Main />} />
           <Route path="/rank" element={<RankPage />} />
-          <Route path="/mypage" element={<PrivateRoute isThatTrue={isLogin} isTrue={<MyPage />} isFalse={<LoginPage />} />} />
+          <Route path="/myinfo" element={<PrivateRoute isThatTrue={isLogin} isTrue={<MyInfo />} isFalse={<LoginPage />} />} />
+          <Route path="/profile" element={<PrivateRoute isThatTrue={isLogin} isTrue={<Profile />} isFalse={<LoginPage />} />} />
+          <Route path="/infoUpdate" element={<PrivateRoute isThatTrue={isLogin} isTrue={<InfoUpdate />} isFalse={<LoginPage />} />} />
         </Routes>
 
         <Footer />
