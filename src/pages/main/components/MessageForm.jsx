@@ -3,29 +3,6 @@ import { delay } from '../../../hooks/delay';
 
 import { IoSend } from "react-icons/io5";
 
-const question = {
-    "Sentence": "논거가 어떤 이론이나 논리, 논설 따위의 근거을 의미를 가지도록 문장을 생성한다.",
-    "question": "위 문장에서 '논거'가 의미하는 바는 무엇인가요?",
-    "answers": [
-        {
-            "answer": "이론",
-            "correct": false
-        },
-        {
-            "answer": "근거",
-            "correct": false
-        },
-        {
-            "answer": "논리",
-            "correct": false
-        },
-        {
-            "answer": "논설",
-            "correct": true
-        }
-    ]
-};
-
 const sentences = {
     "sentences": [
         {
@@ -36,29 +13,26 @@ const sentences = {
     ]
 }
 
-const MessageForm = ({ roundData, setMessages, messageFormRef, step, setStep }) => {
+const MessageForm = ({ id, word, meaning, quiz, setMessages, messageFormRef, step, setStep, aiIsTalking, setAiIsTalking }) => {
     const [message, setMessage] = useState('');
-    const [quiz, setQuiz] = useState(question);
     const [studySentences, setStudySentences] = useState(sentences);
-    const [aiIsTalking, setAiIsTalking] = useState(false);
     const [correctAnswer, setCorrectAnswer] = useState('');
 
     useEffect(() => {
         switch (step) {
             case 1:
                 async function stepOne() {
-                    // TODO: 여기서 /study/quiz에 request, setQuiz(response.data.questions[0]);
                     for (let i = 0; i < quiz.answers.length; i++) {
                         if (quiz.answers[i].correct === true) {
                             setCorrectAnswer(quiz.answers[i].answer);
                         }
                     }
                     setAiIsTalking(true);
-                    addAiMessage(`다음은 "${roundData.word}"를 사용한 문장입니다.`);
+                    addAiMessage(`다음은 "${word}"를 사용한 문장입니다.`);
                     await delay();
                     addAiMessage(`"${quiz.Sentence}"`);
                     await delay();
-                    addAiMessage(`${quiz.question}\n다음 <보기> 중 가장 적절한 답안을 입력해 주세요. 정답 외 다른 입력은 모두 오답으로 처리됩니다.`);
+                    addAiMessage(`${quiz.question}\n\n다음 <보기> 중 가장 적절한 답안을 입력해 주세요. 정답 외 다른 입력은 모두 오답으로 처리됩니다.`);
                     await delay();
                     addAiMessage(`<보기>${quiz.answers.map((ele) => '\n- ' + ele.answer).join('')}`);
                     setAiIsTalking(false);
@@ -102,10 +76,10 @@ const MessageForm = ({ roundData, setMessages, messageFormRef, step, setStep }) 
     }
     
     const userInputJudge = async () => {
-        if (step === 0 && message == roundData.word) setStep(1);
+        if (step === 0 && message == word) setStep(1);
         else if (step === 1) correctJudge();
         else if (step === 2) {
-            if (message === roundData.word) studyHandWriting();
+            if (message === word) studyHandWriting();
             else endOfLearning();
         }
     }
@@ -116,19 +90,19 @@ const MessageForm = ({ roundData, setMessages, messageFormRef, step, setStep }) 
                 // 사용자가 원한다면 -> 학습 사이클 진행
                 setStep(2);
                 setAiIsTalking(true);
-                addAiMessage(`정답입니다!\n\n위 문장에서 단어 '${roundData.word}'는 '${correctAnswer}'(이)라는 의미로 사용되었습니다.`);
+                addAiMessage(`정답입니다!\n\n위 문장에서 단어 '${word}'는 '${correctAnswer}'(이)라는 의미로 사용되었습니다.`);
                 await delay();
                 addAiMessage(`👍`);
                 await delay();
                 addAiMessage(`정답을 맞힌 퀴즈에 한해서 쓰기/읽기 학습을 건너뛸 수 있습니다.\n\n이대로 학습을 마치시겠습니까?`);
                 await delay();
-                addAiMessage(`학습을 마치지 않고 학습을 진행하시겠다면, '${roundData.word}'(을)를 재입력해 주세요. 그 외 내용 입력 시 해당 단계에 대한 학습이 종료됩니다.`);
+                addAiMessage(`학습을 마치지 않고 학습을 진행하시겠다면, '${word}'(을)를 재입력해 주세요. 그 외 내용 입력 시 해당 단계에 대한 학습이 종료됩니다.`);
                 setAiIsTalking(false);
                 break;
             default:
                 // 오답이었음과 정답이 뭐였는지 공개한 후, 학습 사이클 진행
                 setAiIsTalking(true);
-                addAiMessage(`오답입니다!\n\n위 문장에서 단어 '${roundData.word}'는 '${correctAnswer}'(이)라는 의미로 사용되었습니다.`);
+                addAiMessage(`오답입니다!\n\n위 문장에서 단어 '${word}'는 '${correctAnswer}'(이)라는 의미로 사용되었습니다.`);
                 await delay();
                 addAiMessage(`🥲`);
                 await delay();
@@ -182,14 +156,12 @@ const MessageForm = ({ roundData, setMessages, messageFormRef, step, setStep }) 
         await delay();
 
         // 작문 해야되는 타이밍이니? 판단
-        if (roundData.id % 5 === 0) {
+        if (id % 5 === 0) {
             // 작문 해야 함
             setStep(6);
         }
         else {
             // 작문 안 해도 됨
-            addAiMessage(`${roundData.id}단계 학습을 완료하셨습니다.`);
-            await delay();
             endOfLearning();
         }
 
@@ -206,7 +178,9 @@ const MessageForm = ({ roundData, setMessages, messageFormRef, step, setStep }) 
     }
     
     const endOfLearning = async () => {
-        // TODO: Main.jsx의 messages 배열 포함해, user study word 업데이트 하는 request 보내기
+        // TODO: user study word 업데이트 하는 request 보내기
+        addAiMessage(`${Date()}, 학습을 완료하셨습니다.`);
+        await delay();
         addAiMessage(`학습을 종료합니다.`);
         setStep(-1);
     }

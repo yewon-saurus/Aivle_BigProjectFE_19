@@ -1,60 +1,109 @@
 import style from "./style.css";
 import React, {useState, useEffect, useRef } from 'react';
 import { useParams } from 'react-router-dom';
+import axios from 'axios';
+import { delay } from '../../hooks/delay';
 import { MessageForm, MessageList } from './components';
 import GoToLatestAndQuizList from '../../components/GoToLatestAndQuizList';
 
-const currentRound = {
-    "id": 1,
-    "word": "가설",
-    "meanig": "어떤 사실을 설명하",
-    "solved_date": "2023-12-19 10:21:56",
-    "username": "yewon",
-}; // TODO: 임시 데이터.. 실제 서비스 시에는 SELECT round, solved_date, words, sentence FROM 퀴즈 WHERE round = {params.key}; 이런 식으로 받아온 데이터를 넣어주면 되겠다
-const currentRound2 = {
-    "id": 3,
-    "word": "감안하다",
-    "meanig": "감안감안하다",
-    "solved_date": null,
-    "username": "yewon",
+const question = {
+    "Sentence": "논거가 어떤 이론이나 논리, 논설 따위의 근거을 의미를 가지도록 문장을 생성한다.",
+    "question": "위 문장에서 '논거'가 의미하는 바는 무엇인가요?",
+    "answers": [
+        {
+            "answer": "이론",
+            "correct": false
+        },
+        {
+            "answer": "근거",
+            "correct": false
+        },
+        {
+            "answer": "논리",
+            "correct": false
+        },
+        {
+            "answer": "논설",
+            "correct": true
+        }
+    ]
 };
 
 const Main = () => {
+    const token = sessionStorage.getItem('aivle19_token')
+
     const params = useParams();
 
     const scrollRef = useRef();
     const messageFormRef = useRef();
     
+    const [aiIsTalking, setAiIsTalking] = useState(true);
     const [step, setStep] = useState(0); // Step 1: 퀴즈 풀기, Step 2: 퀴즈 정답자 안내 단계, Step 3: 쓰기, Step 4: 소리내어 읽기, 5: 작문 해야되는지 판단, 6: 작문
-    const [roundData, setRoundData] = useState(currentRound2);
+    const [word, setWord] = useState('');
+    const [meanig, setMeaning] = useState('');
+    const [quiz, setQuiz] = useState(question);
+    const [didMount, setDidMount] = useState(false);
     const [messages, setMessages] = useState([
         {
-            text: `어서오세요.\n${params.key}단계 학습에 입장하셨습니다.`,
+            text: `어서오세요.\n생성형 AI를 통한 문해력 향상 학습 서비스에 입장하셨습니다.`,
             isUser: false, isTyping: false, id: Date.now()
         },
         {
-            text: `이번에 학습하실 단어는 "${roundData.word}" 입니다.`,
+            text: `학습은 다음과 같은 단계를 거쳐 진행됩니다.\n\n1. 랜덤 단어 퀴즈 풀기\n2. 단어 연습(퀴즈 오답 시 필수, 정답 시 선택 사항)\n3. 학습한 단어를 활용해 작문 해보기`,
             isUser: false, isTyping: false, id: Date.now()
         },
         {
-            text: `입력창에 "${roundData.word}"를 입력하시면 단어 퀴즈가 시작됩니다.`,
+            text: `문제 생성을 시작합니다. 문제가 생성될 때까지 잠시 기다려 주세요.`,
             isUser: false, isTyping: false, id: Date.now()
-        },
+        }
     ]); // 모든 채팅 메시지 저장
 
     useEffect(() => {
-        modeJudge();
-    }, []);
-
-    const modeJudge = () => {
         if (params.key === undefined) {
-            console.log(params.key + " main"); // TODO: latest solved word로 바로 접속 가능하도록 redirect 가능?
-            // TODO: session storage에 latest solved word의 id(PK) 저장 해놓고, params.key === undefined면 아무튼 최근 문제로 nav 처리합시다
+            // 새 문제 생성, 저장
+            setDidMount(true);
         }
         else {
+            // 전에 풀던/풀이 완료한 문제 입장
             console.log(params.key + " quiz");
         }
-    }
+    }, []);
+
+    useEffect(() => {
+        if (didMount) {
+            axios.get(process.env.REACT_APP_API_URL + '/study/quiz/', {
+                headers: {
+                    'Authorization': `Token ${token}`
+                }
+            }).then(response => {
+                if (response.status === 200) {
+                    setWord(response.data.word);
+                    setMeaning(response.data.meanig);
+                    setQuiz(response.data.question_response.questions[0]);
+                }
+            })
+            .catch(error => {
+                console.error(error);
+            });
+        }
+    }, [didMount])
+
+    useEffect(() => {
+        if (word !== '' && meanig !== '') {
+            setMessages((prevMessages) => [
+                ...prevMessages, // 이전 메시지들
+                {
+                    text: `이번에 학습하실 단어는 "${word}" 입니다.`,
+                    isUser: false, isTyping: false, id: Date.now()
+                },
+                {
+                    text: `입력창에 "${word}"를 입력하시면 단어 퀴즈가 시작됩니다.`,
+                    isUser: false, isTyping: false, id: Date.now()
+                },
+            ]);
+            setAiIsTalking(false);
+        }
+    }, [word, meanig, quiz])
 
     return (
         <div className='flex'>
@@ -75,11 +124,16 @@ const Main = () => {
                     {/* fixed 된 프롬프트 창 + 양 방향 화살표 버튼 */}
                     {/* 프롬프트 창 */}
                     <MessageForm
-                        roundData={roundData}
+                        id={params.key}
+                        word={word}
+                        meaning={meanig}
+                        quiz={quiz}
                         setMessages={setMessages}
                         messageFormRef={messageFormRef}
                         step={step}
                         setStep={setStep}
+                        aiIsTalking={aiIsTalking}
+                        setAiIsTalking={setAiIsTalking}
                     />
                     {/* <div> */}
                         {/* 양 방향 화살표 버튼(이전 회차, 다음 회차) */}
