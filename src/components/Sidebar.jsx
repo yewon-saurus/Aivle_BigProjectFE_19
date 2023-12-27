@@ -5,6 +5,7 @@ import GoToLatestAndQuizList from "./GoToLatestAndQuizList";
 
 import { IoMdLogOut } from "react-icons/io";
 import { FaRankingStar } from "react-icons/fa6";
+import { CiUser } from "react-icons/ci";
 
 const Sidebar = (props) => {
     return (
@@ -25,26 +26,32 @@ const Sidebar = (props) => {
                             </tr>
                             <tr>
                                 <td colspan="2">
-                                    <a href="" className="flex justify-end hover:text-[var(--color-primary-500)]">
-                                        <FaRankingStar size={25} />
-                                        <span>&nbsp;&nbsp;--위</span>
+                                    <a href="/myinfo" className="flex justify-end hover:text-[var(--color-primary-500)]">
+                                        <CiUser size={25} />
+                                        <span>&nbsp;&nbsp;{props.username} 님</span>
                                     </a>
                                 </td>
                             </tr>
                             <tr>
-                                <td>
-                                    <a href="" className="flex justify-end hover:text-[var(--color-primary-500)]" >
-                                        {/* <FaRegLightbulb size={25} /> */}
-                                        <span>&nbsp;&nbsp;찬스 --개</span>
-                                    </a>
-                                </td>
-                                <td>
-                                    <a href="" className="flex justify-end hover:text-[var(--color-primary-500)]" >
-                                        {/* <FaCoins size={25} /> */}
-                                        <span>&nbsp;&nbsp;포인트 --점</span>
+                                <td colspan="2">
+                                    <a href="/rank" className="flex justify-end hover:text-[var(--color-primary-500)]">
+                                        <FaRankingStar size={25} />
+                                        <span>&nbsp;&nbsp;전체랭킹 {props.userrank}위</span>
                                     </a>
                                 </td>
                             </tr>
+                            {/* <tr> */}
+                                {/* <td> */}
+                                    {/* <a href="" className="flex justify-end hover:text-[var(--color-primary-500)]" > */}
+                                        {/* <span>&nbsp;&nbsp;찬스 --개</span> */}
+                                    {/* </a> */}
+                                {/* </td> */}
+                                {/* <td> */}
+                                    {/* <a href="" className="flex justify-end hover:text-[var(--color-primary-500)]" > */}
+                                        {/* <span>&nbsp;&nbsp;포인트 --점</span> */}
+                                    {/* </a> */}
+                                {/* </td> */}
+                            {/* </tr> */}
                         </table>
                         :
                         <div className="w-[100%] text-right p-[10px]">

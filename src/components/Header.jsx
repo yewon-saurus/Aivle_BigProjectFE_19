@@ -1,7 +1,8 @@
 import style from "./style.css";
 import { Sidebar, ConfirmPopup } from "./";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useNavigate } from 'react-router-dom';
+import axios from 'axios';
 
 import { LuMenu } from "react-icons/lu";
 import { IoMdLogOut } from "react-icons/io";
@@ -11,9 +12,16 @@ function Header(props) {
     const nav = useNavigate();
 
     const SIDEBAR_WIDTH = 360;
+    const [username, setUsername] = useState('');
+    const [userrank, setUserrank] = useState(0);
     const [isOpen, setOpen] = useState(false);
     const [xPosition, setX] = useState(SIDEBAR_WIDTH);
     const [logoutPopup, setLogoutPopup] = useState({ open: false, title: "", message: "" }); // 로그아웃 팝업
+
+    useEffect(() => {
+        const usernameTmp = sessionStorage.getItem('aivle19_username');
+        setUsername(usernameTmp);
+    }, []);
     
     // button 클릭 시 토글
     const toggleMenu = () => {
@@ -49,7 +57,7 @@ function Header(props) {
                             </button>
                         </div>
                         <Sidebar width={SIDEBAR_WIDTH} isLogin={props.isLogin} isOpen={isOpen} setOpen={setOpen} setX={setX} xPosition={xPosition}
-                            onClickLogout={onClickLogout} />
+                            onClickLogout={onClickLogout} username={username} userrank={userrank} />
                     </div>
                     <a href={process.env.PUBLIC_URL + "/"} className="flex items-center gap-2 mr-5">
                         <img className="w-10 h-10" src={process.env.PUBLIC_URL + '/logo192.png'} />
@@ -60,9 +68,10 @@ function Header(props) {
                     {
                         props.isLogin ?
                         <div className="flex items-center gap-[2em]">
-                            <a href="/rank" className="flex hover:text-[var(--color-primary-600)]" ><FaRankingStar style={{width: '20px', height: 'auto',}} /><span>&nbsp;&nbsp;--위</span></a>
-                            <a href="" className="hover:text-[var(--color-primary-600)]" >찬스 --개</a>
-                            <a href="" className="hover:text-[var(--color-primary-600)]" >포인트 --점</a> 
+                            <a href="/rank" className="flex hover:text-[var(--color-primary-600)]" ><FaRankingStar style={{width: '20px', height: 'auto',}} /><span>&nbsp;&nbsp;전체랭킹 {userrank}위</span></a>
+                            <a href="/myinfo" className="hover:text-[var(--color-primary-600)]" >{username} 님</a>
+                            {/* <a href="" className="hover:text-[var(--color-primary-600)]" >찬스 --개</a> */}
+                            {/* <a href="" className="hover:text-[var(--color-primary-600)]" >포인트 --점</a>  */}
                             <a href="#" className="flex hover:text-[var(--color-warning-600)]" onClick={onClickLogout}><IoMdLogOut style={{width: '20px', height: 'auto',}} /><span>&nbsp;&nbsp;로그아웃</span></a>
                         </div>
                         :
