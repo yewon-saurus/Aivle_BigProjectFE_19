@@ -26,9 +26,20 @@ const question = {
     ]
 };
 
+const sentences = {
+    "sentences": [
+        {
+            "Sentence1": "학교는 학생들의 학습 환경을 개선하기 위해 교육 기술과 시설을 업그레이드해야 합니다.",
+            "Sentence2": "건강을 개선하기 위해서는 규칙적인 운동과 올바른 식단이 필요합니다.",
+            "Sentence3": "나는 피아노 실력을 개선하기 위해 매일 연습을 꾸준히 해야 합니다.",
+        },
+    ]
+}
+
 const MessageForm = ({ roundData, setMessages, messageFormRef, step, setStep }) => {
     const [message, setMessage] = useState('');
     const [quiz, setQuiz] = useState(question);
+    const [studySentences, setStudySentences] = useState(sentences);
     const [aiIsTalking, setAiIsTalking] = useState(false);
     const [correctAnswer, setCorrectAnswer] = useState('');
 
@@ -47,7 +58,7 @@ const MessageForm = ({ roundData, setMessages, messageFormRef, step, setStep }) 
                     await delay();
                     addAiMessage(`"${quiz.Sentence}"`);
                     await delay();
-                    addAiMessage(`${quiz.question}\n다음 <보기> 중 가장 적절한 답안을 입력해 주세요.`);
+                    addAiMessage(`${quiz.question}\n다음 <보기> 중 가장 적절한 답안을 입력해 주세요. 정답 외 다른 응답 입력 시 오답으로 처리됩니다.`);
                     await delay();
                     addAiMessage(`<보기>${quiz.answers.map((ele) => '\n- ' + ele.answer).join('')}`);
                     setAiIsTalking(false);
@@ -128,6 +139,9 @@ const MessageForm = ({ roundData, setMessages, messageFormRef, step, setStep }) 
         addAiMessage(`학습은 (1)쓰기, (2)읽기 순서로 이루어 집니다.`);
         await delay();
         addAiMessage(`'쓰기' 과정을 진행합니다. 다음 주어지는 문장들을 수기로 작성해 보시고, 사진을 업로드 해주세요.`);
+        await delay();
+        addAiMessage(`1. "${studySentences.sentences[0].Sentence1}"\n\n2. "${studySentences.sentences[0].Sentence2}"\n\n3. "${studySentences.sentences[0].Sentence3}"`);
+        await delay();
         setAiIsTalking(false);
         
         setMessages((prevMessages) => [
@@ -140,10 +154,18 @@ const MessageForm = ({ roundData, setMessages, messageFormRef, step, setStep }) 
         setAiIsTalking(true);
         addAiMessage(`확인 중입니다.`);
         await delay();
-        addAiMessage(`확인되었습니다. 훌륭하게 수행하셨군요!\n\n다음은 '읽기' 과정을 진행합니다. 다음 주어지는 문장들을 소리 내어 읽어보세요.`);
+        addAiMessage(`확인되었습니다. 훌륭하게 수행하셨군요!`);
         await delay();
-        // TODO: 문장 생성 결과
+        addAiMessage(`다음은 '읽기' 과정을 진행합니다. 다음 주어지는 문장들을 소리 내어 읽어보세요.`);
+        await delay();
+        addAiMessage(`1. "${studySentences.sentences[0].Sentence1}"\n\n2. "${studySentences.sentences[0].Sentence2}"\n\n3. "${studySentences.sentences[0].Sentence3}"`);
+        await delay();
         setAiIsTalking(false);
+
+        setMessages((prevMessages) => [
+            ...prevMessages,
+            { isUser: false, mode: 'reading' },
+        ]);
     }
     
     const endOfLearning = async () => {
