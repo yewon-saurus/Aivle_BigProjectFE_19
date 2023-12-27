@@ -58,7 +58,7 @@ const MessageForm = ({ roundData, setMessages, messageFormRef, step, setStep }) 
                     await delay();
                     addAiMessage(`"${quiz.Sentence}"`);
                     await delay();
-                    addAiMessage(`${quiz.question}\n다음 <보기> 중 가장 적절한 답안을 입력해 주세요. 정답 외 다른 응답 입력 시 오답으로 처리됩니다.`);
+                    addAiMessage(`${quiz.question}\n다음 <보기> 중 가장 적절한 답안을 입력해 주세요. 정답 외 다른 입력은 모두 오답으로 처리됩니다.`);
                     await delay();
                     addAiMessage(`<보기>${quiz.answers.map((ele) => '\n- ' + ele.answer).join('')}`);
                     setAiIsTalking(false);
@@ -67,6 +67,12 @@ const MessageForm = ({ roundData, setMessages, messageFormRef, step, setStep }) 
                 break;
             case 4:
                 studyReading();
+                break;
+            case 5:
+                isItTurnToWriting();
+                break;
+            case 6:
+                studyWriting();
                 break;
             default:
         }
@@ -161,18 +167,47 @@ const MessageForm = ({ roundData, setMessages, messageFormRef, step, setStep }) 
         addAiMessage(`1. "${studySentences.sentences[0].Sentence1}"\n\n2. "${studySentences.sentences[0].Sentence2}"\n\n3. "${studySentences.sentences[0].Sentence3}"`);
         await delay();
         setAiIsTalking(false);
-
+        
         setMessages((prevMessages) => [
             ...prevMessages,
             { isUser: false, mode: 'reading' },
         ]);
     }
     
+    const isItTurnToWriting = async () => {
+        setAiIsTalking(true);
+        addAiMessage(`확인 중입니다.`);
+        await delay();
+        addAiMessage(`확인되었습니다. 훌륭하게 수행하셨군요!`);
+        await delay();
+
+        // 작문 해야되는 타이밍이니? 판단
+        if (roundData.id % 5 === 0) {
+            // 작문 해야 함
+            setStep(6);
+        }
+        else {
+            // 작문 안 해도 됨
+            addAiMessage(`${roundData.id}단계 학습을 완료하셨습니다.`);
+            await delay();
+            endOfLearning();
+        }
+
+        setAiIsTalking(false);
+    }
+
+    const studyWriting = async () => {
+        setAiIsTalking(true);
+        addAiMessage(`작문해야돼요`);
+        await delay();
+        addAiMessage(`거의다왔다!`);
+        await delay();
+        setAiIsTalking(false);
+    }
+    
     const endOfLearning = async () => {
         // TODO: Main.jsx의 messages 배열 포함해, user study word 업데이트 하는 request 보내기
-        setAiIsTalking(true);
-        addAiMessage(`${roundData.id}단계 학습을 종료합니다.`);
-        setAiIsTalking(false);
+        addAiMessage(`학습을 종료합니다.`);
         setStep(-1);
     }
     
