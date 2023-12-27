@@ -11,28 +11,30 @@ function Sidebar2() {
     }
   
     return (
-      <div className="h-screen fixed bg-light-blue-500 text-black w-64">
-        <div className="flex flex-col p-6">
+      <div className="h-screen fixed bg-blue-500 bg-opacity-50 text-white w-64 shadow-2xl">
+        <div className="flex flex-col p-8">
           <MenuIcon className="h-6 w-6 mb-8" />
+          <div className="flex flex-col p-9 mb-6">
           <div
             onClick={() => navigateTo('/profile')}
-            className={`cursor-pointer mb-2 last:mb-0 ${location.pathname === "/profile" ? "text-green-500" : ""}`}
+            className={`cursor-pointer mb-2 last:mb-0 text-lg font-bold ${location.pathname === "/profile" ? "text-gray-500" : ""}`}
           >
             프로필
           </div>
           <div
-            onClick={() => navigateTo('/info')}
-            className={`cursor-pointer mb-2 last:mb-0 ${location.pathname === "/mypage" ? "text-green-500" : ""}`}
+            onClick={() => navigateTo('/myinfo')}
+            className={`cursor-pointer mb-2 last:mb-0 text-lg font-bold ${location.pathname === "/myinfo" ? "text-gray-500" : ""}`}
           >
             회원 정보
           </div>
           <div
-            onClick={() => navigateTo('/edit')}
-            className={`cursor-pointer mb-2 last:mb-0 ${location.pathname === "/edit" ? "text-green-500" : ""}`}
+            onClick={() => navigateTo('/infoUpdate')}
+            className={`cursor-pointer mb-2 last:mb-0 text-lg font-bold ${location.pathname === "/infoUpdate" ? "text-gray-500" : ""}`}
           >
             회원 정보 수정
           </div>
         </div>
+      </div>
       </div>
     )
 }
