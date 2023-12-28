@@ -81,20 +81,20 @@ function SignupForm() {
             flexBasis: '50%', alignItems: 'center', justifyContent: 'center', 
             display:'flex', flexDirection:'column' }}>
             <div>
-            <span className='font-semibold'>Create your account!</span>
+            <span className='font-semibold'>회원가입</span>
             </div>    
             
             <form class="w-full max-w-lg m-10">
             <div class="flex flex-wrap -mx-3 mb-4">
                 <div class="w-full md:w-1/2 px-3 mb-6 md:mb-0">
                 <label class="block uppercase tracking-wide text-gray-700 text-xs font-bold mb-2" for="grid-first-name">
-                    First Name
+                    이름
                 </label>
                 <input value={FirstName} onChange={onFirstNameHandler} class="appearance-none block w-full bg-gray-200 text-gray-700 border border-grey-200 rounded py-3 px-4 mb-3 leading-tight focus:outline-none focus:bg-white" id="grid-first-name" type="text" placeholder="이름" />
                 </div>
                 <div class="w-full md:w-1/2 px-3">
                 <label class="block uppercase tracking-wide text-gray-700 text-xs font-bold mb-2" for="grid-last-name">
-                    Last Name
+                    성
                 </label>
                 <input value={LastName} onChange={onLastNameHandler} class="appearance-none block w-full bg-gray-200 text-gray-700 border border-gray-200 rounded py-3 px-4 leading-tight focus:outline-none focus:bg-white focus:border-gray-500" id="grid-last-name" type="text" placeholder="성" />
                 </div>
@@ -102,7 +102,7 @@ function SignupForm() {
             <div class="flex flex-wrap -mx-3 mb-4">
                 <div class="w-full px-3">
                 <label class="block uppercase tracking-wide text-gray-700 text-xs font-bold mb-2" for="grid-email">
-                    Email
+                    이메일 주소
                 </label>
                 <input value={Email} onChange={onEmailHandler} class="appearance-none block w-full bg-gray-200 text-gray-700 border border-gray-200 rounded py-3 px-4 mb-3 leading-tight focus:outline-none focus:bg-white focus:border-gray-500" id="grid-email" type="email" placeholder="your@example.com" />
                 </div>
@@ -110,7 +110,7 @@ function SignupForm() {
             <div class="flex flex-wrap -mx-3 mb-4">
                 <div class="w-full px-3">
                 <label class="block uppercase tracking-wide text-gray-700 text-xs font-bold mb-2" for="grid-id">
-                    ID
+                    아이디
                 </label>
                 <input value={Id} onChange={onIdHandler} class="appearance-none block w-full bg-gray-200 text-gray-700 border border-gray-200 rounded py-3 px-4 mb-3 leading-tight focus:outline-none focus:bg-white focus:border-gray-500" id="grid-id" type="text" placeholder="ID" />
                 </div>
@@ -118,7 +118,7 @@ function SignupForm() {
             <div class="flex flex-wrap -mx-3 mb-4">
                 <div class="w-full px-3">
                 <label class="block uppercase tracking-wide text-gray-700 text-xs font-bold mb-2" for="grid-password">
-                    Password
+                    비밀번호
                 </label>
                 <input value={Password} onChange={onPasswordHandler} class="appearance-none block w-full bg-gray-200 text-gray-700 border border-gray-200 rounded py-3 px-4 mb-3 leading-tight focus:outline-none focus:bg-white focus:border-gray-500" id="grid-password" type="password" placeholder="******************" />
                 </div>
@@ -126,14 +126,14 @@ function SignupForm() {
             <div class="flex flex-wrap -mx-3 mb-4">
                 <div class="w-full px-3">
                 <label class="block uppercase tracking-wide text-gray-700 text-xs font-bold mb-2" for="grid-password">
-                    Check Password
+                    비밀번호 확인
                 </label>
                 <input value={CheckPassword} onChange={onCheckPasswordHandler} class="appearance-none block w-full bg-gray-200 text-gray-700 border border-gray-200 rounded py-3 px-4 mb-3 leading-tight focus:outline-none focus:bg-white focus:border-gray-500" id="grid-password" type="password" placeholder="******************" />
                 {!passwordsMatch && <p className='text-sm font-semibold' style={{ color: 'red' }}>비밀번호가 일치하지 않습니다.</p>}
                 </div>
             </div>
             <button onClick={onSubmitHandler} className='py-2 w-full px-3 rounded-md text-white font-semibold bg-indigo-600 border border-indigo-600 hover:text-indigo-600 hover:bg-white'>
-            Sign-up
+            회원가입
             </button> 
             </form>
 

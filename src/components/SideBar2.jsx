@@ -33,6 +33,12 @@ function Sidebar2() {
           >
             회원 정보 수정
           </div>
+          <div
+            onClick={() => navigateTo('/profileUpdate')}
+            className={`cursor-pointer mb-2 last:mb-0 text-lg font-bold ${location.pathname === "/profileUpdate" ? "text-gray-500" : ""}`}
+          >
+            프로필 수정
+          </div>
         </div>
       </div>
       </div>
