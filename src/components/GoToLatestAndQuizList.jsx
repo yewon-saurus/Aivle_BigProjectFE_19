@@ -2,7 +2,7 @@ import React, { useState, useEffect } from "react";
 import QuizItem from "./QuizItem";
 import axios from 'axios';
 
-import { IoCreateOutline } from "react-icons/io5";
+import { IoCreateOutline, IoRefresh } from "react-icons/io5";
 
 const GoToLatestAndQuizList = () => {
     const token = sessionStorage.getItem('aivle19_token');
@@ -10,6 +10,10 @@ const GoToLatestAndQuizList = () => {
     const [quizlist, setQuizlist] = useState([]);
 
     useEffect(() => {
+        callQuizHistory();
+    }, []);
+
+    const callQuizHistory = () => {
         axios.get(process.env.REACT_APP_API_URL + '/study/', {
             headers: {
                 'Authorization': `Token ${token}`
@@ -22,7 +26,7 @@ const GoToLatestAndQuizList = () => {
         .catch(error => {
             console.error(error);
         });
-    }, []);
+    }
 
     return (
         <div>
@@ -39,8 +43,13 @@ const GoToLatestAndQuizList = () => {
             </div>
             <div className="mt-6">
                 {/* history list */}
-                <div className="px-3 text-left text-[var(--color-info-900)]">
-                    학습 목록
+                <div className="flex justify-between items-center px-3 text-left text-[var(--color-info-900)]">
+                    <div>학습 목록</div>
+                    <button
+                        className="p-1 animate-pulse bg-[var(--color-primary-100)] hover:bg-[var(--color-primary-200)] rounded-full"
+                        onClick={callQuizHistory} type="button">
+                        <IoRefresh size={25} />
+                    </button>
                 </div>
                 <div className="history">
                     {
