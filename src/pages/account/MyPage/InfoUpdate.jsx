@@ -1,90 +1,163 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
+import { useNavigate } from 'react-router-dom';
+import axios from 'axios';
 import Sidebar2 from '../../../components/SideBar2';
-// import { PhotoIcon, UserCircleIcon } from '@heroicons/react/24/solid';
+import {Input} from "@nextui-org/react";
+
 
 function InfoUpdate() {
+  const [userData, setUserData] = useState(null);
+  const token = sessionStorage.getItem('aivle19_token')
+
+    useEffect(() => {
+        axios.get('http://127.0.0.1:8000/accounts/user/', {
+            headers: {
+                'Authorization': `Token ${token}`
+            }
+        })
+        .then(response => {
+            if(response.data) setUserData(response.data)
+        })
+        .catch(error => {
+            console.error(error);
+        });
+    }, []);
+
+  
+  const [Firstname, setFirstname] = useState(userData !== null ? userData.user.First_name : '');
+  const [FirstnameInitial, setFirstnameInitial] = useState(true);
+  const [Lastname, setLastname] = useState(userData !== null ? userData.user.last_name : '');
+  const [LastnameInitial, setLastnameInitial] = useState(true);
+  const [Email, setEmail] = useState(userData !== null ? userData.user.email : '');
+  const [EmailInitial, setEmailInitial] = useState(true);
+  const [NewPassword, setNewPassword] = useState("");
+  const [OldPassword, setOldPassword] = useState("");
+
+  const nav = useNavigate();
+
+  const onFirstnameHandler = (e) => {
+      setFirstname(e.currentTarget.value)
+      setFirstnameInitial(false);
+  }
+
+  const onLastnameHandler = (e) => {
+    setLastname(e.currentTarget.value)
+    setLastnameInitial(false);
+  }
+
+  const onEmailHandler = (e) => {
+    setEmail(e.currentTarget.value)
+    setEmailInitial(false);
+  }
+
+  const onNewPasswordHandler = (e) => {
+      setNewPassword(e.currentTarget.value)
+  }
+
+  const onOldPasswordHandler = (e) => {
+    setOldPassword(e.currentTarget.value)
+  }
+
+  const onSubmitHandler = (e) => {
+      e.preventDefault()
+
+      const url = "http://127.0.0.1:8000/accounts/user/update/";
+      const req = {
+          'last_name': LastnameInitial ? userData?.user.last_name : Lastname,
+          'first_name': FirstnameInitial ? userData?.user.first_name : Firstname,
+          'email': EmailInitial ? userData?.user.email : Email,
+          'password': NewPassword,
+          'old_password': OldPassword
+      };
+
+      axios.put(url, req, {
+        headers: {
+          "Authorization": `Token ${token}`,
+          'Content-Type': 'application/json'
+        }
+      })
+          .then(res => {
+              console.log("200 OK");
+              nav('/myinfo');
+          }).catch(err => {
+              // 에러 처리
+              console.log(err.response.data.message);
+              alert("현재 비밀번호를 확인해 주세요.")
+          });
+    };
+
   return (
     <div>
       <Sidebar2 />
       <div style={{padding:'63px', marginLeft:'256px'}}>
       <form>
       <div className="space-y-12">
-        <div className="border-b border-gray-900/10 pb-12">
-          
-        </div>
+        <div className="border-b border-gray-900/10 pb-12"></div>
 
         <div className="border-b border-gray-900/10 pb-12">
           <h2 className="text-base font-semibold leading-7 text-gray-900">개인정보 수정</h2>
           <div className="mt-10 grid grid-cols-1 gap-x-6 gap-y-8 sm:grid-cols-6">
-            <div className="sm:col-span-3">
-              <label htmlFor="first-name" className="block text-sm font-medium leading-6 text-gray-900">
-                First name
-              </label>
+          <div className="sm:col-span-2">
               <div className="mt-2">
-                <input
+                <Input
                   type="text"
-                  name="first-name"
-                  id="first-name"
-                  autoComplete="given-name"
-                  className="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
+                  label="이름"
+                  variant='bordered'
+                  value={(FirstnameInitial && userData !== null) ? userData.user.first_name : Firstname}
+                  onChange={onFirstnameHandler}
+                  className="flex w-full flex-wrap md:flex-nowrap gap-4"
                 />
               </div>
             </div>
 
-            <div className="sm:col-span-3">
-              <label htmlFor="last-name" className="block text-sm font-medium leading-6 text-gray-900">
-                Last name
-              </label>
+            <div className="sm:col-span-2">
               <div className="mt-2">
-                <input
+                <Input
                   type="text"
-                  name="last-name"
-                  id="last-name"
-                  autoComplete="family-name"
-                  className="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
+                  label="성"
+                  variant='bordered'
+                  value={(LastnameInitial && userData !== null) ? userData.user.last_name : Lastname}
+                  onChange={onLastnameHandler}
+                  className="flex w-full flex-wrap md:flex-nowrap gap-4"
                 />
               </div>
             </div>
 
             <div className="sm:col-span-4">
-              <label htmlFor="email" className="block text-sm font-medium leading-6 text-gray-900">
-                Email address
-              </label>
               <div className="mt-2">
-                <input
-                  id="email"
-                  name="email"
+                <Input
                   type="email"
-                  autoComplete="email"
-                  className="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
+                  label="이메일 주소"
+                  variant='bordered'
+                  value={(EmailInitial && userData !== null) ? userData.user.email : Email}
+                  onChange={onEmailHandler}
+                  className="flex w-full flex-wrap md:flex-nowrap gap-4"
                 />
               </div>
             </div>
 
             <div className="sm:col-span-4">
-              <label htmlFor="newpassword" className="block text-sm font-medium leading-6 text-gray-900">
-                New Password
-              </label>
               <div className="mt-2">
-                <input
-                  id="newpassword"
-                  name="newpassword"
+                <Input
                   type="password"
-                  className="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
+                  label="새로운 비밀번호"
+                  variant='bordered'
+                  value={NewPassword}
+                  onChange={onNewPasswordHandler}
+                  className="flex w-full flex-wrap md:flex-nowrap gap-4"
                 />
               </div>
             </div>
 
             <div className="sm:col-span-4">
-              <label htmlFor="oldpassword" className="block text-sm font-medium leading-6 text-gray-900">
-                Old Password
-              </label>
               <div className="mt-2">
-                <input
-                  id="oldpassword"
-                  name="oldpassword"
+                <Input
                   type="password"
-                  className="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
+                  label="현재 비밀번호"
+                  variant='bordered'
+                  value={OldPassword}
+                  onChange={onOldPasswordHandler}
+                  className="flex w-full flex-wrap md:flex-nowrap gap-4"
                 />
               </div>
             </div>
@@ -95,14 +168,15 @@ function InfoUpdate() {
         </div>
 
       <div className="mt-6 flex items-center justify-end gap-x-6">
-        <button type="button" className="text-sm font-semibold leading-6 text-gray-900">
-          Cancel
+        <button onClick={() => nav('/myinfo')} type="button" className="text-sm font-semibold leading-6 text-gray-900">
+          취소
         </button>
         <button
+          onClick={onSubmitHandler}
           type="submit"
           className="rounded-md bg-indigo-600 px-3 py-2 text-sm font-semibold text-white shadow-sm hover:bg-indigo-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600"
         >
-          Save
+          저장
         </button>
       </div>
     </form>
