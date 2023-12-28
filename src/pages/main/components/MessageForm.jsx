@@ -13,7 +13,7 @@ const sentences = {
     ]
 }
 
-const MessageForm = ({ id, word, meaning, quiz, setMessages, messageFormRef, step, setStep, aiIsTalking, setAiIsTalking }) => {
+const MessageForm = ({ quizId, word, quiz, setMessages, messageFormRef, step, setStep, aiIsTalking, setAiIsTalking }) => {
     const [message, setMessage] = useState('');
     const [studySentences, setStudySentences] = useState(sentences);
     const [correctAnswer, setCorrectAnswer] = useState('');
@@ -56,7 +56,7 @@ const MessageForm = ({ id, word, meaning, quiz, setMessages, messageFormRef, ste
         // message: 사용자가 form에 입력한 내용
         setMessages((prevMessages) => [
             ...prevMessages, // 이전 메시지들
-            { text: message, isUser: true, step: step }, // 사용자의 메시지
+            { text: message, isUser: true, id: Date.now(), step: step }, // 사용자의 메시지
             // { text: `Your message is: "${message}"`, isUser: false, isTyping: true, id: Date.now() },
         ]);
         userInputJudge();
@@ -126,7 +126,7 @@ const MessageForm = ({ id, word, meaning, quiz, setMessages, messageFormRef, ste
         
         setMessages((prevMessages) => [
             ...prevMessages,
-            { isUser: false, mode: 'handwriting', step: step },
+            { isUser: false, mode: 'handwriting', id: Date.now(), step: step },
         ]);
     }
     
@@ -144,7 +144,7 @@ const MessageForm = ({ id, word, meaning, quiz, setMessages, messageFormRef, ste
         
         setMessages((prevMessages) => [
             ...prevMessages,
-            { isUser: false, mode: 'reading', step: step },
+            { isUser: false, mode: 'reading', id: Date.now(), step: step },
         ]);
     }
     
@@ -156,7 +156,7 @@ const MessageForm = ({ id, word, meaning, quiz, setMessages, messageFormRef, ste
         await delay();
 
         // 작문 해야되는 타이밍이니? 판단
-        if (id % 5 === 0) {
+        if (quizId % 5 === 0) {
             // 작문 해야 함
             setStep(6);
         }

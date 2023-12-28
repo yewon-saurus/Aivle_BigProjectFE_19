@@ -9,7 +9,7 @@ const QuizItem = ({data}) => {
                 <IoChatboxOutline style={{width: '20px', height: 'auto',}} color="var(--color-primary-500)" />
                 : <IoCheckmarkCircleOutline style={{width: '20px', height: 'auto',}} color="var(--color-success-500)" />
             }
-            <span className="text-sm truncate w-full">{data.quiz_id + "단계: " + data.word}</span>
+            <span className="text-sm truncate w-full">{data.quiz_id + "회차: " + data.word}</span>
         </a>
     );
 }

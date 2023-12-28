@@ -6,29 +6,6 @@ import { delay } from '../../hooks/delay';
 import { MessageForm, MessageList } from './components';
 import GoToLatestAndQuizList from '../../components/GoToLatestAndQuizList';
 
-const question = {
-    "Sentence": "논거가 어떤 이론이나 논리, 논설 따위의 근거을 의미를 가지도록 문장을 생성한다.",
-    "question": "위 문장에서 '논거'가 의미하는 바는 무엇인가요?",
-    "answers": [
-        {
-            "answer": "이론",
-            "correct": false
-        },
-        {
-            "answer": "근거",
-            "correct": false
-        },
-        {
-            "answer": "논리",
-            "correct": false
-        },
-        {
-            "answer": "논설",
-            "correct": true
-        }
-    ]
-};
-
 const Main = () => {
     const token = sessionStorage.getItem('aivle19_token')
 
@@ -39,9 +16,9 @@ const Main = () => {
     
     const [aiIsTalking, setAiIsTalking] = useState(true);
     const [step, setStep] = useState(0); // Step 1: 퀴즈 풀기, Step 2: 퀴즈 정답자 안내 단계, Step 3: 쓰기, Step 4: 소리내어 읽기, 5: 작문 해야되는지 판단, 6: 작문
+    const [quizId, setQuizId] = useState(0);
     const [word, setWord] = useState('');
-    const [meanig, setMeaning] = useState('');
-    const [quiz, setQuiz] = useState(question);
+    const [quiz, setQuiz] = useState({});
     const [didMount, setDidMount] = useState(false);
     const [messages, setMessages] = useState([
         {
@@ -77,9 +54,10 @@ const Main = () => {
                 }
             }).then(response => {
                 if (response.status === 200) {
+                    setQuizId(response.data.quiz_id);
                     setWord(response.data.word);
-                    setMeaning(response.data.meanig);
-                    setQuiz(response.data.question_response.questions[0]);
+                    const tempQuiz = JSON.parse(response.data.quiz);
+                    setQuiz(tempQuiz.questions[0]);
                 }
             })
             .catch(error => {
@@ -89,7 +67,7 @@ const Main = () => {
     }, [didMount])
 
     useEffect(() => {
-        if (word !== '' && meanig !== '') {
+        if (word !== '') {
             setMessages((prevMessages) => [
                 ...prevMessages, // 이전 메시지들
                 {
@@ -103,7 +81,7 @@ const Main = () => {
             ]);
             setAiIsTalking(false);
         }
-    }, [word, meanig, quiz])
+    }, [word, quiz])
 
     return (
         <div className='flex'>
@@ -114,6 +92,8 @@ const Main = () => {
                 <div>
                     {/* 대화 형식으로 나타난 학습 로그 */}
                     <MessageList
+                        token={token}
+                        quizId={quizId}
                         messages={messages}
                         scrollRef={scrollRef}
                         step={step}
@@ -124,9 +104,8 @@ const Main = () => {
                     {/* fixed 된 프롬프트 창 + 양 방향 화살표 버튼 */}
                     {/* 프롬프트 창 */}
                     <MessageForm
-                        id={params.key}
+                        quizId={quizId}
                         word={word}
-                        meaning={meanig}
                         quiz={quiz}
                         setMessages={setMessages}
                         messageFormRef={messageFormRef}
