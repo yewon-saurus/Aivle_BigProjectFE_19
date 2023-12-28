@@ -1,35 +1,28 @@
-import React, {useState} from "react";
+import React, { useState, useEffect } from "react";
 import QuizItem from "./QuizItem";
+import axios from 'axios';
 
 import { IoCreateOutline } from "react-icons/io5";
 
 const GoToLatestAndQuizList = () => {
-    const list = [
-        {
-            "id": 1,
-            "word": "가설",
-            "meanig": "어떤 사실을 설명하",
-            "solved_date": "2023-12-19 10:21:56",
-            "username": "yewon",
-        },
-        {
-            "id": 2,
-            "word": "각인되다",
-            "meanig": "머릿속에 새겨 넣듯어쩌구",
-            "solved_date": "2023-12-12 10:21:57",
-            "username": "yewon",
-        },
-        {
-            "id": 3,
-            "word": "감안하다",
-            "meanig": "고찰하다",
-            "solved_date": null,
-            "username": "yewon",
-        },
-    ]; // SELECT round, solved_date, words, sentence FROM 퀴즈 where username={로그인중인사용자};
-    
-    const [latest, setLatest] = useState(list[1]); // 개발 중 임시 데이터
-    const [quizlist, setQuizlist] = useState(list); // 개발 중 임시 데이터로 초기화
+    const token = sessionStorage.getItem('aivle19_token');
+
+    const [quizlist, setQuizlist] = useState([]);
+
+    useEffect(() => {
+        axios.get(process.env.REACT_APP_API_URL + '/study/', {
+            headers: {
+                'Authorization': `Token ${token}`
+            }
+        }).then(response => {
+            if (response.status === 200) {
+                setQuizlist(response.data);
+            }
+        })
+        .catch(error => {
+            console.error(error);
+        });
+    }, []);
 
     return (
         <div>
