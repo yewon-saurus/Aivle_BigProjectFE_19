@@ -56,7 +56,7 @@ const MessageForm = ({ id, word, meaning, quiz, setMessages, messageFormRef, ste
         // message: 사용자가 form에 입력한 내용
         setMessages((prevMessages) => [
             ...prevMessages, // 이전 메시지들
-            { text: message, isUser: true }, // 사용자의 메시지
+            { text: message, isUser: true, step: step }, // 사용자의 메시지
             // { text: `Your message is: "${message}"`, isUser: false, isTyping: true, id: Date.now() },
         ]);
         userInputJudge();
@@ -71,7 +71,7 @@ const MessageForm = ({ id, word, meaning, quiz, setMessages, messageFormRef, ste
     const addAiMessage = (aiSay, isTyping=false) => {
         setMessages((prevMessages) => [
             ...prevMessages, // 이전 메시지들
-            { text: `${aiSay}`, isUser: false, isTyping: isTyping, id: Date.now() },
+            { text: `${aiSay}`, isUser: false, isTyping: isTyping, id: Date.now(), step: step},
         ]);
     }
     
@@ -126,7 +126,7 @@ const MessageForm = ({ id, word, meaning, quiz, setMessages, messageFormRef, ste
         
         setMessages((prevMessages) => [
             ...prevMessages,
-            { isUser: false, mode: 'handwriting' },
+            { isUser: false, mode: 'handwriting', step: step },
         ]);
     }
     
@@ -144,7 +144,7 @@ const MessageForm = ({ id, word, meaning, quiz, setMessages, messageFormRef, ste
         
         setMessages((prevMessages) => [
             ...prevMessages,
-            { isUser: false, mode: 'reading' },
+            { isUser: false, mode: 'reading', step: step },
         ]);
     }
     

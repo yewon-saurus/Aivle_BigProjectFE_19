@@ -6,6 +6,7 @@ const MessageList = ({ messages, scrollRef, step, setStep }) => {
     useEffect(() => {
         scrollRef.current.scrollIntoView({behavior: "smooth", block: "end"});
         // TODO: update chat_log where id={} .. 메시지 업데이트 될 때마다 그냥 싹 다 update
+        console.log(messages);
     }, [messages]);
 
     return (
