@@ -46,7 +46,7 @@ const GoToLatestAndQuizList = () => {
                 <div className="flex justify-between items-center px-3 text-left text-[var(--color-info-900)]">
                     <div>학습 목록</div>
                     <button
-                        className="p-1 animate-pulse bg-[var(--color-primary-100)] hover:bg-[var(--color-primary-200)] rounded-full"
+                        className="p-1 lg:animate-pulse bg-[var(--color-primary-100)] hover:bg-[var(--color-primary-200)] rounded-full"
                         onClick={callQuizHistory} type="button">
                         <IoRefresh size={25} />
                     </button>
