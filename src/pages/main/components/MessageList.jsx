@@ -29,10 +29,7 @@ const MessageList = ({ token, quizId, messages, scrollRef, step, setStep }) => {
     return (
         <div className="messages-list">
             {messages.map((message) =>
-                <div
-                    key={message.id}
-                    className={`message ${message.isUser ? 'user-message' : 'ai-message'}`}
-                >
+                <div className={`message ${message.isUser ? 'user-message' : 'ai-message'}`}>
                     <MessageItem message={message} step={step} setStep={setStep} />
                     <div className='relative -bottom-5' ref={scrollRef}></div>
                 </div>

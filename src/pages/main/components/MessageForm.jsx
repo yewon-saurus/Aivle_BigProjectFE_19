@@ -195,16 +195,16 @@ const MessageForm = ({ quizId, word, quiz, messages, setMessages, messageFormRef
     }
     
     const endOfLearning = async () => {
-        addAiMessage(`${Date()}, 학습을 완료하셨습니다.`);
+        await addAiMessage(`${Date()}, 학습을 완료하셨습니다.`);
         await delay();
-        addAiMessage(`학습을 종료합니다.`);
+        await addAiMessage(`학습을 종료합니다.`);
 
         const jsonString = JSON.stringify(messages);
         const today = dateToTimestamp(Date());
         const formData = new FormData();
-        formData.append('chat_log', jsonString);
-        formData.append('solved_date', today);
-        axios.patch(process.env.REACT_APP_API_URL + '/study/quiz/' + quizId + '/', formData, {
+        await formData.append('chat_log', jsonString);
+        await formData.append('solved_date', today);
+        await axios.patch(process.env.REACT_APP_API_URL + '/study/quiz/' + quizId + '/', formData, {
             headers: {
                 'Authorization': `Token ${token}`,
                 'Content-Type': 'multipart/form-data'
