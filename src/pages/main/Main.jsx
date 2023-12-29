@@ -7,7 +7,7 @@ import { MessageForm, MessageList } from './components';
 import GoToLatestAndQuizList from '../../components/GoToLatestAndQuizList';
 
 const Main = () => {
-    const token = sessionStorage.getItem('aivle19_token')
+    const token = sessionStorage.getItem('aivle19_token');
 
     const params = useParams();
 
@@ -107,6 +107,7 @@ const Main = () => {
                         quizId={quizId}
                         word={word}
                         quiz={quiz}
+                        messages={messages}
                         setMessages={setMessages}
                         messageFormRef={messageFormRef}
                         step={step}

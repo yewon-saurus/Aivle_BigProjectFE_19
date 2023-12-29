@@ -1,7 +1,8 @@
 import React, { useEffect, useState } from 'react';
-import { delay } from '../../../hooks/delay';
+import { delay, dateToTimestamp } from '../../../hooks/';
 
 import { IoSend } from "react-icons/io5";
+import axios from 'axios';
 
 const sentences = {
     "sentences": [
@@ -13,7 +14,9 @@ const sentences = {
     ]
 }
 
-const MessageForm = ({ quizId, word, quiz, setMessages, messageFormRef, step, setStep, aiIsTalking, setAiIsTalking }) => {
+const MessageForm = ({ quizId, word, quiz, messages, setMessages, messageFormRef, step, setStep, aiIsTalking, setAiIsTalking }) => {
+    const token = sessionStorage.getItem('aivle19_token');
+
     const [message, setMessage] = useState('');
     const [studySentences, setStudySentences] = useState(sentences);
     const [correctAnswer, setCorrectAnswer] = useState('');
@@ -39,6 +42,12 @@ const MessageForm = ({ quizId, word, quiz, setMessages, messageFormRef, step, se
                 }
                 stepOne();
                 break;
+            case 2:
+                quideToCorrect();
+                break;
+            case 3:
+                studyHandWriting();
+                break;
             case 4:
                 studyReading();
                 break;
@@ -47,6 +56,9 @@ const MessageForm = ({ quizId, word, quiz, setMessages, messageFormRef, step, se
                 break;
             case 6:
                 studyWriting();
+                break;
+            case -1 :
+                endOfLearning();
                 break;
             default:
         }
@@ -76,11 +88,15 @@ const MessageForm = ({ quizId, word, quiz, setMessages, messageFormRef, step, se
     }
     
     const userInputJudge = async () => {
-        if (step === 0 && message == word) setStep(1);
+        if (step === 0 && message === word) setStep(1);
         else if (step === 1) correctJudge();
         else if (step === 2) {
-            if (message === word) studyHandWriting();
-            else endOfLearning();
+            if (message === word) {
+                setStep(3);
+            }
+            else {
+                setStep(-1);
+            }
         }
     }
 
@@ -89,15 +105,6 @@ const MessageForm = ({ quizId, word, quiz, setMessages, messageFormRef, step, se
             case correctAnswer:
                 // 사용자가 원한다면 -> 학습 사이클 진행
                 setStep(2);
-                setAiIsTalking(true);
-                addAiMessage(`정답입니다!\n\n위 문장에서 단어 '${word}'는 '${correctAnswer}'(이)라는 의미로 사용되었습니다.`);
-                await delay();
-                addAiMessage(`👍`);
-                await delay();
-                addAiMessage(`정답을 맞힌 퀴즈에 한해서 쓰기/읽기 학습을 건너뛸 수 있습니다.\n\n이대로 학습을 마치시겠습니까?`);
-                await delay();
-                addAiMessage(`학습을 마치지 않고 학습을 진행하시겠다면, '${word}'(을)를 재입력해 주세요. 그 외 내용 입력 시 해당 단계에 대한 학습이 종료됩니다.`);
-                setAiIsTalking(false);
                 break;
             default:
                 // 오답이었음과 정답이 뭐였는지 공개한 후, 학습 사이클 진행
@@ -109,12 +116,23 @@ const MessageForm = ({ quizId, word, quiz, setMessages, messageFormRef, step, se
                 addAiMessage(`퀴즈의 정답을 맞히지 못한 단어에 대해서는 쓰기/읽기 학습을 수행해야 합니다.`);
                 await delay();
                 setAiIsTalking(false);
-                studyHandWriting();
-            }
+                setStep(3);
+            };
         }
+    
+    const quideToCorrect = async () => {
+        setAiIsTalking(true);
+        addAiMessage(`정답입니다!\n\n위 문장에서 단어 '${word}'는 '${correctAnswer}'(이)라는 의미로 사용되었습니다.`);
+        await delay();
+        addAiMessage(`👍`);
+        await delay();
+        addAiMessage(`정답을 맞힌 퀴즈에 한해서 쓰기/읽기 학습을 건너뛸 수 있습니다.\n\n이대로 학습을 마치시겠습니까?`);
+        await delay();
+        addAiMessage(`학습을 마치지 않고 학습을 진행하시겠다면, '${word}'(을)를 재입력해 주세요. 그 외 내용 입력 시 해당 단계에 대한 학습이 종료됩니다.`);
+        setAiIsTalking(false);
+    }
         
     const studyHandWriting = async () => {
-        setStep(3);
         setAiIsTalking(true);
         addAiMessage(`학습은 (1)쓰기, (2)읽기 순서로 이루어 집니다.`);
         await delay();
@@ -162,9 +180,8 @@ const MessageForm = ({ quizId, word, quiz, setMessages, messageFormRef, step, se
         }
         else {
             // 작문 안 해도 됨
-            endOfLearning();
+            setStep(-1);
         }
-
         setAiIsTalking(false);
     }
 
@@ -178,11 +195,26 @@ const MessageForm = ({ quizId, word, quiz, setMessages, messageFormRef, step, se
     }
     
     const endOfLearning = async () => {
-        // TODO: user study word 업데이트 하는 request 보내기
         addAiMessage(`${Date()}, 학습을 완료하셨습니다.`);
         await delay();
         addAiMessage(`학습을 종료합니다.`);
-        setStep(-1);
+
+        const jsonString = JSON.stringify(messages);
+        const today = dateToTimestamp(Date());
+        const formData = new FormData();
+        formData.append('chat_log', jsonString);
+        formData.append('solved_date', today);
+        axios.patch(process.env.REACT_APP_API_URL + '/study/quiz/' + quizId + '/', formData, {
+            headers: {
+                'Authorization': `Token ${token}`,
+                'Content-Type': 'multipart/form-data'
+            }
+        }).then(response => {
+            if (response.status === 200) console.log('solved date is updated.'); // console.log(JSON.parse(response.data.chat_log)); 테스트 해보니 잘 파싱 됨
+        })
+        .catch(error => {
+            console.error(error);
+        });
     }
     
     return (
