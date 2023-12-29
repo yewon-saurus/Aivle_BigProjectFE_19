@@ -20,6 +20,7 @@ const MessageForm = ({ quizId, word, quiz, messages, setMessages, messageFormRef
     const [message, setMessage] = useState('');
     const [studySentences, setStudySentences] = useState(sentences);
     const [correctAnswer, setCorrectAnswer] = useState('');
+    const [didMount, setDidMount] = useState(false);
 
     useEffect(() => {
         switch (step) {
@@ -63,6 +64,27 @@ const MessageForm = ({ quizId, word, quiz, messages, setMessages, messageFormRef
             default:
         }
     }, [step]);
+
+    useEffect(() => {
+        if (didMount) {
+            const jsonString = JSON.stringify(messages);
+            const today = dateToTimestamp(Date());
+            const formData = new FormData();
+            formData.append('chat_log', jsonString);
+            formData.append('solved_date', today);
+            axios.patch(process.env.REACT_APP_API_URL + '/study/quiz/' + quizId + '/', formData, {
+                headers: {
+                    'Authorization': `Token ${token}`,
+                    'Content-Type': 'multipart/form-data'
+                }
+            }).then(response => {
+                if (response.status === 200) console.log('solved date is updated.'); // console.log(JSON.parse(response.data.chat_log)); 테스트 해보니 잘 파싱 됨
+            })
+            .catch(error => {
+                console.error(error);
+            });
+        }
+    }, [didMount]);
     
     const handleSendMessage = (message) => {
         // message: 사용자가 form에 입력한 내용
@@ -194,27 +216,11 @@ const MessageForm = ({ quizId, word, quiz, messages, setMessages, messageFormRef
         setAiIsTalking(false);
     }
     
-    const endOfLearning = async () => {
-        await addAiMessage(`${Date()}, 학습을 완료하셨습니다.`);
-        await delay();
-        await addAiMessage(`학습을 종료합니다.`);
-
-        const jsonString = JSON.stringify(messages);
-        const today = dateToTimestamp(Date());
-        const formData = new FormData();
-        await formData.append('chat_log', jsonString);
-        await formData.append('solved_date', today);
-        await axios.patch(process.env.REACT_APP_API_URL + '/study/quiz/' + quizId + '/', formData, {
-            headers: {
-                'Authorization': `Token ${token}`,
-                'Content-Type': 'multipart/form-data'
-            }
-        }).then(response => {
-            if (response.status === 200) console.log('solved date is updated.'); // console.log(JSON.parse(response.data.chat_log)); 테스트 해보니 잘 파싱 됨
-        })
-        .catch(error => {
-            console.error(error);
-        });
+    const endOfLearning = () => {
+        addAiMessage(`${Date()}, 학습을 완료하셨습니다.`);
+        delay();
+        addAiMessage(`학습을 종료합니다.`);
+        setDidMount(true);
     }
     
     return (
