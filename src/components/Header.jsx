@@ -21,7 +21,7 @@ function Header(props) {
     useEffect(() => {
         const usernameTmp = sessionStorage.getItem('aivle19_username');
         setUsername(usernameTmp);
-    }, []);
+    }, [props.isLogin]);
     
     // button 클릭 시 토글
     const toggleMenu = () => {
