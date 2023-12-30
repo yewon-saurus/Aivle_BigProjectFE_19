@@ -13,12 +13,12 @@ const Main = () => {
     const scrollRef = useRef();
     const messageFormRef = useRef();
     
+    const [didMount, setDidMount] = useState(false);
     const [aiIsTalking, setAiIsTalking] = useState(true);
     const [step, setStep] = useState(0);
     const [quizId, setQuizId] = useState(0);
     const [word, setWord] = useState('');
     const [quiz, setQuiz] = useState({});
-    const [didMount, setDidMount] = useState(false);
     const [messages, setMessages] = useState([
         {
             text: `어서오세요.\n생성형 AI를 통한 문해력 향상 학습 서비스에 입장하셨습니다.`,
@@ -33,6 +33,7 @@ const Main = () => {
             isUser: false, isTyping: false, id: Date.now()
         }
     ]); // 모든 채팅 메시지 저장
+    const [writingWords, setWritingWords] = useState([]);
     
     useEffect(() => {
         if (params.key === undefined) {
@@ -118,6 +119,8 @@ const Main = () => {
                         scrollRef={scrollRef}
                         step={step}
                         setStep={setStep}
+                        writingWords={writingWords}
+                        setWritingWords={setWritingWords}
                     />
                 </div>
                 <div className="control">
@@ -134,6 +137,7 @@ const Main = () => {
                         setStep={setStep}
                         aiIsTalking={aiIsTalking}
                         setAiIsTalking={setAiIsTalking}
+                        writingWords={writingWords}
                     />
                     {/* <div> */}
                         {/* 양 방향 화살표 버튼(이전 회차, 다음 회차) */}

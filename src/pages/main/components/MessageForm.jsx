@@ -14,18 +14,18 @@ const sentences = {
     ]
 }
 
-const MessageForm = ({ quizId, word, quiz, messages, setMessages, messageFormRef, step, setStep, aiIsTalking, setAiIsTalking }) => {
+const MessageForm = ({ quizId, word, quiz, messages, setMessages, messageFormRef, step, setStep, aiIsTalking, setAiIsTalking, writingWords }) => {
     const token = sessionStorage.getItem('aivle19_token');
     const username = sessionStorage.getItem('aivle19_username');
 
+    const [didMount, setDidMount] = useState(false);
     const [message, setMessage] = useState('');
     const [studySentences, setStudySentences] = useState(sentences);
     const [correctAnswer, setCorrectAnswer] = useState('');
-    const [didMount, setDidMount] = useState(false);
 
     useEffect(() => {
         switch (step) {
-            // Step 1: 퀴즈 풀기, Step 2: 퀴즈 정답자 안내 단계, Step 3: 쓰기, Step 4: 소리내어 읽기, 5: 읽기 끝, 6: 작문 할 건지 묻기, 7: 작문
+            // Step 1: 퀴즈 풀기, Step 2: 퀴즈 정답자 안내 단계, Step 3: 쓰기, Step 4: 소리내어 읽기, 5: 읽기 끝, 6: 작문 할 건지 묻기, 7: 작문(단어 선택), 8: 작문(본격)
             case 1:
                 async function stepOne() {
                     for (let i = 0; i < quiz.answers.length; i++) {
@@ -62,6 +62,9 @@ const MessageForm = ({ quizId, word, quiz, messages, setMessages, messageFormRef
                 break;
             case 7:
                 studyWriting();
+                break;
+            case 8:
+                studyWriting2();
                 break;
             case -1 :
                 endOfLearning();
@@ -123,7 +126,11 @@ const MessageForm = ({ quizId, word, quiz, messages, setMessages, messageFormRef
             }
             else {
                 setStep(6);
+                setDidMount(true);
             }
+        }
+        else if (step === 8) {
+            // TODO: 작문 상태 확인, 맞춤법 교정
         }
     }
 
@@ -203,6 +210,7 @@ const MessageForm = ({ quizId, word, quiz, messages, setMessages, messageFormRef
         await delay();
         setAiIsTalking(false);
         setStep(6);
+        setDidMount(true);
     }
 
     const isItTurnToWriting = async () => {
@@ -218,7 +226,7 @@ const MessageForm = ({ quizId, word, quiz, messages, setMessages, messageFormRef
             await delay();
             addAiMessage(`${username} 님은 최근에 다섯 개 이상의 단어를 학습했고, 이제 '작문하기' 단계에 도전할 준비가 된 상태입니다.`);
             await delay();
-            addAiMessage(`이어서 '작문허기'를 수행하시겠습니까?`);
+            addAiMessage(`이어서 '작문하기'를 수행하시겠습니까?`);
             await delay();
             
             setMessages((prevMessages) => [
@@ -230,9 +238,27 @@ const MessageForm = ({ quizId, word, quiz, messages, setMessages, messageFormRef
 
     const studyWriting = async () => {
         setAiIsTalking(true);
-        addAiMessage(`작문해야돼요`);
+        addAiMessage(`'작문하기' 과정을 진행합니다.`);
         await delay();
-        addAiMessage(`거의다왔다!`);
+        addAiMessage(`다음 주어지는 단어 목록은 '최근에 학습한 다섯 개의 단어' 목록입니다.\n\n다음 단어 중, '두 개 이상'의 단어를 선택하세요. 선택 완료 후, 선택한 단어를 이용해 '작문하기'를 수행하게 됩니다.`);
+        await delay();
+        setAiIsTalking(false);
+        
+        setMessages((prevMessages) => [
+            ...prevMessages,
+            { isUser: false, mode: 'writing', id: Date.now(), step: step },
+        ]);
+    }
+    
+    const studyWriting2 = async () => {
+        setAiIsTalking(true);
+        addAiMessage(`확인 중입니다.`);
+        await delay();
+        addAiMessage(`선택하신 단어는 다음과 같습니다.`);
+        await delay();
+        addAiMessage(`${writingWords.map((ele, idx) => (idx + 1) +'. ' + ele.word + '\n').join('')}`);
+        await delay();
+        addAiMessage(`이제, 위 단어를 이용해 자유롭게 문장을 작문해 주세요.\n\n하단의 입력창을 통해 문장을 제출하시면, 맞춤법 확인 및 교정이 이루어진 뒤 완전히 학습을 마치게 됩니다.`);
         await delay();
         setAiIsTalking(false);
     }
@@ -241,7 +267,6 @@ const MessageForm = ({ quizId, word, quiz, messages, setMessages, messageFormRef
         addAiMessage(`${Date()}, 학습을 완료하셨습니다.`);
         delay();
         addAiMessage(`학습을 종료합니다.`);
-        setDidMount(true);
     }
 
     const writingConditionCheck = async () => {

@@ -1,6 +1,9 @@
-import React, { useState, useRef } from 'react';
+import axios from 'axios';
+import React, { useState, useRef, useEffect } from 'react';
 
-const MessageItem = ({ message, step, setStep }) => {
+const MessageItem = ({ message, step, setStep, writingWords, setWritingWords }) => {
+    const token = sessionStorage.getItem('aivle19_token');
+
     const [imgFile, setImageFile] = useState("");
     const [stream, setStream] = useState();
     const [media, setMedia] = useState();
@@ -9,8 +12,27 @@ const MessageItem = ({ message, step, setStep }) => {
     const [analyser, setAnalyser] = useState();
     const [audioUrl, setAudioUrl] = useState();
     const [disabled, setDisabled] = useState(true);
+    const [recentLearedWords, setRecentLearnedWords] = useState([]);
 
     const imgRef = useRef();
+
+    useEffect(() => {
+        axios.get(process.env.REACT_APP_API_URL + '/study/writing/', {
+            headers: {
+                'Authorization': `Token ${token}`,
+                'Content-Type': 'multipart/form-data'
+            }
+        }).then(response => {
+            if (response.status === 200) return setRecentLearnedWords(response.data.quiz_words);
+        }).catch(error => {
+            console.error(error);
+        });
+    }, []);
+
+    useEffect(() => {
+        if (writingWords.length >= 2) setDisabled(false);
+        else setDisabled(true);
+    }, [writingWords]);
 
     const handleSaveImgFile = () => {
         const file = imgRef.current.files[0];
@@ -31,6 +53,14 @@ const MessageItem = ({ message, step, setStep }) => {
     const handleSubmitAudioFile = () => {
         setStep(5);
         // TODO: TTS 모듈 request, response에 따라 재시도 하도록 유도하거나 통과 처리 할 수 있도록 조치할 것
+    }
+    
+    const handleChangeWritingWords = (checked, item, word) => {
+        if (checked) setWritingWords((prev) => [
+            ...prev,
+            { id: item, word: word }
+        ]);
+        else setWritingWords(writingWords.filter((ele) => ele.id !== item));
     }
 
     const onRecAudio = () => {
@@ -160,7 +190,23 @@ const MessageItem = ({ message, step, setStep }) => {
             </div>
         );
     }
-    else if (message.mode === 'writing') console.log('call writing module');
+    else if (message.mode === 'writing') {
+        return (
+            <form>
+                {
+                    recentLearedWords.map((ele) => 
+                        <div className='text-lg m-1 p-1 border-b border-[var(--color-primary-500)]'>
+                            {step === 7 && <input type='checkbox' name='writingWords' id={ele.id} value={ele.id} onChange={(e) => {
+                                handleChangeWritingWords(e.target.checked, e.target.id, ele.word);
+                            }} />}
+                            <label htmlFor={ele.id}> {ele.word}</label>
+                        </div>
+                    )
+                }
+                {step === 7 && <button className={`text-sm mt-6 w-[100%] p-2 bg-[var(--color-primary-500)] hover:bg-[var(--color-primary-600)] transition-colors text-white rounded-full ${disabled ? 'bg-gray-200 text-white border-0' : ''}`} type='button' onClick={() => {setStep(8);}} disabled={disabled}>선택 완료</button>}
+            </form>
+        );
+    }
     else {
         // mode === undefined
         return message.text;
