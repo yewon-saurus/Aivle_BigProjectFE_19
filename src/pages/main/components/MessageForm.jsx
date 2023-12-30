@@ -16,6 +16,7 @@ const sentences = {
 
 const MessageForm = ({ quizId, word, quiz, messages, setMessages, messageFormRef, step, setStep, aiIsTalking, setAiIsTalking }) => {
     const token = sessionStorage.getItem('aivle19_token');
+    const username = sessionStorage.getItem('aivle19_username');
 
     const [message, setMessage] = useState('');
     const [studySentences, setStudySentences] = useState(sentences);
@@ -24,6 +25,7 @@ const MessageForm = ({ quizId, word, quiz, messages, setMessages, messageFormRef
 
     useEffect(() => {
         switch (step) {
+            // Step 1: 퀴즈 풀기, Step 2: 퀴즈 정답자 안내 단계, Step 3: 쓰기, Step 4: 소리내어 읽기, 5: 읽기 끝, 6: 작문 할 건지 묻기, 7: 작문
             case 1:
                 async function stepOne() {
                     for (let i = 0; i < quiz.answers.length; i++) {
@@ -53,9 +55,12 @@ const MessageForm = ({ quizId, word, quiz, messages, setMessages, messageFormRef
                 studyReading();
                 break;
             case 5:
-                isItTurnToWriting();
+                endOfReading();
                 break;
             case 6:
+                isItTurnToWriting();
+                break;
+            case 7:
                 studyWriting();
                 break;
             case -1 :
@@ -117,7 +122,7 @@ const MessageForm = ({ quizId, word, quiz, messages, setMessages, messageFormRef
                 setStep(3);
             }
             else {
-                setStep(-1);
+                setStep(6);
             }
         }
     }
@@ -150,7 +155,7 @@ const MessageForm = ({ quizId, word, quiz, messages, setMessages, messageFormRef
         await delay();
         addAiMessage(`정답을 맞힌 퀴즈에 한해서 쓰기/읽기 학습을 건너뛸 수 있습니다.\n\n이대로 학습을 마치시겠습니까?`);
         await delay();
-        addAiMessage(`학습을 마치지 않고 학습을 진행하시겠다면, '${word}'(을)를 재입력해 주세요. 그 외 내용 입력 시 해당 단계에 대한 학습이 종료됩니다.`);
+        addAiMessage(`학습을 마치지 않고 학습을 진행하시겠다면, '${word}'(을)를 재입력해 주세요. 그 외 내용 입력 시 현재 단계에 대한 학습이 종료됩니다.`);
         setAiIsTalking(false);
     }
         
@@ -188,23 +193,39 @@ const MessageForm = ({ quizId, word, quiz, messages, setMessages, messageFormRef
         ]);
     }
     
-    const isItTurnToWriting = async () => {
+    const endOfReading = async () => {
         setAiIsTalking(true);
         addAiMessage(`확인 중입니다.`);
         await delay();
         addAiMessage(`확인되었습니다. 훌륭하게 수행하셨군요!`);
         await delay();
+        addAiMessage(`👏`);
+        await delay();
+        setAiIsTalking(false);
+        setStep(6);
+    }
 
-        // 작문 해야되는 타이밍이니? 판단
-        if (quizId % 5 === 0) {
-            // 작문 해야 함
-            setStep(6);
-        }
-        else {
-            // 작문 안 해도 됨
+    const isItTurnToWriting = async () => {
+        // 사용자가 작문을 할 수 있는 조건이 되는 지 확인하기
+        const writingCheck = writingConditionCheck();
+        console.log(writingCheck);
+        if (writingCheck === undefined) {
             setStep(-1);
         }
-        setAiIsTalking(false);
+        else {
+            // 사용자한테 작문 할거냐고 물어보기
+            addAiMessage(`잠시만요!`);
+            await delay();
+            addAiMessage(`${username} 님은 최근에 다섯 개 이상의 단어를 학습했고, 이제 '작문하기' 단계에 도전할 준비가 된 상태입니다.`);
+            await delay();
+            addAiMessage(`이어서 '작문허기'를 수행하시겠습니까?`);
+            await delay();
+            
+            setMessages((prevMessages) => [
+                ...prevMessages,
+                { isUser: false, mode: 'areYouWantToWriting', id: Date.now(), step: step },
+            ]);
+        }
     }
 
     const studyWriting = async () => {
@@ -221,6 +242,20 @@ const MessageForm = ({ quizId, word, quiz, messages, setMessages, messageFormRef
         delay();
         addAiMessage(`학습을 종료합니다.`);
         setDidMount(true);
+    }
+
+    const writingConditionCheck = async () => {
+        axios.get(process.env.REACT_APP_API_URL + '/study/writing/', {
+            headers: {
+                'Authorization': `Token ${token}`,
+                'Content-Type': 'multipart/form-data'
+            }
+        }).then(response => {
+            if (response.status === 200) return response.data.quiz_words;
+        })
+        .catch(error => {
+            console.error(error);
+        });
     }
     
     return (

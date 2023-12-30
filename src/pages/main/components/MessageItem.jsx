@@ -127,7 +127,7 @@ const MessageItem = ({ message, step, setStep }) => {
                     onChange={handleSaveImgFile}
                     ref={imgRef}
                 />
-                { imgFile && step === 3 && <button className='text-sm mt-2 w-[100%] p-2 bg-[var(--color-primary-500)] text-white rounded-full' type='button' onClick={handleSubmitImgFile}>제출하기</button>}
+                { imgFile && step === 3 && <button className='text-sm mt-2 w-[100%] p-2 bg-[var(--color-primary-500)] hover:bg-[var(--color-primary-600)] transition-colors text-white rounded-full' type='button' onClick={handleSubmitImgFile}>제출하기</button>}
             </form>
         );
     }
@@ -140,7 +140,23 @@ const MessageItem = ({ message, step, setStep }) => {
                 <br></br>
                 <button className='text-sm w-[100%] p-2 border border-[var(--color-primary-500)] rounded-full' onClick={onRec ? onRecAudio : offRecAudio}>{onRec ? '🎤 말하기(녹음 시작)' : '녹음 중지'}</button>
                 <button className={`text-sm mt-2 w-[100%] p-2 border border-[var(--color-primary-500)] rounded-full transition-colors ${disabled ? 'bg-gray-200 text-white border-0' : ''}`} onClick={audioPLay} disabled={disabled}>내 녹음 들어보기</button>
-                {audioUrl && step === 4 && <button className='text-sm mt-2 w-[100%] p-2 bg-[var(--color-primary-500)] text-white rounded-full' type='button' onClick={handleSubmitAudioFile}>제출하기</button>}
+                {audioUrl && step === 4 && <button className='text-sm mt-2 w-[100%] p-2 bg-[var(--color-primary-500)] hover:bg-[var(--color-primary-600)] transition-colors text-white rounded-full' type='button' onClick={handleSubmitAudioFile}>제출하기</button>}
+            </div>
+        );
+    }
+    else if (message.mode === 'areYouWantToWriting') {
+        return (
+            <div>
+                <div>작문 연습은 작문 능력, 어휘, 문법 및 비판적 사고 능력을 향상시키는 데 도움 되며,</div>
+                <br></br>
+                <div>효과적인 작문 연습을 하려면 규칙적인 루틴을 설정하고 수행하는 것이 중요합니다.</div>
+                {
+                    step === 6 && 
+                    <div>
+                        <button className='text-sm mt-2 w-[100%] p-2 bg-[var(--color-primary-500)] hover:bg-[var(--color-primary-600)] transition-colors text-white rounded-full' onClick={() => {setStep(7);}}>네, 작문하기를 시작합니다.</button>
+                        <button className='text-sm mt-2 w-[100%] p-2 bg-[var(--color-primary-500)] hover:bg-[var(--color-primary-600)] transition-colors text-white rounded-full' onClick={() => {setStep(-1);}}>아니오, 오늘은 이만 마치겠습니다.</button>
+                    </div>
+                }
             </div>
         );
     }

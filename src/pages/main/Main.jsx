@@ -14,7 +14,7 @@ const Main = () => {
     const messageFormRef = useRef();
     
     const [aiIsTalking, setAiIsTalking] = useState(true);
-    const [step, setStep] = useState(0); // Step 1: 퀴즈 풀기, Step 2: 퀴즈 정답자 안내 단계, Step 3: 쓰기, Step 4: 소리내어 읽기, 5: 작문 해야되는지 판단, 6: 작문
+    const [step, setStep] = useState(0);
     const [quizId, setQuizId] = useState(0);
     const [word, setWord] = useState('');
     const [quiz, setQuiz] = useState({});
