@@ -183,6 +183,11 @@ const MessageForm = ({ quizId, word, quiz, messages, setMessages, messageFormRef
     }
     
     const studyReading = async () => {
+        setMessages((prevMessages) => [
+            ...prevMessages, // 이전 메시지들
+            { text: `제출 완료`, isUser: true, id: Date.now(), step: step },
+        ]);
+
         setAiIsTalking(true);
         addAiMessage(`확인 중입니다.`);
         await delay();
@@ -201,6 +206,11 @@ const MessageForm = ({ quizId, word, quiz, messages, setMessages, messageFormRef
     }
     
     const endOfReading = async () => {
+        setMessages((prevMessages) => [
+            ...prevMessages, // 이전 메시지들
+            { text: `제출 완료`, isUser: true, id: Date.now(), step: step },
+        ]);
+
         setAiIsTalking(true);
         addAiMessage(`확인 중입니다.`);
         await delay();
@@ -237,6 +247,11 @@ const MessageForm = ({ quizId, word, quiz, messages, setMessages, messageFormRef
     }
 
     const studyWriting = async () => {
+        setMessages((prevMessages) => [
+            ...prevMessages, // 이전 메시지들
+            { text: `네, 작문하기를 시작합니다.`, isUser: true, id: Date.now(), step: step },
+        ]);
+
         setAiIsTalking(true);
         addAiMessage(`'작문하기' 과정을 진행합니다.`);
         await delay();
@@ -251,6 +266,11 @@ const MessageForm = ({ quizId, word, quiz, messages, setMessages, messageFormRef
     }
     
     const studyWriting2 = async () => {
+        setMessages((prevMessages) => [
+            ...prevMessages, // 이전 메시지들
+            { text: `선택 완료`, isUser: true, id: Date.now(), step: step },
+        ]);
+
         setAiIsTalking(true);
         addAiMessage(`확인 중입니다.`);
         await delay();
