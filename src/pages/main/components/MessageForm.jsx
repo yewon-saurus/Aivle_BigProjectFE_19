@@ -58,6 +58,7 @@ const MessageForm = ({ quizId, word, quiz, messages, setMessages, messageFormRef
                 endOfReading();
                 break;
             case 6:
+                setDidMount(true);
                 isItTurnToWriting();
                 break;
             case 7:
@@ -126,12 +127,9 @@ const MessageForm = ({ quizId, word, quiz, messages, setMessages, messageFormRef
             }
             else {
                 setStep(6);
-                setDidMount(true);
             }
         }
-        else if (step === 8) {
-            // TODO: 작문 상태 확인, 맞춤법 교정
-        }
+        else if (step === 8) examineWriting();
     }
 
     const correctJudge = async () => {
@@ -153,6 +151,46 @@ const MessageForm = ({ quizId, word, quiz, messages, setMessages, messageFormRef
                 setStep(3);
             };
         }
+    
+    const examineWriting = async () => {
+        var writingAnswer = false;
+
+        setAiIsTalking(true);
+        addAiMessage(`확인 중입니다.`);
+
+        var writingWordsId = [];
+        for (var i = 0; i < writingWords.length; i++) {
+            writingWordsId.push(parseInt(writingWords[i].id));
+        }
+
+        const formData = new FormData();
+        formData.append('selected_words', JSON.stringify(writingWordsId));
+        formData.append('composition_text', message);
+        await axios.post(process.env.REACT_APP_API_URL + '/study/writing/', formData, {
+            headers: {
+                'Authorization': `Token ${token}`,
+                'Content-Type': 'multipart/form-data'
+            }
+        }).then(response => {
+            if (response.status === 200) {
+                writingAnswer = response.data.composition_result.answer;
+                addAiMessage(`${response.data.composition_result.text}`);
+                setAiIsTalking(false);
+            }
+        })
+        .catch(error => {
+            console.error(error);
+        });
+        
+        if (writingAnswer) {
+            setAiIsTalking(true);
+            await delay();
+            addAiMessage(`완벽합니다! 모든 학습의 수행을 완료하셨습니다.`);
+            await delay();
+            setAiIsTalking(false);
+            setStep(-1);
+        }
+    }
     
     const quideToCorrect = async () => {
         setAiIsTalking(true);
@@ -220,14 +258,24 @@ const MessageForm = ({ quizId, word, quiz, messages, setMessages, messageFormRef
         await delay();
         setAiIsTalking(false);
         setStep(6);
-        setDidMount(true);
     }
 
     const isItTurnToWriting = async () => {
+        var writingCheck;
+
         // 사용자가 작문을 할 수 있는 조건이 되는 지 확인하기
-        const writingCheck = writingConditionCheck();
-        console.log(writingCheck);
-        if (writingCheck === undefined) {
+        await axios.get(process.env.REACT_APP_API_URL + '/study/writing/', {
+            headers: {
+                'Authorization': `Token ${token}`,
+            }
+        }).then(response => {
+            if (response.status === 200) writingCheck = response.data.quiz_words;
+        })
+        .catch(error => {
+            writingCheck = null;
+        });
+
+        if (writingCheck === null) {
             setStep(-1);
         }
         else {
@@ -279,28 +327,11 @@ const MessageForm = ({ quizId, word, quiz, messages, setMessages, messageFormRef
         addAiMessage(`${writingWords.map((ele, idx) => (idx + 1) +'. ' + ele.word + '\n').join('')}`);
         await delay();
         addAiMessage(`이제, 위 단어를 이용해 자유롭게 문장을 작문해 주세요.\n\n하단의 입력창을 통해 문장을 제출하시면, 맞춤법 확인 및 교정이 이루어진 뒤 완전히 학습을 마치게 됩니다.`);
-        await delay();
         setAiIsTalking(false);
     }
     
     const endOfLearning = () => {
-        addAiMessage(`${Date()}, 학습을 완료하셨습니다.`);
-        delay();
-        addAiMessage(`학습을 종료합니다.`);
-    }
-
-    const writingConditionCheck = async () => {
-        axios.get(process.env.REACT_APP_API_URL + '/study/writing/', {
-            headers: {
-                'Authorization': `Token ${token}`,
-                'Content-Type': 'multipart/form-data'
-            }
-        }).then(response => {
-            if (response.status === 200) return response.data.quiz_words;
-        })
-        .catch(error => {
-            console.error(error);
-        });
+        addAiMessage(`${Date()}, 학습을 종료합니다.`);
     }
     
     return (
