@@ -11,7 +11,7 @@ import { FaRankingStar } from "react-icons/fa6";
 function Header(props) {
     const nav = useNavigate();
 
-    const SIDEBAR_WIDTH = 360;
+    const SIDEBAR_WIDTH = 320;
     const [username, setUsername] = useState('');
     const [userrank, setUserrank] = useState(0);
     const [isOpen, setOpen] = useState(false);
