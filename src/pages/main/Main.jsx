@@ -57,8 +57,7 @@ const Main = () => {
                 if (response.status === 200) {
                     setQuizId(response.data.quiz_id);
                     setWord(response.data.word);
-                    const tempQuiz = JSON.parse(response.data.quiz);
-                    setQuiz(tempQuiz.questions[0]);
+                    setQuiz(JSON.parse(response.data.quiz).questions[0]);
                 }
             })
             .catch(error => {
@@ -92,16 +91,15 @@ const Main = () => {
         }).then(response => {
             if (response.status === 200) {
                 setQuizId(response.data.quiz_id);
-                setQuiz(JSON.parse(response.data.quiz));
+                setQuiz(JSON.parse(response.data.quiz).questions[0]);
                 setWord(response.data.word);
                 setMessages(JSON.parse(response.data.chat_log));
+                setStep(JSON.parse(response.data.chat_log)[JSON.parse(response.data.chat_log).length - 1].step);
             }
         })
         .catch(error => {
             console.error(error);
         });
-        
-        await setStep(messages[messages.length - 1].step); // TODO: 이 setStep이 안 됨. 위의 setMessages가 한 박자 늦게 돼서 그런 것 같은데..
     }
 
     return (
