@@ -95,10 +95,10 @@ const MessageForm = ({ quizId, word, quiz, messages, setMessages, messageFormRef
         setMessage('');
     };
     
-    const addAiMessage = (aiSay, isTyping=false) => {
+    const addAiMessage = (aiSay, currStep=step, isTyping=false) => {
         setMessages((prevMessages) => [
             ...prevMessages, // 이전 메시지들
-            { text: `${aiSay}`, isUser: false, isTyping: isTyping, id: Date.now(), step: step},
+            { text: `${aiSay}`, isUser: false, id: Date.now(), step: currStep, isTyping: isTyping},
         ]);
     }
     
@@ -277,17 +277,17 @@ const MessageForm = ({ quizId, word, quiz, messages, setMessages, messageFormRef
     const studyWriting2 = async () => {
         setMessages((prevMessages) => [
             ...prevMessages, // 이전 메시지들
-            { text: `선택 완료`, isUser: true, id: Date.now(), step: step },
+            { text: `선택 완료`, isUser: true, id: Date.now(), step: step - 1 },
         ]);
 
         setAiIsTalking(true);
-        addAiMessage(`확인 중입니다.`);
+        addAiMessage(`확인 중입니다.`, step - 1);
         await delay();
-        addAiMessage(`선택하신 단어는 다음과 같습니다.`);
+        addAiMessage(`선택하신 단어는 다음과 같습니다.`, step - 1);
         await delay();
-        addAiMessage(`${writingWords.map((ele, idx) => (idx + 1) +'. ' + ele.word + '\n').join('')}`);
+        addAiMessage(`${writingWords.map((ele, idx) => (idx + 1) +'. ' + ele.word + '\n').join('')}`, step - 1);
         await delay();
-        addAiMessage(`이제, 위 단어를 이용해 자유롭게 문장을 작문해 주세요.\n\n하단의 입력창을 통해 문장을 제출하시면, 맞춤법 확인 및 교정이 이루어진 뒤 완전히 학습을 마치게 됩니다.`);
+        addAiMessage(`이제, 위 단어를 이용해 자유롭게 문장을 작문해 주세요.\n\n하단의 입력창을 통해 문장을 제출하시면, 맞춤법 확인 및 교정이 이루어진 뒤 완전히 학습을 마치게 됩니다.`, step - 1);
         setAiIsTalking(false);
     }
 
@@ -295,7 +295,7 @@ const MessageForm = ({ quizId, word, quiz, messages, setMessages, messageFormRef
         var writingAnswer = false;
 
         setAiIsTalking(true);
-        addAiMessage(`확인 중입니다.`);
+        addAiMessage(`확인 중입니다.`, step - 1);
 
         var writingWordsId = [];
         for (var i = 0; i < writingWords.length; i++) {
@@ -313,7 +313,7 @@ const MessageForm = ({ quizId, word, quiz, messages, setMessages, messageFormRef
         }).then(response => {
             if (response.status === 200) {
                 writingAnswer = response.data.composition_result.answer;
-                addAiMessage(`${response.data.composition_result.text}`);
+                addAiMessage(`${response.data.composition_result.text}`, step - 1);
                 setAiIsTalking(false);
             }
         })
@@ -324,7 +324,7 @@ const MessageForm = ({ quizId, word, quiz, messages, setMessages, messageFormRef
         if (writingAnswer) {
             setAiIsTalking(true);
             await delay();
-            addAiMessage(`완벽합니다! 모든 학습의 수행을 완료하셨습니다.`);
+            addAiMessage(`완벽합니다! 모든 학습의 수행을 완료하셨습니다.`, step - 1);
             await delay();
             setAiIsTalking(false);
             setStep(-1);
