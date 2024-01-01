@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { delay, dateToTimestamp } from '../../../hooks/';
+import { delay, dateToTimestamp } from '../../../utils';
 
 import { IoSend } from "react-icons/io5";
 import axios from 'axios';
@@ -27,26 +27,10 @@ const MessageForm = ({ quizId, word, quiz, messages, setMessages, messageFormRef
         switch (step) {
             // Step 1: 퀴즈 풀기, Step 2: 퀴즈 정답자 안내 단계, Step 3: 쓰기, Step 4: 소리내어 읽기, 5: 읽기 끝, 6: 작문 할 건지 묻기, 7: 작문(단어 선택), 8: 작문(본격)
             case 1:
-                async function stepOne() {
-                    for (let i = 0; i < quiz.answers.length; i++) {
-                        if (quiz.answers[i].correct === true) {
-                            setCorrectAnswer(quiz.answers[i].answer);
-                        }
-                    }
-                    setAiIsTalking(true);
-                    addAiMessage(`다음은 "${word}"를 사용한 문장입니다.`);
-                    await delay();
-                    addAiMessage(`"${quiz.Sentence}"`);
-                    await delay();
-                    addAiMessage(`${quiz.question}\n\n다음 <보기> 중 가장 적절한 답안을 입력해 주세요. 정답 외 다른 입력은 모두 오답으로 처리됩니다.`);
-                    await delay();
-                    addAiMessage(`<보기>${quiz.answers.map((ele) => '\n- ' + ele.answer).join('')}`);
-                    setAiIsTalking(false);
-                }
-                stepOne();
+                startQuiz();
                 break;
             case 2:
-                quideToCorrect();
+                guideToCorrect();
                 break;
             case 3:
                 studyHandWriting();
@@ -132,6 +116,23 @@ const MessageForm = ({ quizId, word, quiz, messages, setMessages, messageFormRef
         else if (step === 8) examineWriting();
     }
 
+    const startQuiz = async () => {
+        for (let i = 0; i < quiz.answers.length; i++) {
+            if (quiz.answers[i].correct === true) {
+                setCorrectAnswer(quiz.answers[i].answer);
+            }
+        }
+        setAiIsTalking(true);
+        addAiMessage(`다음은 "${word}"를 사용한 문장입니다.`);
+        await delay();
+        addAiMessage(`"${quiz.Sentence}"`);
+        await delay();
+        addAiMessage(`${quiz.question}\n\n다음 <보기> 중 가장 적절한 답안을 입력해 주세요. 정답 외 다른 입력은 모두 오답으로 처리됩니다.`);
+        await delay();
+        addAiMessage(`<보기>${quiz.answers.map((ele) => '\n- ' + ele.answer).join('')}`);
+        setAiIsTalking(false);
+    }
+
     const correctJudge = async () => {
         switch (message) {
             case correctAnswer:
@@ -152,47 +153,7 @@ const MessageForm = ({ quizId, word, quiz, messages, setMessages, messageFormRef
             };
         }
     
-    const examineWriting = async () => {
-        var writingAnswer = false;
-
-        setAiIsTalking(true);
-        addAiMessage(`확인 중입니다.`);
-
-        var writingWordsId = [];
-        for (var i = 0; i < writingWords.length; i++) {
-            writingWordsId.push(parseInt(writingWords[i].id));
-        }
-
-        const formData = new FormData();
-        formData.append('selected_words', JSON.stringify(writingWordsId));
-        formData.append('composition_text', message);
-        await axios.post(process.env.REACT_APP_API_URL + '/study/writing/', formData, {
-            headers: {
-                'Authorization': `Token ${token}`,
-                'Content-Type': 'multipart/form-data'
-            }
-        }).then(response => {
-            if (response.status === 200) {
-                writingAnswer = response.data.composition_result.answer;
-                addAiMessage(`${response.data.composition_result.text}`);
-                setAiIsTalking(false);
-            }
-        })
-        .catch(error => {
-            console.error(error);
-        });
-        
-        if (writingAnswer) {
-            setAiIsTalking(true);
-            await delay();
-            addAiMessage(`완벽합니다! 모든 학습의 수행을 완료하셨습니다.`);
-            await delay();
-            setAiIsTalking(false);
-            setStep(-1);
-        }
-    }
-    
-    const quideToCorrect = async () => {
+    const guideToCorrect = async () => {
         setAiIsTalking(true);
         addAiMessage(`정답입니다!\n\n위 문장에서 단어 '${word}'는 '${correctAnswer}'(이)라는 의미로 사용되었습니다.`);
         await delay();
@@ -328,6 +289,46 @@ const MessageForm = ({ quizId, word, quiz, messages, setMessages, messageFormRef
         await delay();
         addAiMessage(`이제, 위 단어를 이용해 자유롭게 문장을 작문해 주세요.\n\n하단의 입력창을 통해 문장을 제출하시면, 맞춤법 확인 및 교정이 이루어진 뒤 완전히 학습을 마치게 됩니다.`);
         setAiIsTalking(false);
+    }
+
+    const examineWriting = async () => {
+        var writingAnswer = false;
+
+        setAiIsTalking(true);
+        addAiMessage(`확인 중입니다.`);
+
+        var writingWordsId = [];
+        for (var i = 0; i < writingWords.length; i++) {
+            writingWordsId.push(parseInt(writingWords[i].id));
+        }
+
+        const formData = new FormData();
+        formData.append('selected_words', JSON.stringify(writingWordsId));
+        formData.append('composition_text', message);
+        await axios.post(process.env.REACT_APP_API_URL + '/study/writing/', formData, {
+            headers: {
+                'Authorization': `Token ${token}`,
+                'Content-Type': 'multipart/form-data'
+            }
+        }).then(response => {
+            if (response.status === 200) {
+                writingAnswer = response.data.composition_result.answer;
+                addAiMessage(`${response.data.composition_result.text}`);
+                setAiIsTalking(false);
+            }
+        })
+        .catch(error => {
+            console.error(error);
+        });
+        
+        if (writingAnswer) {
+            setAiIsTalking(true);
+            await delay();
+            addAiMessage(`완벽합니다! 모든 학습의 수행을 완료하셨습니다.`);
+            await delay();
+            setAiIsTalking(false);
+            setStep(-1);
+        }
     }
     
     const endOfLearning = () => {
