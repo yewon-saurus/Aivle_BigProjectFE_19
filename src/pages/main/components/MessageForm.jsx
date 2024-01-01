@@ -18,7 +18,7 @@ const MessageForm = ({ quizId, word, quiz, messages, setMessages, messageFormRef
     const token = sessionStorage.getItem('aivle19_token');
     const username = sessionStorage.getItem('aivle19_username');
 
-    const [didMount, setDidMount] = useState(false);
+    const [updateSolvedDateDidMount, setUpdateSolvedDateDidMount] = useState(false);
     const [message, setMessage] = useState('');
     const [studySentences, setStudySentences] = useState(sentences);
     const [correctAnswer, setCorrectAnswer] = useState('');
@@ -58,7 +58,7 @@ const MessageForm = ({ quizId, word, quiz, messages, setMessages, messageFormRef
                 endOfReading();
                 break;
             case 6:
-                setDidMount(true);
+                setUpdateSolvedDateDidMount(true);
                 isItTurnToWriting();
                 break;
             case 7:
@@ -75,7 +75,7 @@ const MessageForm = ({ quizId, word, quiz, messages, setMessages, messageFormRef
     }, [step]);
 
     useEffect(() => {
-        if (didMount) {
+        if (updateSolvedDateDidMount) {
             const jsonString = JSON.stringify(messages);
             const today = dateToTimestamp(Date());
             const formData = new FormData();
@@ -93,7 +93,7 @@ const MessageForm = ({ quizId, word, quiz, messages, setMessages, messageFormRef
                 console.error(error);
             });
         }
-    }, [didMount]);
+    }, [updateSolvedDateDidMount]);
     
     const handleSendMessage = (message) => {
         // message: 사용자가 form에 입력한 내용

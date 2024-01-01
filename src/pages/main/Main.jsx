@@ -13,7 +13,7 @@ const Main = () => {
     const scrollRef = useRef();
     const messageFormRef = useRef();
     
-    const [didMount, setDidMount] = useState(false);
+    const [createQuizDidMount, setCreateQuizDidMount] = useState(false);
     const [aiIsTalking, setAiIsTalking] = useState(true);
     const [step, setStep] = useState(0);
     const [quizId, setQuizId] = useState(0);
@@ -38,7 +38,7 @@ const Main = () => {
     useEffect(() => {
         if (params.key === undefined) {
             // 새 문제 생성, 저장
-            setDidMount(true);
+            setCreateQuizDidMount(true);
         }
         else {
             // 전에 풀던/풀이 완료한 문제 입장
@@ -48,7 +48,7 @@ const Main = () => {
     }, []);
 
     useEffect(() => {
-        if (didMount) {
+        if (createQuizDidMount) {
             axios.get(process.env.REACT_APP_API_URL + '/study/quiz/', {
                 headers: {
                     'Authorization': `Token ${token}`
@@ -65,7 +65,7 @@ const Main = () => {
                 console.error(error);
             });
         }
-    }, [didMount])
+    }, [createQuizDidMount])
 
     useEffect(() => {
         if (word !== '' && messages[messages.length - 1].text === '문제 생성을 시작합니다. 문제가 생성될 때까지 잠시 기다려 주세요.') {
