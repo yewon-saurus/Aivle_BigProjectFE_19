@@ -12,7 +12,6 @@ const MessageForm = ({ quizId, word, quiz, correctAnswer, setCorrectAnswer, mess
     const token = sessionStorage.getItem('aivle19_token');
     const username = sessionStorage.getItem('aivle19_username');
 
-    const [generateSentenceDidMount, setGenerateSentenceDidMount] = useState(false);
     const [updateSolvedDateDidMount, setUpdateSolvedDateDidMount] = useState(false);
     const [message, setMessage] = useState('');
     const [studySentence, setStudySentence] = useState(sentence);
@@ -22,14 +21,12 @@ const MessageForm = ({ quizId, word, quiz, correctAnswer, setCorrectAnswer, mess
             // Step 1: 퀴즈 풀기, Step 2: 퀴즈 정답자 안내 단계, Step 3: 쓰기, Step 4: 소리내어 읽기, 5: 읽기 끝, 6: 작문 할 건지 묻기, 7: 작문(단어 선택), 8: 작문(본격)
             case 1:
                 startQuiz();
-                setGenerateSentenceDidMount(true); // '단어 연습장' 문장 미리 생성
                 break;
             case 2:
                 guideToCorrect();
                 break;
             case 3:
                 studyHandWriting();
-                setGenerateSentenceDidMount(true); //'단어 연습장' reading에서 볼 문장 미리 업데이트
                 break;
             case 4:
                 studyReading();
@@ -53,26 +50,6 @@ const MessageForm = ({ quizId, word, quiz, correctAnswer, setCorrectAnswer, mess
             default:
         }
     }, [step]);
-
-    useEffect(() => {
-        if (generateSentenceDidMount) {
-            const formData = new FormData();
-            formData.append('word', word);
-            formData.append('meaning', correctAnswer);
-            axios.post(process.env.REACT_APP_API_URL + '/study/quiz/' + quizId + '/sentence/', formData, {
-                headers: {
-                    'Authorization': `Token ${token}`,
-                    'Content-Type': 'multipart/form-data'
-                }
-            }).then(response => {
-                if (response.status === 200) setStudySentence(response.data);
-            })
-            .catch(error => {
-                console.error(error);
-            });
-            setGenerateSentenceDidMount(false);
-        }
-    }, [generateSentenceDidMount]);
 
     useEffect(() => {
         if (updateSolvedDateDidMount) {
@@ -180,15 +157,29 @@ const MessageForm = ({ quizId, word, quiz, correctAnswer, setCorrectAnswer, mess
         addAiMessage(`학습을 마치지 않고 학습을 진행하시겠다면, '${word}'(을)를 재입력해 주세요. 그 외 내용 입력 시 현재 단계에 대한 학습이 종료됩니다.`);
         setAiIsTalking(false);
     }
+
+    const generateSentence = async () => {
+        const formData = new FormData();
+        formData.append('word', word);
+        formData.append('meaning', correctAnswer);
+        return await axios.post(process.env.REACT_APP_API_URL + '/study/quiz/' + quizId + '/sentence/', formData, {
+            headers: {
+                'Authorization': `Token ${token}`,
+                'Content-Type': 'multipart/form-data'
+            }
+        });
+    }
         
     const studyHandWriting = async () => {
         setAiIsTalking(true);
         addAiMessage(`학습은 (1)쓰기, (2)읽기 순서로 이루어 집니다.`);
         await delay();
         addAiMessage(`'쓰기' 과정을 진행합니다. 다음 주어지는 문장을 수기로 작성해 보시고, 사진을 업로드 해주세요.`);
-        await delay();
-        addAiMessage(`📝 "${studySentence.sentence}"`);
-        // addAiMessage(`1. "${studySentences.sentences[0].Sentence1}"\n\n2. "${studySentences.sentences[0].Sentence2}"\n\n3. "${studySentences.sentences[0].Sentence3}"`);
+        const response = generateSentence();
+        if ((await response).status === 200) {
+            setStudySentence((await response).data);
+            addAiMessage(`📝 "${(await response).data.sentence}"`);
+        }
         await delay();
         setAiIsTalking(false);
         
@@ -210,8 +201,11 @@ const MessageForm = ({ quizId, word, quiz, correctAnswer, setCorrectAnswer, mess
         addAiMessage(`확인되었습니다. 훌륭하게 수행하셨군요!`);
         await delay();
         addAiMessage(`다음은 '읽기' 과정을 진행합니다. 다음 주어지는 문장을 소리 내어 읽어보세요.`);
-        await delay();
-        addAiMessage(`🎙️ "${studySentence.sentence}"`);
+        const response = generateSentence();
+        if ((await response).status === 200) {
+            setStudySentence((await response).data);
+            addAiMessage(`🎙️ "${(await response).data.sentence}"`);
+        }
         await delay();
         setAiIsTalking(false);
         
