@@ -5,7 +5,7 @@ import Typing from 'react-kr-typing-anim';
 
 const MessageList = ({ token, quizId, messages, scrollRef, step, setStep, writingWords, setWritingWords }) => {
     useEffect(() => {
-        scrollRef.current.scrollIntoView({behavior: "smooth", block: "end"});
+        if (scrollRef.current) scrollRef.current.scrollIntoView({behavior: "smooth", block: "end"});
         updateChatLog();
     }, [messages]);
 
