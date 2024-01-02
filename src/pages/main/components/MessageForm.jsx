@@ -8,7 +8,7 @@ const sentence = {
     "sentence": "내 친구는 간지 넘치는 스타일을 가지고 있다."
 }
 
-const MessageForm = ({ quizId, word, quiz, messages, setMessages, messageFormRef, step, setStep, aiIsTalking, setAiIsTalking, writingWords }) => {
+const MessageForm = ({ quizId, word, quiz, correctAnswer, setCorrectAnswer, messages, setMessages, messageFormRef, step, setStep, aiIsTalking, setAiIsTalking, writingWords }) => {
     const token = sessionStorage.getItem('aivle19_token');
     const username = sessionStorage.getItem('aivle19_username');
 
@@ -16,14 +16,13 @@ const MessageForm = ({ quizId, word, quiz, messages, setMessages, messageFormRef
     const [updateSolvedDateDidMount, setUpdateSolvedDateDidMount] = useState(false);
     const [message, setMessage] = useState('');
     const [studySentence, setStudySentence] = useState(sentence);
-    const [correctAnswer, setCorrectAnswer] = useState('');
 
     useEffect(() => {
         switch (step) {
             // Step 1: 퀴즈 풀기, Step 2: 퀴즈 정답자 안내 단계, Step 3: 쓰기, Step 4: 소리내어 읽기, 5: 읽기 끝, 6: 작문 할 건지 묻기, 7: 작문(단어 선택), 8: 작문(본격)
             case 1:
-                setGenerateSentenceDidMount(true); // '단어 연습장' 문장 미리 생성
                 startQuiz();
+                setGenerateSentenceDidMount(true); // '단어 연습장' 문장 미리 생성
                 break;
             case 2:
                 guideToCorrect();
@@ -71,6 +70,7 @@ const MessageForm = ({ quizId, word, quiz, messages, setMessages, messageFormRef
             .catch(error => {
                 console.error(error);
             });
+            setGenerateSentenceDidMount(false);
         }
     }, [generateSentenceDidMount]);
 
@@ -242,16 +242,12 @@ const MessageForm = ({ quizId, word, quiz, messages, setMessages, messageFormRef
         var writingCheck;
 
         // 사용자가 작문을 할 수 있는 조건이 되는 지 확인하기
-        await axios.get(process.env.REACT_APP_API_URL + '/study/writing/', {
+        const response = await axios.get(process.env.REACT_APP_API_URL + '/study/writing/', {
             headers: {
                 'Authorization': `Token ${token}`,
             }
-        }).then(response => {
-            if (response.status === 200) writingCheck = response.data.quiz_words;
-        })
-        .catch(error => {
-            writingCheck = null;
         });
+        if (response.status === 200) writingCheck = response.data.quiz_words;
 
         if (writingCheck === null) {
             setStep(-1);

@@ -19,6 +19,7 @@ const Main = () => {
     const [quizId, setQuizId] = useState(0);
     const [word, setWord] = useState('');
     const [quiz, setQuiz] = useState({});
+    const [correctAnswer, setCorrectAnswer] = useState('');
     const [messages, setMessages] = useState([
         {
             text: `어서오세요.\n생성형 AI를 통한 문해력 향상 학습 서비스에 입장하셨습니다.`,
@@ -91,7 +92,13 @@ const Main = () => {
         }).then(response => {
             if (response.status === 200) {
                 setQuizId(response.data.quiz_id);
-                setQuiz(JSON.parse(response.data.quiz).questions[0]);
+                const tmpQuiz = JSON.parse(response.data.quiz).questions[0];
+                setQuiz(tmpQuiz);
+                for (let i = 0; i < tmpQuiz.answers.length; i++) {
+                    if (tmpQuiz.answers[i].correct === true) {
+                        setCorrectAnswer(tmpQuiz.answers[i].answer);
+                    }
+                }
                 setWord(response.data.word);
                 setMessages(JSON.parse(response.data.chat_log));
                 setStep(JSON.parse(response.data.chat_log)[JSON.parse(response.data.chat_log).length - 1].step);
@@ -128,6 +135,8 @@ const Main = () => {
                         quizId={quizId}
                         word={word}
                         quiz={quiz}
+                        correctAnswer={correctAnswer}
+                        setCorrectAnswer={setCorrectAnswer}
                         messages={messages}
                         setMessages={setMessages}
                         messageFormRef={messageFormRef}

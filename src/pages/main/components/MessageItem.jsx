@@ -17,17 +17,19 @@ const MessageItem = ({ message, step, setStep, writingWords, setWritingWords }) 
     const imgRef = useRef();
 
     useEffect(() => {
-        axios.get(process.env.REACT_APP_API_URL + '/study/writing/', {
-            headers: {
-                'Authorization': `Token ${token}`,
-                'Content-Type': 'multipart/form-data'
-            }
-        }).then(response => {
-            if (response.status === 200) return setRecentLearnedWords(response.data.quiz_words);
-        }).catch(error => {
-            console.error(error);
-        });
-    }, []);
+        if (step === 7) {
+            axios.get(process.env.REACT_APP_API_URL + '/study/writing/', {
+                headers: {
+                    'Authorization': `Token ${token}`,
+                    'Content-Type': 'multipart/form-data'
+                }
+            }).then(response => {
+                if (response.status === 200) return setRecentLearnedWords(response.data.quiz_words);
+            }).catch(error => {
+                console.error(error);
+            });
+        }
+    }, [step]);
 
     useEffect(() => {
         if (writingWords.length >= 2) setDisabled(false);
