@@ -13,6 +13,10 @@ function Article() {
   const onCommentHandler = (e) => {
     setWriteComment(e.currentTarget.value);
   };
+  const [newComment, setNewComment] = useState('');
+  const onNewCommentHandler = (e) => {
+    setNewComment(e.currentTarget.value);
+  };
   const [editing, setEditing] = useState({});
 
     useEffect(() => {
@@ -107,10 +111,10 @@ function Article() {
     return modalOpenStates[commentId] || false;
   };
 
-  const onUpdateCommentHandler = async (postId, commentId) => {
+  const onUpdateSubmitHandler = async (postId, commentId) => {
     const url = `http://127.0.0.1:8000/board/${postId}/comments/${commentId}/`;
     let req = {
-      comment: editing,
+      comment: newComment,
     };
     try {
         const response = await axios.put(url, req, {
@@ -171,7 +175,8 @@ function Article() {
           {editing[comment.comment_id] ? (
             <Textarea
               variant="bordered"
-              defaultValue={comment.comment}
+              value={newComment}
+              onChange={onNewCommentHandler}
               className="max-w"
             />
           ) : (
@@ -188,11 +193,11 @@ function Article() {
             <>
               {editing[comment.comment_id] ? (
                 <>
-                  <span className="user" style={{color: '#6B7270'}} onClick={() => setEditing({...editing, [comment.comment_id]: false})}>취소</span>
-                  <span className="user" style={{color: '#6B7270', paddingRight:'10px', paddingLeft:'10px'}} onClick={() => onUpdateCommentHandler(postId, comment.comment_id)}>수정</span>  
+                  <span className="user" style={{color: '#6B7270', }} onClick={() => setEditing({...editing, [comment.comment_id]: false})}>취소</span>
+                  <span className="user" style={{color: '#6B7270', paddingLeft:'10px'}} onClick={() => onUpdateSubmitHandler(postId, comment.comment_id)}>수정</span>  
                 </>
               ) : (
-                <span className="user" style={{color: '#6B7270'}} onClick={() => setEditing({...editing, [comment.comment_id]: true})}>수정</span>
+                <span className="user" style={{color: '#6B7270'}} onClick={() => {setNewComment(comment.comment); setEditing({...editing, [comment.comment_id]: true})}}>수정</span>
               )}
               <span onClick={() => openModal(comment.comment_id)} className="user" style={{color: '#6B7270', paddingRight:'10px', paddingLeft:'10px'}}>삭제</span>  
               <Modal isOpen={isModalOpen(comment.comment_id)} onOpenChange={() => closeModal(comment.comment_id)} backdrop="Transparent">
