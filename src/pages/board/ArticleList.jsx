@@ -55,7 +55,7 @@ function ArticleList() {
                                 auto
                                 color="secondary"
                                 onClick={() => {
-                                    // 글쓰기 페이지로 이동
+                                    nav('/board/new')
                                 }}
                             >
                                 글 작성
