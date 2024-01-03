@@ -1,10 +1,13 @@
 import React, { useState, useEffect } from "react";
-import {Modal, ModalContent, ModalHeader, ModalBody, ModalFooter, Button, Input, Textarea, User } from "@nextui-org/react";
-import { useParams } from "react-router-dom";
+import {Modal, ModalContent, ModalHeader, ModalBody, ModalFooter, Button, Textarea, User, useDisclosure } from "@nextui-org/react";
+import { useParams, useNavigate } from "react-router-dom";
 import axios from 'axios';
+import MDEditor from '@uiw/react-md-editor';
+import rehypeSanitize from "rehype-sanitize";
 
 function Article() {
   const {postId} = useParams();
+  const nav = useNavigate();
   const token = sessionStorage.getItem('aivle19_token')
   const loginUser = sessionStorage.getItem('aivle19_username')
   const [articleData, setArticleData] = useState([]);
@@ -130,8 +133,25 @@ function Article() {
     }
   }
 
+  const onDeleteArticleHandler = async (e) => {
+    e.preventDefault()
+    const url = `http://127.0.0.1:8000/board/${postId}/`;
+    try {
+        const response = await axios.delete(url, {
+          headers: {
+            'Authorization': `Token ${token}`
+        }
+        });
+        nav('/board');
+    } catch (error) {
+        console.error(error);
+    }
+  }
+  const {isOpen, onOpen, onOpenChange} = useDisclosure();
+
+
   return (
-    <div style={{padding:'63px', paddingLeft:'270px', paddingRight:'270px'}}>
+    <div data-color-mode="light" style={{padding:'63px', paddingLeft:'270px', paddingRight:'270px'}}>
       <div style={{paddingBottom:'63px'}}>
         <div>
           <h1 style={{fontSize: "3em", fontWeight: 'bold'}}>{articleData.title}</h1>
@@ -140,10 +160,52 @@ function Article() {
         <span className="user">{articleData.user}</span>
         <span> · </span>
         <span>{new Date(articleData.created_at).toLocaleString()}</span>
+        <div style={{ float: 'right' }}>
+        {loginUser === articleData.user && (
+          <>
+          <span onClick={() => nav('/board/update')} className="user" style={{color: '#6B7270', paddingRight: '10px', fontSize: '0.9em'}}>수정</span>
+          <>
+          <span onClick={onOpen} className="user" style={{color: '#6B7270', fontSize: '0.9em'}}>삭제</span>
+          <Modal isOpen={isOpen} onOpenChange={onOpenChange} backdrop="Transparent">
+            <ModalContent>
+              {(onClose) => (
+                <>
+                  <ModalHeader className="flex flex-col gap-1">게시물 삭제</ModalHeader>
+                  <ModalBody>
+                    <p> 
+                      게시물을 삭제하시겠습니까?
+                    </p>
+                  </ModalBody>
+                  <ModalFooter>
+                    <Button className='rounded-md' color="danger" variant="light" onPress={onClose}>
+                      닫기
+                    </Button>
+                    <Button
+                    className="rounded-md bg-indigo-600 px-3 py-2 text-sm font-semibold text-white shadow-sm hover:bg-indigo-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600"
+                    onClick={onDeleteArticleHandler} 
+                    type='submit' 
+                    onPress={onClose}>
+                      삭제
+                    </Button>
+                  </ModalFooter>
+                </>
+              )}
+            </ModalContent>
+      </Modal>
+      </>
+          </>
+        )}
+        </div>
       </div>
 
       <div style={{paddingBottom: '55px'}}>
-        {articleData.content}
+        <MDEditor.Markdown 
+          source={articleData.content} 
+          style={{whiteSpace: 'pre-wrap'}}
+          previewOptions={{
+            rehypePlugins: [[rehypeSanitize]],
+          }} 
+        />
       </div>
       <hr />
 
