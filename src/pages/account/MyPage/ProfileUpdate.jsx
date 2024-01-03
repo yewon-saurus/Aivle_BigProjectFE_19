@@ -2,6 +2,8 @@ import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import { useNavigate } from 'react-router-dom';
 import Sidebar2 from '../../../components/SideBar2'
+import {Modal, ModalContent, ModalHeader, ModalBody, ModalFooter, Button, useDisclosure, Input } from "@nextui-org/react";
+
 
 function ProfileUpdate() {
     const [userData, setUserData] = useState(null);
@@ -67,7 +69,8 @@ function ProfileUpdate() {
 
         }
 
-
+  const {isOpen, onOpen, onOpenChange} = useDisclosure();
+    
   return (
     <div>
         <Sidebar2 />
@@ -123,17 +126,45 @@ function ProfileUpdate() {
                     </div>
                     </div>
 
-                <div className="mt-6 flex items-center justify-end gap-x-6">
-                    <button onClick={() => nav('/profile')} type="button" className="text-sm font-semibold leading-6 text-gray-900">
+                    <div className="mt-3 flex items-center justify-end gap-x-2">
+                        <Button onClick={() => nav('/profile')} type="button" className="rounded-md text-sm font-semibold leading-6 text-gray-900">
                         취소
-                    </button>
-                    <button
-                    onClick={onSubmitHandler}
-                    type="submit"
-                    className="rounded-md bg-indigo-600 px-3 py-2 text-sm font-semibold text-white shadow-sm hover:bg-indigo-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600"
-                    >
-                        저장
-                    </button>
+                        </Button>
+                        <>
+                        <Button
+                        type='button'
+                        onPress={onOpen}
+                        className="rounded-md bg-indigo-600 px-3 py-2 text-sm font-semibold text-white shadow-sm hover:bg-indigo-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600"
+                        >
+                        수정
+                        </Button>
+                        <Modal isOpen={isOpen} onOpenChange={onOpenChange}>
+                            <ModalContent>
+                                {(onClose) => (
+                            <>
+                                    <ModalHeader className="flex flex-col gap-1">프로필 수정</ModalHeader>
+                                    <ModalBody>
+                                    <p> 
+                                        변경된 내용을 저장하시겠습니까?
+                                    </p>
+                                    </ModalBody>
+                                    <ModalFooter>
+                                        <Button className='rounded-md' color="danger" variant="light" onPress={onClose}>
+                                            닫기
+                                        </Button>
+                                        <Button 
+                                        className="rounded-md bg-indigo-600 px-3 py-2 text-sm font-semibold text-white shadow-sm hover:bg-indigo-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600"
+                                        onClick={onSubmitHandler} 
+                                        type='submit' 
+                                        onPress={onClose}>
+                                            저장
+                                        </Button>
+                                    </ModalFooter>
+                                </>
+                            )}
+                            </ModalContent>
+                        </Modal>
+                    </>
                 </div>
             </form>
         </div>

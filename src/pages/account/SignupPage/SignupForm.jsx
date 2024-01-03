@@ -72,8 +72,6 @@ function SignupForm() {
             } else if ('username' in error.response.data) {
                 alert("이미 사용 중인 아이디 입니다.")
             }
-
-            
       };
     }
     return (
@@ -132,8 +130,8 @@ function SignupForm() {
                 {!passwordsMatch && <p className='text-sm font-semibold' style={{ color: 'red' }}>비밀번호가 일치하지 않습니다.</p>}
                 </div>
             </div>
-            <button onClick={onSubmitHandler} className='py-2 w-full px-3 rounded-md text-white font-semibold bg-indigo-600 border border-indigo-600 hover:text-indigo-600 hover:bg-white'>
-            회원가입
+            <button onClick={onSubmitHandler} disabled={!passwordsMatch} className='py-2 w-full px-3 rounded-md text-white font-semibold bg-indigo-600 border border-indigo-600 hover:text-indigo-600 hover:bg-white'>
+                회원가입
             </button> 
             </form>
 

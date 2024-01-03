@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import axios from 'axios';
 import Sidebar2 from '../../../components/SideBar2';
-import {Input} from "@nextui-org/react";
+import {Modal, ModalContent, ModalHeader, ModalBody, ModalFooter, Button, useDisclosure, Input } from "@nextui-org/react";
 
 
 function InfoUpdate() {
@@ -85,6 +85,8 @@ function InfoUpdate() {
               alert("현재 비밀번호를 확인해 주세요.")
           });
     };
+  
+  const {isOpen, onOpen, onOpenChange} = useDisclosure();
 
   return (
     <div>
@@ -167,17 +169,45 @@ function InfoUpdate() {
 
         </div>
 
-      <div className="mt-6 flex items-center justify-end gap-x-6">
-        <button onClick={() => nav('/myinfo')} type="button" className="text-sm font-semibold leading-6 text-gray-900">
+      <div className="mt-3 flex items-center justify-end gap-x-2">
+        <Button onClick={() => nav('/myinfo')} type="button" className="rounded-md text-sm font-semibold leading-6 text-gray-900">
           취소
-        </button>
-        <button
-          onClick={onSubmitHandler}
-          type="submit"
+        </Button>
+        <>
+        <Button
+          type='button'
+          onPress={onOpen}
           className="rounded-md bg-indigo-600 px-3 py-2 text-sm font-semibold text-white shadow-sm hover:bg-indigo-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600"
         >
-          저장
-        </button>
+          수정
+        </Button>
+        <Modal isOpen={isOpen} onOpenChange={onOpenChange}>
+        <ModalContent>
+          {(onClose) => (
+            <>
+              <ModalHeader className="flex flex-col gap-1">회원 정보 수정</ModalHeader>
+              <ModalBody>
+                <p> 
+                  변경된 내용을 저장하시겠습니까?
+                </p>
+              </ModalBody>
+              <ModalFooter>
+                <Button className='rounded-md' color="danger" variant="light" onPress={onClose}>
+                  닫기
+                </Button>
+                <Button
+                className="rounded-md bg-indigo-600 px-3 py-2 text-sm font-semibold text-white shadow-sm hover:bg-indigo-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600"
+                onClick={onSubmitHandler} 
+                type='submit' 
+                onPress={onClose}>
+                  저장
+                </Button>
+              </ModalFooter>
+            </>
+          )}
+        </ModalContent>
+      </Modal>
+      </>
       </div>
     </form>
       </div>
