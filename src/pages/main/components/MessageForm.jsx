@@ -174,7 +174,7 @@ const MessageForm = ({ quizId, word, quiz, correctAnswer, setCorrectAnswer, mess
         setAiIsTalking(true);
         addAiMessage(`학습은 (1)쓰기, (2)읽기 순서로 이루어 집니다.`);
         await delay();
-        addAiMessage(`'쓰기' 과정을 진행합니다. 다음 주어지는 문장을 수기로 작성해 보시고, 사진을 업로드 해주세요.`);
+        addAiMessage(`'쓰기' 과정을 진행합니다. 다음 주어지는 문장을 수기로 작성해 보시고, 사진을 업로드 해주세요.\n\n(문장 생성에 5 ~ 10초가량 시간이 소요됩니다.)`);
         const response = generateSentence();
         if ((await response).status === 200) {
             setStudySentence((await response).data);
@@ -200,7 +200,7 @@ const MessageForm = ({ quizId, word, quiz, correctAnswer, setCorrectAnswer, mess
         await delay();
         addAiMessage(`확인되었습니다. 훌륭하게 수행하셨군요!`);
         await delay();
-        addAiMessage(`다음은 '읽기' 과정을 진행합니다. 다음 주어지는 문장을 소리 내어 읽어보세요.`);
+        addAiMessage(`다음은 '읽기' 과정을 진행합니다. 다음 주어지는 문장을 소리 내어 읽어보세요.\n\n(문장 생성에 5 ~ 10초가량 시간이 소요됩니다.)`);
         const response = generateSentence();
         if ((await response).status === 200) {
             setStudySentence((await response).data);
@@ -240,8 +240,11 @@ const MessageForm = ({ quizId, word, quiz, correctAnswer, setCorrectAnswer, mess
             headers: {
                 'Authorization': `Token ${token}`,
             }
+        }).then(response => {
+            if (response.status === 200) writingCheck = response.data.quiz_words;
+        }).catch(error => {
+            writingCheck = null;
         });
-        if (response.status === 200) writingCheck = response.data.quiz_words;
 
         if (writingCheck === null) {
             setStep(-1);
