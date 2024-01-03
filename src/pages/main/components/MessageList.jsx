@@ -3,7 +3,7 @@ import { MessageItem } from './';
 import axios from 'axios';
 import Typing from 'react-kr-typing-anim';
 
-const MessageList = ({ token, quizId, messages, scrollRef, step, setStep, writingWords, setWritingWords }) => {
+const MessageList = ({ token, quizId, messages, setMessages, scrollRef, step, setStep, setAiIsTalking, writingWords, setWritingWords }) => {
     useEffect(() => {
         if (scrollRef.current) scrollRef.current.scrollIntoView({behavior: "smooth", block: "end"});
         updateChatLog();
@@ -30,7 +30,7 @@ const MessageList = ({ token, quizId, messages, scrollRef, step, setStep, writin
         <div className="messages-list">
             {messages.map((message) =>
                 <div className={`message ${message.isUser ? 'user-message' : 'ai-message'}`}>
-                    <MessageItem message={message} step={step} setStep={setStep} writingWords={writingWords} setWritingWords={setWritingWords} />
+                    <MessageItem message={message} setMessages={setMessages} quizId={quizId} step={step} setStep={setStep} setAiIsTalking={setAiIsTalking} writingWords={writingWords} setWritingWords={setWritingWords} />
                     <div className='relative -bottom-5' ref={scrollRef}></div>
                 </div>
             )}

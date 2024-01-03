@@ -19,29 +19,32 @@ const MessageForm = ({ quizId, word, quiz, correctAnswer, setCorrectAnswer, mess
     useEffect(() => {
         switch (step) {
             // Step 1: 퀴즈 풀기, Step 2: 퀴즈 정답자 안내 단계, Step 3: 쓰기, Step 4: 소리내어 읽기, 5: 읽기 끝, 6: 작문 할 건지 묻기, 7: 작문(단어 선택), 8: 작문(본격)
-            case 1:
+            case 10:
                 startQuiz();
                 break;
-            case 2:
+            case 20:
                 guideToCorrect();
                 break;
-            case 3:
+            case 30:
                 studyHandWriting();
                 break;
-            case 4:
+            case 31:
+                studyHandWriting2();
+                break;
+            case 40:
                 studyReading();
                 break;
-            case 5:
+            case 50:
                 endOfReading();
                 break;
-            case 6:
+            case 60:
                 setUpdateSolvedDateDidMount(true);
                 isItTurnToWriting();
                 break;
-            case 7:
+            case 70:
                 studyWriting();
                 break;
-            case 8:
+            case 71:
                 studyWriting2();
                 break;
             case -1 :
@@ -88,22 +91,22 @@ const MessageForm = ({ quizId, word, quiz, correctAnswer, setCorrectAnswer, mess
         setMessage('');
     };
     
-    const addAiMessage = (aiSay, currStep=step, isTyping=false) => {
+    const addAiMessage = (aiSay, currStep=step) => {
         setMessages((prevMessages) => [
             ...prevMessages, // 이전 메시지들
-            { text: `${aiSay}`, isUser: false, id: Date.now(), step: currStep, isTyping: isTyping},
+            { text: `${aiSay}`, isUser: false, id: Date.now(), step: currStep},
         ]);
     }
     
     const userInputJudge = async () => {
-        if (step === 0 && message === word) setStep(1);
-        else if (step === 1) correctJudge();
-        else if (step === 2) {
+        if (step === 0 && message === word) setStep(10);
+        else if (step === 10) correctJudge();
+        else if (step === 20) {
             if (message === word) {
-                setStep(3);
+                setStep(30);
             }
             else {
-                setStep(6);
+                setStep(60);
             }
         }
         else if (step === 8) examineWriting();
@@ -130,7 +133,7 @@ const MessageForm = ({ quizId, word, quiz, correctAnswer, setCorrectAnswer, mess
         switch (message) {
             case correctAnswer:
                 // 사용자가 원한다면 -> 학습 사이클 진행
-                setStep(2);
+                setStep(20);
                 break;
             default:
                 // 오답이었음과 정답이 뭐였는지 공개한 후, 학습 사이클 진행
@@ -142,7 +145,7 @@ const MessageForm = ({ quizId, word, quiz, correctAnswer, setCorrectAnswer, mess
                 addAiMessage(`퀴즈의 정답을 맞히지 못한 단어에 대해서는 쓰기/읽기 학습을 수행해야 합니다.`);
                 await delay();
                 setAiIsTalking(false);
-                setStep(3);
+                setStep(30);
             };
         }
     
@@ -174,19 +177,29 @@ const MessageForm = ({ quizId, word, quiz, correctAnswer, setCorrectAnswer, mess
         setAiIsTalking(true);
         addAiMessage(`학습은 (1)쓰기, (2)읽기 순서로 이루어 집니다.`);
         await delay();
-        addAiMessage(`'쓰기' 과정을 진행합니다. 다음 주어지는 문장을 수기로 작성해 보시고, 사진을 업로드 해주세요.\n\n(문장 생성에 5 ~ 10초가량 시간이 소요됩니다.)`);
+        addAiMessage(`'쓰기' 과정을 진행합니다. 다음 주어지는 문장을 수기로 작성해 보시고, 사진을 업로드 해주세요.\n\n(※ 문장 생성에 5 ~ 10초가량 시간이 소요됩니다.)`);
         const response = generateSentence();
         if ((await response).status === 200) {
             setStudySentence((await response).data);
             addAiMessage(`📝 "${(await response).data.sentence}"`);
         }
-        await delay();
         setAiIsTalking(false);
         
         setMessages((prevMessages) => [
             ...prevMessages,
             { isUser: false, mode: 'handwriting', id: Date.now(), step: step },
         ]);
+    }
+
+    const studyHandWriting2 = async () => {
+        addAiMessage(`사진에서 해당 문장을 찾지 못했습니다. 재작성하거나 재촬영 후 재업로드 해주세요.`);
+        setAiIsTalking(false);
+
+        setMessages((prevMessages) => [
+            ...prevMessages,
+            { isUser: false, mode: 'handwriting', id: Date.now(), step: step },
+        ]);
+        setStep(39);
     }
     
     const studyReading = async () => {
@@ -195,12 +208,9 @@ const MessageForm = ({ quizId, word, quiz, correctAnswer, setCorrectAnswer, mess
             { text: `제출 완료`, isUser: true, id: Date.now(), step: step },
         ]);
 
-        setAiIsTalking(true);
-        addAiMessage(`확인 중입니다.`);
-        await delay();
         addAiMessage(`확인되었습니다. 훌륭하게 수행하셨군요!`);
         await delay();
-        addAiMessage(`다음은 '읽기' 과정을 진행합니다. 다음 주어지는 문장을 소리 내어 읽어보세요.\n\n(문장 생성에 5 ~ 10초가량 시간이 소요됩니다.)`);
+        addAiMessage(`다음은 '읽기' 과정을 진행합니다. 다음 주어지는 문장을 소리 내어 읽어보세요.\n\n(※ 문장 생성에 5 ~ 10초가량 시간이 소요됩니다.)`);
         const response = generateSentence();
         if ((await response).status === 200) {
             setStudySentence((await response).data);
@@ -229,7 +239,7 @@ const MessageForm = ({ quizId, word, quiz, correctAnswer, setCorrectAnswer, mess
         addAiMessage(`👏`);
         await delay();
         setAiIsTalking(false);
-        setStep(6);
+        setStep(60);
     }
 
     const isItTurnToWriting = async () => {

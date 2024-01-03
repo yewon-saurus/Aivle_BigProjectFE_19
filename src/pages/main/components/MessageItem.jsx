@@ -1,7 +1,7 @@
 import axios from 'axios';
 import React, { useState, useRef, useEffect } from 'react';
 
-const MessageItem = ({ message, step, setStep, writingWords, setWritingWords }) => {
+const MessageItem = ({ message, setMessages, quizId, step, setStep, setAiIsTalking, writingWords, setWritingWords }) => {
     const token = sessionStorage.getItem('aivle19_token');
 
     const [imgFile, setImageFile] = useState("");
@@ -47,13 +47,33 @@ const MessageItem = ({ message, step, setStep, writingWords, setWritingWords }) 
         // TODO: 이미지 파일도 불러올 수 있도록, 서버에 이미지 파일 전송 및 저장되도록 처리하면 더 아름다울 것 같다.
     };
     
-    const handleSubmitImgFile = () => {
-        setStep(4);
+    const handleSubmitImgFile = async () => {
         // TODO: OCR 모듈 request, response에 따라 재시도 하도록 유도하거나 통과 처리 할 수 있도록 조치할 것
+        setAiIsTalking(true);
+        setMessages((prevMessages) => [
+            ...prevMessages,
+            { text: `확인 중입니다.`, isUser: false, id: Date.now(), step: step},
+        ]);
+        const response = checkWithOCR();
+        if ((await response).status === 200 || (await response).status === 201) {
+            setStep(40);
+            // TODO: 확인 후, 채점 결과 좋으면 setStep(40), 채점 결과 별로면 setStep(31)
+        }
+    }
+
+    const checkWithOCR = async () => {
+        const formData = new FormData();
+        formData.append('image', imgRef.current.files[0]);
+        return await axios.post(process.env.REACT_APP_API_URL + '/study/quiz/' + quizId + '/ocr/', formData, {
+            headers: {
+                'Authorization': `Token ${token}`,
+                'Content-Type': 'multipart/form-data'
+            }
+        });
     }
 
     const handleSubmitAudioFile = () => {
-        setStep(5);
+        setStep(50);
         // TODO: TTS 모듈 request, response에 따라 재시도 하도록 유도하거나 통과 처리 할 수 있도록 조치할 것
     }
     
@@ -159,7 +179,7 @@ const MessageItem = ({ message, step, setStep, writingWords, setWritingWords }) 
                     onChange={handleSaveImgFile}
                     ref={imgRef}
                 />
-                { imgFile && step === 3 && <button className='text-sm mt-2 w-[100%] p-2 bg-[var(--color-primary-500)] hover:bg-[var(--color-primary-600)] transition-colors text-white rounded-full' type='button' onClick={handleSubmitImgFile}>제출하기</button>}
+                { imgFile && (step === 30 || step === 31 || step === 39) && <button className='text-sm mt-2 w-[100%] p-2 bg-[var(--color-primary-500)] hover:bg-[var(--color-primary-600)] transition-colors text-white rounded-full' type='button' onClick={handleSubmitImgFile}>제출하기</button>}
             </form>
         );
     }
@@ -172,7 +192,7 @@ const MessageItem = ({ message, step, setStep, writingWords, setWritingWords }) 
                 <br></br>
                 <button className='text-sm w-[100%] p-2 border border-[var(--color-primary-500)] rounded-full' onClick={onRec ? onRecAudio : offRecAudio}>{onRec ? '🎤 말하기(녹음 시작)' : '녹음 중지'}</button>
                 <button className={`text-sm mt-2 w-[100%] p-2 border border-[var(--color-primary-500)] rounded-full transition-colors ${disabled ? 'bg-gray-200 text-white border-0' : ''}`} onClick={audioPLay} disabled={disabled}>내 녹음 들어보기</button>
-                {audioUrl && step === 4 && <button className='text-sm mt-2 w-[100%] p-2 bg-[var(--color-primary-500)] hover:bg-[var(--color-primary-600)] transition-colors text-white rounded-full' type='button' onClick={handleSubmitAudioFile}>제출하기</button>}
+                {audioUrl && step === 40 && <button className='text-sm mt-2 w-[100%] p-2 bg-[var(--color-primary-500)] hover:bg-[var(--color-primary-600)] transition-colors text-white rounded-full' type='button' onClick={handleSubmitAudioFile}>제출하기</button>}
             </div>
         );
     }
@@ -183,9 +203,9 @@ const MessageItem = ({ message, step, setStep, writingWords, setWritingWords }) 
                 <br></br>
                 <div>효과적인 작문 연습을 하려면 규칙적인 루틴을 설정하고 수행하는 것이 중요합니다.</div>
                 {
-                    step === 6 && 
+                    step === 60 && 
                     <div>
-                        <button className='text-sm mt-2 w-[100%] p-2 bg-[var(--color-primary-500)] hover:bg-[var(--color-primary-600)] transition-colors text-white rounded-full' onClick={() => {setStep(7);}}>네, 작문하기를 시작합니다.</button>
+                        <button className='text-sm mt-2 w-[100%] p-2 bg-[var(--color-primary-500)] hover:bg-[var(--color-primary-600)] transition-colors text-white rounded-full' onClick={() => {setStep(70);}}>네, 작문하기를 시작합니다.</button>
                         <button className='text-sm mt-2 w-[100%] p-2 bg-[var(--color-primary-500)] hover:bg-[var(--color-primary-600)] transition-colors text-white rounded-full' onClick={() => {setStep(-1);}}>아니오, 오늘은 이만 마치겠습니다.</button>
                     </div>
                 }
@@ -205,7 +225,7 @@ const MessageItem = ({ message, step, setStep, writingWords, setWritingWords }) 
                         </div>
                     )
                 }
-                {step === 7 && <button className={`text-sm mt-6 w-[100%] p-2 bg-[var(--color-primary-500)] hover:bg-[var(--color-primary-600)] transition-colors text-white rounded-full ${disabled ? 'bg-gray-200 text-white border-0' : ''}`} type='button' onClick={() => {setStep(8);}} disabled={disabled}>선택 완료</button>}
+                {step === 70 && <button className={`text-sm mt-6 w-[100%] p-2 bg-[var(--color-primary-500)] hover:bg-[var(--color-primary-600)] transition-colors text-white rounded-full ${disabled ? 'bg-gray-200 text-white border-0' : ''}`} type='button' onClick={() => {setStep(71);}} disabled={disabled}>선택 완료</button>}
             </form>
         );
     }
