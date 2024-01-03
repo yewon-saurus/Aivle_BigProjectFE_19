@@ -149,6 +149,10 @@ const MessageItem = ({ message, setMessages, quizId, step, setStep, setAiIsTalki
             URL.createObjectURL(audioUrl); // 출력된 링크에서 녹음된 오디오 확인 가능
         }
         setDisabled(false);
+
+        return () => { // 리소스 해제
+            URL.revokeObjectURL(audioUrl);
+        }
         
         // File 생성자를 사용해 파일로 변환
         // const sound = new File([audioUrl], "soundBlob", {
@@ -166,7 +170,17 @@ const MessageItem = ({ message, setMessages, quizId, step, setStep, setAiIsTalki
         audio.play();
     }
 
-    if (message.mode === 'handwriting') {
+    if (message.mode === 'tts') {
+        return (
+            <div>
+                {message.text}
+                <div>
+                    <audio className='w-[100%]' src={message.audioUrl} controls />
+                </div>
+            </div>
+        );
+    }
+    else if (message.mode === 'handwriting') {
         return (
             <form>
                 <label className='' htmlFor='handwriting'>(모든 타입의 이미지 파일이 허용됩니다.)</label>
