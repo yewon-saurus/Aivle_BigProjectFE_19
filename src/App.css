@@ -28,6 +28,26 @@
   color: #61dafb;
 }
 
+/* 게시판에 이용 - .cell-hover, .cell-hover:hover, .user, .user:hover */
+.cell-hover {
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+}
+
+.cell-hover:hover {
+  background-color: #f5f5f5;
+  border-radius: 30px;
+}
+
+.user {
+  cursor: pointer;
+  font-weight: bold;
+}
+
+.user:hover {
+  text-decoration: underline;
+}
+
 @keyframes App-logo-spin {
   from {
     transform: rotate(0deg);
