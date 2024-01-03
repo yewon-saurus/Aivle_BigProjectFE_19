@@ -1,11 +1,53 @@
 import style from "./style.css";
-import React, { useRef } from 'react';
+import React, { useRef, useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 
 const Info = () => {
     const nav = useNavigate();
 
     const mainImgContainerRef = useRef();
+    
+    window.onload = function() {
+        const elm = document.querySelectorAll('.section');
+        const elmCount = elm.length;
+        elm.forEach(function(item, index) {
+          item.addEventListener('mousewheel', function(event){
+            event.preventDefault();
+            var delta = 0;
+  
+            if (!event) event = window.event;
+            if (event.wheelDelta) {
+                delta = event.wheelDelta / 120;
+                if (window.opera) delta = -delta;
+            } 
+            else if (event.detail)
+                delta = -event.detail / 3;
+  
+            var moveTop = window.scrollY;
+            var elmSelector = elm[index];
+  
+            // wheel down : move to next section
+            if (delta < 0) {
+              if (elmSelector !== elmCount-1) {
+                try{
+                  moveTop = window.pageYOffset + elmSelector.nextElementSibling.getBoundingClientRect().top;
+                } catch (e) { }
+              }
+            }
+            // wheel up : move to previous section
+            else {
+              if (elmSelector !== 0) {
+                try {
+                  moveTop = window.pageYOffset + elmSelector.previousElementSibling.getBoundingClientRect().top;
+                } catch (e) { }
+              }
+            }
+  
+            const body = document.querySelector('html');
+            window.scrollTo({top:moveTop, left:0, behavior:'smooth'});
+          });
+        });
+      }
 
     const handleMouseMove = (e) => {
         var x = e.nativeEvent.offsetX;
@@ -13,17 +55,16 @@ const Info = () => {
         var rotateY = x >= 300 ? -1/100 * x : 1/100 * x;
         var rotateX = y >= 300 ? 1/100 * y : -1/100 * y;
 
-        // TODO: 갑자기 에러남
-        // mainImgContainerRef.current.style = `transform : perspective(350px) rotateX(${rotateX}deg) rotateY(${rotateY}deg);`;
+        if (mainImgContainerRef.current) mainImgContainerRef.current.style = `transform : perspective(350px) rotateX(${rotateX}deg) rotateY(${rotateY}deg);`;
     }
 
     const handleMouseOut = () => {
-        // mainImgContainerRef.current.style = 'transform : perspective(350px) rotateY(0deg) rotateX(0deg);'
+        if (mainImgContainerRef.current) mainImgContainerRef.current.style = 'transform : perspective(350px) rotateY(0deg) rotateX(0deg);'
     }
 
     return (
         <div>
-            <div className='w-full h-[100vh] flex justify-center items-center lg:gap-32 pt-[63px] bg-[var(--color-primary-500)]'>
+            <div className='section w-full h-[100vh] flex justify-center items-center lg:gap-32 pt-[63px] bg-[var(--color-primary-500)]'>
                 <div className="text-white lg:p-0 px-4 py-10">
                     <div className='introduce'>
                         <div className="lg:text-6xl text-4xl">LiQuest,</div>
@@ -37,12 +78,12 @@ const Info = () => {
                     <button className='text-lg mt-10 py-4 bg-[var(--color-primary-700)] hover:bg-[var(--color-primary-900)] w-[200px] hover:w-full transition-all rounded-full' type='button' onClick={() => {nav('/login');}}>시작하기</button>
                 </div>
                 <div ref={mainImgContainerRef} onMouseMove={handleMouseMove} onMouseOut={handleMouseOut} className='rounded-full transition-all'>
-                    <div className='info-graphic lg:w-[600px] lg:h-[600px] md:w-[400px] rounded-full' />
+                    <div className='info-graphic lg:w-[600px] lg:h-[600px] md:w-[400px] rounded-full hover:w-[620px] hover:h-[620px] transition-all' />
                     {/* <a className='relative bottom-[4em] text-xs'
                         href="https://kr.freepik.com/free-vector/college-project-concept-illustration_35020245.htm#query=literacy&position=1&from_view=search&track=sph&uuid=a56fde11-07fb-45d7-bc27-b79b331cc0c1">출처 Freepik 작가 storyset</a> */}
                 </div>
             </div>
-            <div className='w-full h-[100vh] lg:flex justify-center items-center lg:gap-10 pt-[63px] bg-[var(--color-primary-400)]'>
+            <div className='section w-full h-[100vh] lg:flex justify-center items-center lg:gap-10 bg-[var(--color-primary-400)]'>
                 <div>단어 퀴즈</div>
                 <div>단어 연습장(쓰기/읽기)</div>
                 <div>작문 연습</div>
