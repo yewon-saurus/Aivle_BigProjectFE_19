@@ -18,30 +18,35 @@ const MessageForm = ({ quizId, word, quiz, correctAnswer, setCorrectAnswer, mess
 
     useEffect(() => {
         switch (step) {
-            // Step 1: 퀴즈 풀기, Step 2: 퀴즈 정답자 안내 단계, Step 3: 쓰기, Step 4: 소리내어 읽기, 5: 읽기 끝, 6: 작문 할 건지 묻기, 7: 작문(단어 선택), 8: 작문(본격)
-            case 1:
+            case 101: // 100: 퀴즈
                 startQuiz();
                 break;
-            case 2:
+            case 102:
                 guideToCorrect();
                 break;
-            case 3:
+            case 201: // 200: 쓰기
                 studyHandWriting();
                 break;
-            case 4:
+            case 202:
+                studyHandWriting2();
+                break;
+            case 301: // 300: 소리내어 읽기
                 studyReading();
                 break;
-            case 5:
+            case 302:
+                studyReading2();
+                break;
+            case 303:
                 endOfReading();
                 break;
-            case 6:
+            case 401: // 400: 작문
                 setUpdateSolvedDateDidMount(true);
                 isItTurnToWriting();
                 break;
-            case 7:
+            case 402:
                 studyWriting();
                 break;
-            case 8:
+            case 403:
                 studyWriting2();
                 break;
             case -1 :
@@ -88,25 +93,25 @@ const MessageForm = ({ quizId, word, quiz, correctAnswer, setCorrectAnswer, mess
         setMessage('');
     };
     
-    const addAiMessage = (aiSay, currStep=step, isTyping=false) => {
+    const addAiMessage = (aiSay, currStep=step) => {
         setMessages((prevMessages) => [
             ...prevMessages, // 이전 메시지들
-            { text: `${aiSay}`, isUser: false, id: Date.now(), step: currStep, isTyping: isTyping},
+            { text: `${aiSay}`, isUser: false, id: Date.now(), step: currStep},
         ]);
     }
     
     const userInputJudge = async () => {
-        if (step === 0 && message === word) setStep(1);
-        else if (step === 1) correctJudge();
-        else if (step === 2) {
+        if (step === 0 && message === word) setStep(101);
+        else if (step === 101) correctJudge();
+        else if (step === 102) {
             if (message === word) {
-                setStep(3);
+                setStep(201);
             }
             else {
-                setStep(6);
+                setStep(401);
             }
         }
-        else if (step === 8) examineWriting();
+        else if (step === 403) examineWriting();
     }
 
     const startQuiz = async () => {
@@ -130,31 +135,31 @@ const MessageForm = ({ quizId, word, quiz, correctAnswer, setCorrectAnswer, mess
         switch (message) {
             case correctAnswer:
                 // 사용자가 원한다면 -> 학습 사이클 진행
-                setStep(2);
+                setStep(102);
                 break;
             default:
                 // 오답이었음과 정답이 뭐였는지 공개한 후, 학습 사이클 진행
                 setAiIsTalking(true);
-                addAiMessage(`오답입니다!\n\n위 문장에서 단어 '${word}'는 '${correctAnswer}'(이)라는 의미로 사용되었습니다.`);
+                addAiMessage(`오답입니다!\n\n위 문장에서 단어 '${word}'는 '${correctAnswer}'라는 의미로 사용되었습니다.`);
                 await delay();
                 addAiMessage(`🥲`);
                 await delay();
                 addAiMessage(`퀴즈의 정답을 맞히지 못한 단어에 대해서는 쓰기/읽기 학습을 수행해야 합니다.`);
                 await delay();
                 setAiIsTalking(false);
-                setStep(3);
+                setStep(201);
             };
         }
     
     const guideToCorrect = async () => {
         setAiIsTalking(true);
-        addAiMessage(`정답입니다!\n\n위 문장에서 단어 '${word}'는 '${correctAnswer}'(이)라는 의미로 사용되었습니다.`);
+        addAiMessage(`정답입니다!\n\n위 문장에서 단어 '${word}'는 '${correctAnswer}'라는 의미로 사용되었습니다.`);
         await delay();
         addAiMessage(`👍`);
         await delay();
         addAiMessage(`정답을 맞힌 퀴즈에 한해서 쓰기/읽기 학습을 건너뛸 수 있습니다.\n\n이대로 학습을 마치시겠습니까?`);
         await delay();
-        addAiMessage(`학습을 마치지 않고 학습을 진행하시겠다면, '${word}'(을)를 재입력해 주세요. 그 외 내용 입력 시 현재 단계에 대한 학습이 종료됩니다.`);
+        addAiMessage(`학습을 마치지 않고 학습을 진행하시겠다면, '${word}'를 재입력해 주세요. 그 외 내용 입력 시 현재 단계에 대한 학습이 종료됩니다.`);
         setAiIsTalking(false);
     }
 
@@ -169,18 +174,51 @@ const MessageForm = ({ quizId, word, quiz, correctAnswer, setCorrectAnswer, mess
             }
         });
     }
+    
+    const textToSpeech = async (text) => {
+        const formData = new FormData();
+        formData.append('text', text);
+        return await axios.post(process.env.REACT_APP_API_URL + '/study/quiz/' + quizId + '/tts/', formData, {
+            responseType: 'blob',
+            headers: {
+                'Authorization': `Token ${token}`,
+            }
+        });
+    }
+
+    const getRecentLearnedWords = async () => {
+        return await axios.get(process.env.REACT_APP_API_URL + '/study/writing/', {
+            headers: {
+                'Authorization': `Token ${token}`,
+                'Content-Type': 'multipart/form-data'
+            }
+        });
+    }
         
     const studyHandWriting = async () => {
         setAiIsTalking(true);
         addAiMessage(`학습은 (1)쓰기, (2)읽기 순서로 이루어 집니다.`);
         await delay();
-        addAiMessage(`'쓰기' 과정을 진행합니다. 다음 주어지는 문장을 수기로 작성해 보시고, 사진을 업로드 해주세요.`);
+        addAiMessage(`'쓰기' 과정을 진행합니다. 다음 주어지는 문장을 수기로 작성해 보시고, 사진을 업로드 해주세요.\n\n(※ 문장 생성에 5 ~ 10초가량 시간이 소요됩니다.)`);
+        
+        // generate Sentence And Provide TTS
         const response = generateSentence();
         if ((await response).status === 200) {
             setStudySentence((await response).data);
-            addAiMessage(`📝 "${(await response).data.sentence}"`);
+            const tmpSentence = (await response).data.sentence;
+
+            // tts 요청
+            const ttsResponse = textToSpeech(tmpSentence);
+            if ((await ttsResponse).status === 200) {
+                const tmpAudioBlob = new Blob([(await ttsResponse).data]);
+                const tmpAudioUrl = URL.createObjectURL(tmpAudioBlob);
+                setMessages((prevMessages) => [
+                    ...prevMessages,
+                    { text: `📝 "${tmpSentence}"`, isUser: false, mode: 'tts', audioUrl: tmpAudioUrl, id: Date.now(), step: step },
+                ]);
+                URL.revokeObjectURL(tmpAudioBlob); // 리소스 해제
+            }
         }
-        await delay();
         setAiIsTalking(false);
         
         setMessages((prevMessages) => [
@@ -188,25 +226,41 @@ const MessageForm = ({ quizId, word, quiz, correctAnswer, setCorrectAnswer, mess
             { isUser: false, mode: 'handwriting', id: Date.now(), step: step },
         ]);
     }
+
+    const studyHandWriting2 = async () => {
+        addAiMessage(`사진에서 해당 문장을 찾지 못했습니다. 재작성하거나 재촬영 후 재업로드 해주세요.`);
+        setAiIsTalking(false);
+
+        setMessages((prevMessages) => [
+            ...prevMessages,
+            { isUser: false, mode: 'handwriting', id: Date.now(), step: step },
+        ]);
+        setStep(200);
+    }
     
     const studyReading = async () => {
-        setMessages((prevMessages) => [
-            ...prevMessages, // 이전 메시지들
-            { text: `제출 완료`, isUser: true, id: Date.now(), step: step },
-        ]);
-
-        setAiIsTalking(true);
-        addAiMessage(`확인 중입니다.`);
-        await delay();
         addAiMessage(`확인되었습니다. 훌륭하게 수행하셨군요!`);
         await delay();
-        addAiMessage(`다음은 '읽기' 과정을 진행합니다. 다음 주어지는 문장을 소리 내어 읽어보세요.`);
+        addAiMessage(`다음은 '읽기' 과정을 진행합니다. 다음 주어지는 문장을 소리 내어 읽어보세요.\n\n(※ 문장 생성에 5 ~ 10초가량 시간이 소요됩니다.)`);
+        
+        // generate Sentence And Provide TTS
         const response = generateSentence();
         if ((await response).status === 200) {
             setStudySentence((await response).data);
-            addAiMessage(`🎙️ "${(await response).data.sentence}"`);
+            const tmpSentence = (await response).data.sentence;
+
+            // tts 요청
+            const ttsResponse = textToSpeech(tmpSentence);
+            if ((await ttsResponse).status === 200) {
+                const tmpAudioBlob = new Blob([(await ttsResponse).data]);
+                const tmpAudioUrl = URL.createObjectURL(tmpAudioBlob);
+                setMessages((prevMessages) => [
+                    ...prevMessages,
+                    { text: `🎙️ "${tmpSentence}"`, isUser: false, mode: 'tts', audioUrl: tmpAudioUrl, id: Date.now(), step: step },
+                ]);
+                URL.revokeObjectURL(tmpAudioBlob); // 리소스 해제
+            }
         }
-        await delay();
         setAiIsTalking(false);
         
         setMessages((prevMessages) => [
@@ -214,22 +268,25 @@ const MessageForm = ({ quizId, word, quiz, correctAnswer, setCorrectAnswer, mess
             { isUser: false, mode: 'reading', id: Date.now(), step: step },
         ]);
     }
+
+    const studyReading2 = async () => {
+        addAiMessage(`음성에서 해당 문장을 인식하지 못했습니다. 재녹음 후 재업로드 해주세요.`);
+        setAiIsTalking(false);
+
+        setMessages((prevMessages) => [
+            ...prevMessages,
+            { isUser: false, mode: 'reading', id: Date.now(), step: step },
+        ]);
+        setStep(300);
+    }
     
     const endOfReading = async () => {
-        setMessages((prevMessages) => [
-            ...prevMessages, // 이전 메시지들
-            { text: `제출 완료`, isUser: true, id: Date.now(), step: step },
-        ]);
-
-        setAiIsTalking(true);
-        addAiMessage(`확인 중입니다.`);
-        await delay();
         addAiMessage(`확인되었습니다. 훌륭하게 수행하셨군요!`);
         await delay();
         addAiMessage(`👏`);
         await delay();
         setAiIsTalking(false);
-        setStep(6);
+        setStep(401);
     }
 
     const isItTurnToWriting = async () => {
@@ -240,8 +297,11 @@ const MessageForm = ({ quizId, word, quiz, correctAnswer, setCorrectAnswer, mess
             headers: {
                 'Authorization': `Token ${token}`,
             }
+        }).then(response => {
+            if (response.status === 200) writingCheck = response.data.quiz_words;
+        }).catch(error => {
+            writingCheck = null;
         });
-        if (response.status === 200) writingCheck = response.data.quiz_words;
 
         if (writingCheck === null) {
             setStep(-1);
@@ -272,13 +332,15 @@ const MessageForm = ({ quizId, word, quiz, correctAnswer, setCorrectAnswer, mess
         addAiMessage(`'작문하기' 과정을 진행합니다.`);
         await delay();
         addAiMessage(`다음 주어지는 단어 목록은 '최근에 학습한 다섯 개의 단어' 목록입니다.\n\n다음 단어 중, '두 개 이상'의 단어를 선택하세요. 선택 완료 후, 선택한 단어를 이용해 '작문하기'를 수행하게 됩니다.`);
-        await delay();
+        const response = getRecentLearnedWords();
+        if ((await response).status === 200) {
+            const recentLearnedWords = (await response).data.quiz_words;
+            setMessages((prevMessages) => [
+                ...prevMessages,
+                { isUser: false, mode: 'writing', recentLearnedWords: recentLearnedWords, id: Date.now(), step: step },
+            ]);
+        }
         setAiIsTalking(false);
-        
-        setMessages((prevMessages) => [
-            ...prevMessages,
-            { isUser: false, mode: 'writing', id: Date.now(), step: step },
-        ]);
     }
     
     const studyWriting2 = async () => {

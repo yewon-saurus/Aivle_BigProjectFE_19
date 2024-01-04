@@ -7,19 +7,28 @@
 
 @import url(//fonts.googleapis.com/earlyaccess/notosanskr.css);
 .notosanskr * { 
- font-family: 'Noto Sans KR', sans-serif;
+    font-family: 'Noto Sans KR', sans-serif;
+}
+
+.section {
+    font-family: 'Noto Sans KR', sans-serif;
 }
 
 .introduce {
     font-family: 'JalnanGothic', sans-serif;
 }
 
-.introduce-detail {
-    font-family: 'Noto Sans KR', sans-serif;
-}
-
 .info-graphic {
     background-image: url('../../assets/images/MainGraphic.jpg');
     background-position: center;
     background-size: cover;
+}
+
+@keyframes pulse {
+    50% {
+        opacity: .6;
+    }
+}
+.ani-pulse {
+    animation: pulse 3s cubic-bezier(0.4, 0, 0.6, 1) infinite;
 }

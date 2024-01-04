@@ -17,6 +17,8 @@ import InfoUpdate from './pages/account/MyPage/InfoUpdate';
 import ProfileUpdate from './pages/account/MyPage/ProfileUpdate';
 import ArticleList from './pages/board/ArticleList';
 import Article from './pages/board/Article';
+import CreateArticle from './pages/board/CreateArticle';
+import UpdateArticle from './pages/board/UpdateArticle';
 
 
 function App() {
@@ -51,6 +53,8 @@ function App() {
           <Route path="/profileUpdate" element={<PrivateRoute isThatTrue={isLogin} isTrue={<ProfileUpdate />} isFalse={<LoginPage />} />} />
           <Route path="/board" element={<PrivateRoute isThatTrue={isLogin} isTrue={<ArticleList />} isFalse={<LoginPage />} />} />
           <Route path="/board/:postId" element={<PrivateRoute isThatTrue={isLogin} isTrue={<Article />} isFalse={<LoginPage />} />} />
+          <Route path="/board/new" element={<PrivateRoute isThatTrue={isLogin} isTrue={<CreateArticle />} isFalse={<LoginPage />} />} />
+          <Route path="/board/update" element={<PrivateRoute isThatTrue={isLogin} isTrue={<UpdateArticle />} isFalse={<LoginPage />} />} />
         </Routes>
 
         <Footer />

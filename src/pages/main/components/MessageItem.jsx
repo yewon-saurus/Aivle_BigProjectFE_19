@@ -1,7 +1,7 @@
 import axios from 'axios';
 import React, { useState, useRef, useEffect } from 'react';
 
-const MessageItem = ({ message, step, setStep, writingWords, setWritingWords }) => {
+const MessageItem = ({ message, setMessages, quizId, step, setStep, setAiIsTalking, writingWords, setWritingWords }) => {
     const token = sessionStorage.getItem('aivle19_token');
 
     const [imgFile, setImageFile] = useState("");
@@ -12,24 +12,8 @@ const MessageItem = ({ message, step, setStep, writingWords, setWritingWords }) 
     const [analyser, setAnalyser] = useState();
     const [audioUrl, setAudioUrl] = useState();
     const [disabled, setDisabled] = useState(true);
-    const [recentLearedWords, setRecentLearnedWords] = useState([]);
 
     const imgRef = useRef();
-
-    useEffect(() => {
-        if (step === 7) {
-            axios.get(process.env.REACT_APP_API_URL + '/study/writing/', {
-                headers: {
-                    'Authorization': `Token ${token}`,
-                    'Content-Type': 'multipart/form-data'
-                }
-            }).then(response => {
-                if (response.status === 200) return setRecentLearnedWords(response.data.quiz_words);
-            }).catch(error => {
-                console.error(error);
-            });
-        }
-    }, [step]);
 
     useEffect(() => {
         if (writingWords.length >= 2) setDisabled(false);
@@ -47,14 +31,41 @@ const MessageItem = ({ message, step, setStep, writingWords, setWritingWords }) 
         // TODO: 이미지 파일도 불러올 수 있도록, 서버에 이미지 파일 전송 및 저장되도록 처리하면 더 아름다울 것 같다.
     };
     
-    const handleSubmitImgFile = () => {
-        setStep(4);
+    const handleSubmitImgFile = async () => {
         // TODO: OCR 모듈 request, response에 따라 재시도 하도록 유도하거나 통과 처리 할 수 있도록 조치할 것
+        setMessages((prevMessages) => [
+            ...prevMessages, // 이전 메시지들
+            { text: `제출 완료`, isUser: true, id: Date.now(), step: step },
+        ]);
+        setAiIsTalking(true);
+        setMessages((prevMessages) => [
+            ...prevMessages,
+            { text: `확인 중입니다.`, isUser: false, id: Date.now(), step: step},
+        ]);
+        const response = checkWithOCR();
+        if ((await response).status === 200 || (await response).status === 201) {
+            setStep(301);
+            // TODO: 확인 후, 채점 결과 좋으면 setStep(301), 채점 결과 별로면 setStep(202)
+        }
     }
 
-    const handleSubmitAudioFile = () => {
-        setStep(5);
-        // TODO: TTS 모듈 request, response에 따라 재시도 하도록 유도하거나 통과 처리 할 수 있도록 조치할 것
+    const handleSubmitAudioFile = async () => {
+        setMessages((prevMessages) => [
+            ...prevMessages, // 이전 메시지들
+            { text: `제출 완료`, isUser: true, id: Date.now(), step: step },
+        ]);
+        setAiIsTalking(true);
+        setMessages((prevMessages) => [
+            ...prevMessages,
+            { text: `확인 중입니다.`, isUser: false, id: Date.now(), step: step},
+        ]);
+        checkWithSTT();
+        setStep(303);
+        // const response = checkWithSTT();
+        // if ((await response).status === 200) {
+        //     setStep(303);
+        //     // TODO: 확인 후, 채점 결과 좋으면 setStep(303), 채점 결과 별로면 setStep(302)
+        // }
     }
     
     const handleChangeWritingWords = (checked, item, word) => {
@@ -63,6 +74,30 @@ const MessageItem = ({ message, step, setStep, writingWords, setWritingWords }) 
             { id: item, word: word }
         ]);
         else setWritingWords(writingWords.filter((ele) => ele.id !== item));
+    }
+
+    const checkWithOCR = async () => {
+        const formData = new FormData();
+        formData.append('image', imgRef.current.files[0]);
+        return await axios.post(process.env.REACT_APP_API_URL + '/study/quiz/' + quizId + '/ocr/', formData, {
+            headers: {
+                'Authorization': `Token ${token}`,
+                'Content-Type': 'multipart/form-data'
+            }
+        });
+    }
+
+    const checkWithSTT = async () => {
+        const audio = new Audio(URL.createObjectURL(audioUrl));
+        console.log(audio);
+        // const formData = new FormData();
+        // formData.append('audio', );
+        // return await axios.post(process.env.REACT_APP_API_URL + '/study/quiz/' + quizId + '/stt/', formData, {
+        //     headers: {
+        //         'Authorization': `Token ${token}`,
+        //         'Content-Type': 'multipart/form-data'
+        //     }
+        // });
     }
 
     const onRecAudio = () => {
@@ -129,6 +164,10 @@ const MessageItem = ({ message, step, setStep, writingWords, setWritingWords }) 
             URL.createObjectURL(audioUrl); // 출력된 링크에서 녹음된 오디오 확인 가능
         }
         setDisabled(false);
+
+        return () => { // 리소스 해제
+            URL.revokeObjectURL(audioUrl);
+        }
         
         // File 생성자를 사용해 파일로 변환
         // const sound = new File([audioUrl], "soundBlob", {
@@ -146,11 +185,22 @@ const MessageItem = ({ message, step, setStep, writingWords, setWritingWords }) 
         audio.play();
     }
 
-    if (message.mode === 'handwriting') {
+    if (message.mode === 'tts') {
+        return (
+            <div>
+                {message.text}
+                <div>
+                    <audio className='w-[100%]' src={message.audioUrl} controls />
+                </div>
+            </div>
+        );
+    }
+    else if (message.mode === 'handwriting') {
         return (
             <form>
                 <label className='' htmlFor='handwriting'>(모든 타입의 이미지 파일이 허용됩니다.)</label>
                 { imgFile && <img src={imgFile} alt='handwriting image' /> }
+                <br></br>
                 <input
                     className=''
                     type='file'
@@ -159,7 +209,7 @@ const MessageItem = ({ message, step, setStep, writingWords, setWritingWords }) 
                     onChange={handleSaveImgFile}
                     ref={imgRef}
                 />
-                { imgFile && step === 3 && <button className='text-sm mt-2 w-[100%] p-2 bg-[var(--color-primary-500)] hover:bg-[var(--color-primary-600)] transition-colors text-white rounded-full' type='button' onClick={handleSubmitImgFile}>제출하기</button>}
+                { imgFile && (step === 200 || step === 201 || step === 202) && <button className='text-sm mt-2 w-[100%] p-2 bg-[var(--color-primary-500)] hover:bg-[var(--color-primary-600)] transition-colors text-white rounded-full' type='button' onClick={handleSubmitImgFile}>제출하기</button>}
             </form>
         );
     }
@@ -172,7 +222,7 @@ const MessageItem = ({ message, step, setStep, writingWords, setWritingWords }) 
                 <br></br>
                 <button className='text-sm w-[100%] p-2 border border-[var(--color-primary-500)] rounded-full' onClick={onRec ? onRecAudio : offRecAudio}>{onRec ? '🎤 말하기(녹음 시작)' : '녹음 중지'}</button>
                 <button className={`text-sm mt-2 w-[100%] p-2 border border-[var(--color-primary-500)] rounded-full transition-colors ${disabled ? 'bg-gray-200 text-white border-0' : ''}`} onClick={audioPLay} disabled={disabled}>내 녹음 들어보기</button>
-                {audioUrl && step === 4 && <button className='text-sm mt-2 w-[100%] p-2 bg-[var(--color-primary-500)] hover:bg-[var(--color-primary-600)] transition-colors text-white rounded-full' type='button' onClick={handleSubmitAudioFile}>제출하기</button>}
+                {audioUrl && (step === 300 || step === 301 || step === 302) && <button className='text-sm mt-2 w-[100%] p-2 bg-[var(--color-primary-500)] hover:bg-[var(--color-primary-600)] transition-colors text-white rounded-full' type='button' onClick={handleSubmitAudioFile}>제출하기</button>}
             </div>
         );
     }
@@ -183,9 +233,9 @@ const MessageItem = ({ message, step, setStep, writingWords, setWritingWords }) 
                 <br></br>
                 <div>효과적인 작문 연습을 하려면 규칙적인 루틴을 설정하고 수행하는 것이 중요합니다.</div>
                 {
-                    step === 6 && 
+                    step === 401 && 
                     <div>
-                        <button className='text-sm mt-2 w-[100%] p-2 bg-[var(--color-primary-500)] hover:bg-[var(--color-primary-600)] transition-colors text-white rounded-full' onClick={() => {setStep(7);}}>네, 작문하기를 시작합니다.</button>
+                        <button className='text-sm mt-2 w-[100%] p-2 bg-[var(--color-primary-500)] hover:bg-[var(--color-primary-600)] transition-colors text-white rounded-full' onClick={() => {setStep(402);}}>네, 작문하기를 시작합니다.</button>
                         <button className='text-sm mt-2 w-[100%] p-2 bg-[var(--color-primary-500)] hover:bg-[var(--color-primary-600)] transition-colors text-white rounded-full' onClick={() => {setStep(-1);}}>아니오, 오늘은 이만 마치겠습니다.</button>
                     </div>
                 }
@@ -193,19 +243,21 @@ const MessageItem = ({ message, step, setStep, writingWords, setWritingWords }) 
         );
     }
     else if (message.mode === 'writing') {
+        const recentLearnedWords = message.recentLearnedWords;
+
         return (
             <form>
                 {
-                    recentLearedWords.map((ele) => 
+                    recentLearnedWords.map((ele) => 
                         <div className='text-lg m-1 p-1 border-b border-[var(--color-primary-500)]'>
-                            {step === 7 && <input type='checkbox' name='writingWords' id={ele.id} value={ele.id} onChange={(e) => {
+                            {step === 402 && <input type='checkbox' name='writingWords' id={ele.id} value={ele.id} onChange={(e) => {
                                 handleChangeWritingWords(e.target.checked, e.target.id, ele.word);
                             }} />}
                             <label htmlFor={ele.id}> {ele.word}</label>
                         </div>
                     )
                 }
-                {step === 7 && <button className={`text-sm mt-6 w-[100%] p-2 bg-[var(--color-primary-500)] hover:bg-[var(--color-primary-600)] transition-colors text-white rounded-full ${disabled ? 'bg-gray-200 text-white border-0' : ''}`} type='button' onClick={() => {setStep(8);}} disabled={disabled}>선택 완료</button>}
+                {step === 402 && <button className={`text-sm mt-6 w-[100%] p-2 bg-[var(--color-primary-500)] hover:bg-[var(--color-primary-600)] transition-colors text-white rounded-full ${disabled ? 'bg-gray-200 text-white border-0' : ''}`} type='button' onClick={() => {setStep(403);}} disabled={disabled}>선택 완료</button>}
             </form>
         );
     }

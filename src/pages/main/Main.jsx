@@ -121,9 +121,11 @@ const Main = () => {
                         token={token}
                         quizId={quizId}
                         messages={messages}
+                        setMessages={setMessages}
                         scrollRef={scrollRef}
                         step={step}
                         setStep={setStep}
+                        setAiIsTalking={setAiIsTalking}
                         writingWords={writingWords}
                         setWritingWords={setWritingWords}
                     />
