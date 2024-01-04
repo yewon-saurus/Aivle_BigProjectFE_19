@@ -44,6 +44,7 @@ const MessageItem = ({ message, setMessages, quizId, step, setStep, setAiIsTalki
         ]);
         const response = checkWithOCR();
         if ((await response).status === 200 || (await response).status === 201) {
+            console.log((await response).data.text_results);
             setStep(301);
             // TODO: 확인 후, 채점 결과 좋으면 setStep(301), 채점 결과 별로면 setStep(202)
         }
@@ -60,12 +61,12 @@ const MessageItem = ({ message, setMessages, quizId, step, setStep, setAiIsTalki
             { text: `확인 중입니다.`, isUser: false, id: Date.now(), step: step},
         ]);
         checkWithSTT();
-        setStep(303);
-        // const response = checkWithSTT();
-        // if ((await response).status === 200) {
-        //     setStep(303);
-        //     // TODO: 확인 후, 채점 결과 좋으면 setStep(303), 채점 결과 별로면 setStep(302)
-        // }
+        const response = checkWithSTT();
+        if ((await response).status === 200) {
+            console.log((await response).data.text);
+            setStep(303);
+            // TODO: 확인 후, 채점 결과 좋으면 setStep(303), 채점 결과 별로면 setStep(302)
+        }
     }
     
     const handleChangeWritingWords = (checked, item, word) => {
@@ -88,16 +89,20 @@ const MessageItem = ({ message, setMessages, quizId, step, setStep, setAiIsTalki
     }
 
     const checkWithSTT = async () => {
-        const audio = new Audio(URL.createObjectURL(audioUrl));
-        console.log(audio);
-        // const formData = new FormData();
-        // formData.append('audio', );
-        // return await axios.post(process.env.REACT_APP_API_URL + '/study/quiz/' + quizId + '/stt/', formData, {
-        //     headers: {
-        //         'Authorization': `Token ${token}`,
-        //         'Content-Type': 'multipart/form-data'
-        //     }
-        // });
+        // File 생성자를 사용해 파일로 변환
+        const audio = new File([audioUrl], "soundBlob", {
+            lastModified: new Date().getTime(),
+            type: "audio",
+        });
+
+        const formData = new FormData();
+        formData.append('audio', audio);
+        return await axios.post(process.env.REACT_APP_API_URL + '/study/quiz/' + quizId + '/stt/', formData, {
+            headers: {
+                'Authorization': `Token ${token}`,
+                'Content-Type': 'multipart/form-data'
+            }
+        });
     }
 
     const onRecAudio = () => {
@@ -168,14 +173,6 @@ const MessageItem = ({ message, setMessages, quizId, step, setStep, setAiIsTalki
         return () => { // 리소스 해제
             URL.revokeObjectURL(audioUrl);
         }
-        
-        // File 생성자를 사용해 파일로 변환
-        // const sound = new File([audioUrl], "soundBlob", {
-        //     lastModified: new Date().getTime(),
-        //     type: "audio",
-        // });
-
-        // console.log(sound);
     }
 
     const audioPLay = () => {
