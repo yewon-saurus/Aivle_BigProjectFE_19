@@ -10,7 +10,7 @@
  font-family: 'Noto Sans KR', sans-serif;
 }
 
-label {
+.terms-check label {
   display: flex;
   align-items: center;
   margin-bottom: 15px;
