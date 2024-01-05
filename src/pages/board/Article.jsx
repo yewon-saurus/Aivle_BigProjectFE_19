@@ -238,7 +238,7 @@ function Article() {
                   name={comment.username}
                   description={new Date(comment.created_at).toLocaleString()}
                   avatarProps= {{
-                    src: `http://127.0.0.1:8000${comment.image}`
+                    src: `http://127.0.0.1:8000${comment.profile_image}`
                   }}
                   style={{ cursor: "pointer" }}
                 />
