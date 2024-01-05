@@ -50,7 +50,9 @@ function ProfileUpdate() {
         const url = "http://127.0.0.1:8000/accounts/profile/update/";
         const formData = new FormData();
         formData.append('introduction', AboutInitial ? userData?.profile.introduction : About);
-        formData.append('image', Image === null ? userData?.profile.image : Image);
+        if(Image !== null) {
+            formData.append('image', Image);
+        }
 
         axios
             .put(url, formData, {

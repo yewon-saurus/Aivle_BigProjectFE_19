@@ -22,20 +22,21 @@ function CreateArticle() {
   };
 
   const onDropHandler = async (files) => {
+    console.log(files)
     const formData = new FormData();
     formData.append('image', files[0]);
 
     try {
-      const response = await axios.post('YOUR_UPLOAD_API_ENDPOINT', formData, {
+      const response = await axios.post('http://127.0.0.1:8000/board/image-upload/', formData, {
         headers: {
           'Authorization': `Token ${token}`,
           'Content-Type': 'multipart/form-data',
         },
       });
-      const imageUrl = response.data.url; // Assuming your API returns the URL of the uploaded image
+      const imageUrl = response.data.image_url; // Assuming your API returns the URL of the uploaded image
 
       // Append the image URL to the content
-      const newContent = `${content}![Alt text](${imageUrl})`;
+      const newContent = `${content}![Alt text](http://127.0.0.1:8000${imageUrl})`;
       setContent(newContent);
     } catch (error) {
       console.error('Image upload error:', error);
@@ -82,16 +83,25 @@ function CreateArticle() {
         </div>
       </div>
 
-      <MDEditor
-        height="60vh"
-        value={content}
-        onChange={onContentHandler}
-        style={{ whiteSpace: 'pre-wrap' }}
-        previewOptions={{
-          rehypePlugins: [[rehypeSanitize]],
-        }} 
-        onDrop={(files) => onDropHandler(files)}
-      />
+      <div onDrop={e => {
+        e.preventDefault();
+        e.stopPropagation();
+        const files = e.dataTransfer.files;
+        if (files && files.length > 0) {
+          onDropHandler(files);
+        }
+      }}>
+        <MDEditor
+          height="60vh"
+          value={content}
+          onChange={onContentHandler}
+          style={{ whiteSpace: 'pre-wrap' }}
+          previewOptions={{
+            rehypePlugins: [[rehypeSanitize]],
+          }} 
+          onDrop={(files) => onDropHandler(files)}
+        />
+      </div>
 
       <div
         style={{ paddingTop: '17px', paddingLeft: '455px' }}

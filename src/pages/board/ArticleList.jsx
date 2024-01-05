@@ -9,7 +9,6 @@ function ArticleList() {
     const nav = useNavigate();
     const [articleData, setArticleData] = useState([]);
     const token = sessionStorage.getItem('aivle19_token')
-    const [profiles, setProfiles] = useState(null);
 
     useEffect(() => {
         axios.get('http://127.0.0.1:8000/board/', {

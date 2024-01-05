@@ -172,7 +172,7 @@ function Article() {
         <div style={{ float: 'right' }}>
         {loginUser === articleData.username && (
           <>
-          <span onClick={() => nav('/board/update')} className="user" style={{color: '#6B7270', paddingRight: '10px', fontSize: '0.9em'}}>수정</span>
+          <span onClick={() => nav(`/board/${postId}/update`, { state: { title: articleData.title, content: articleData.content }})} className="user" style={{color: '#6B7270', paddingRight: '10px', fontSize: '0.9em'}}>수정</span>
           <>
           <span onClick={onOpen} className="user" style={{color: '#6B7270', fontSize: '0.9em'}}>삭제</span>
           <Modal isOpen={isOpen} onOpenChange={onOpenChange} backdrop="Transparent">
@@ -238,7 +238,7 @@ function Article() {
                   name={comment.username}
                   description={new Date(comment.created_at).toLocaleString()}
                   avatarProps= {{
-                    src: `http://127.0.0.1:8000${comment.image}`
+                    src: `http://127.0.0.1:8000${comment.profile_image}`
                   }}
                   style={{ cursor: "pointer" }}
                 />
