@@ -69,7 +69,7 @@ const TermsOfUseForm = ({setShowSignupForm}) => {
 
   const Table = ({ termsOfUse }) => {
     return (
-      <table>
+      <table className='terms-table'>
         <thead>
           <tr>
             <th className='text-center'>목적</th> 
