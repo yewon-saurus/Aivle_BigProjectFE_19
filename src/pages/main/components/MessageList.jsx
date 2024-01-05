@@ -27,10 +27,18 @@ const MessageList = ({ token, quizId, studySentence,
         });
     }
 
+    const judgeChatStyle = (message) => {
+        if (message.mode === 'reEnter') return 'guide-re-enter';
+        else {
+            if (message.isUser) return 'user-message';
+            else return 'ai-message';
+        }
+    }
+
     return (
         <div className="messages-list">
             {messages.map((message) =>
-                <div className={`message ${message.isUser ? 'user-message' : 'ai-message'}`}>
+                <div className={`message ${judgeChatStyle(message)}`}>
                     <MessageItem
                         message={message} setMessages={setMessages} quizId={quizId}
                         studySentence={studySentence}
