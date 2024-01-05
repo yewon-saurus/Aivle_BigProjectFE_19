@@ -72,19 +72,19 @@ input[type="checkbox"]:checked::after {
   border-radius: 10px;
 }
 
-table {
+.terms-table table {
   width: 100%;
   border-collapse: collapse;
 }
 
 
-th {
+.terms-table th {
   border: 1px solid #ddd;
   padding: 8px;
   text-align: left;
 }
 
-td {
+.terms-table td {
   border: 1px solid #ddd;
   padding: 8px;
   text-align: left;
