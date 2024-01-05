@@ -9,20 +9,17 @@ function SignupPage() {
   const [agreedToTerms1, setAgreedToTerms1] = useState(false);
   const [agreedToTerms2, setAgreedToTerms2] = useState(false);
   const [allAgreed, setAllAgreed] = useState(false);
-
   const [showSignupForm, setShowSignupForm] = useState(false);
-
   const [showModal1, setShowModal1] = useState(false);
   const [showModal2, setShowModal2] = useState(false);
-
   const [confirmation1, setConfirmation1] = useState(false);
   const [confirmation2, setConfirmation2] = useState(false);
 
   const handleAgreeToTerms = (setAgreed, setShowModal, setConfirmation) => {
     setAgreed((prevAgreed) => !prevAgreed);
     setShowModal(false);
-    setConfirmation(true);
-  };
+    setConfirmation((prevConfirmation) => !prevConfirmation);
+  };  
 
   const handleModalClick1 = (e) => {
     if (e.target.className === 'modal') {
@@ -33,11 +30,9 @@ function SignupPage() {
   const handleShowModal1 = () => {
     setShowModal1(true);
   };
-
   const handleHideModal1 = () => {
     setShowModal1(false);
   };
-
   const handleAgreeToTerms1 = () => {
     handleAgreeToTerms(setAgreedToTerms1, setShowModal1, setConfirmation1);
   };
@@ -47,15 +42,12 @@ function SignupPage() {
       handleHideModal2();
     }
   };
-
   const handleShowModal2 = () => {
     setShowModal2(true);
   };
-
   const handleHideModal2 = () => {
     setShowModal2(false);
   };
-
   const handleAgreeToTerms2 = () => {
     handleAgreeToTerms(setAgreedToTerms2, setShowModal2, setConfirmation2);
   };
@@ -83,7 +75,7 @@ const Table = ({ data }) => {
     <table>
       <thead>
         <tr>
-          <th>목적</th>
+          <th>목적</th> 
           <th>항목</th>
           <th>보유기간</th>
         </tr>
@@ -116,74 +108,85 @@ const Table = ({ data }) => {
           {showSignupForm ? (
             <SignupForm />
           ) : (
+            
             <div style={{ 
               flexBasis: '50%', alignItems: 'center', justifyContent: 'center', 
-              display:'flex', flexDirection:'column', padding:'63px'}}>
-              <div class="flex flex-wrap -mx-3 mb-4">
+              display: 'flex', flexDirection: 'column', padding: '63px' }}>
+            <div className="flex flex-wrap -mx-3 mb-4">
               <h1 className='font-bold'>LiQuest 서비스 약관에 동의해 주세요</h1>
-              </div>
-              <div class="flex flex-wrap -mx-3 mb-4">
+            </div>
+            <div className="flex flex-wrap -mx-3 mb-4">
               <button onClick={handleAgreeAll} className='py-2 w-full px-3 rounded-md text-white font-semibold bg-indigo-600 border border-indigo-600 hover:text-indigo-600 hover:bg-white'>
                 {allAgreed ? '전체 동의 해제' : '모두 동의'}
               </button>
-              </div>
-              <div class="flex flex-wrap -mx-3 mb-4">
-              <button onClick={handleShowModal1} className='py-2 w-full px-3 rounded-md text-white font-semibold bg-indigo-600 border border-indigo-600 hover:text-indigo-600 hover:bg-white'>{['LiQuest 이용약관', agreedToTerms1 && ' 완료']}</button>
+            </div>
+              <div className="flex flex-wrap -mx-3 mb-4 items-center">
+                <input type="checkbox" checked={agreedToTerms1} onChange={handleAgreeToTerms1} />
+                <button onClick={handleShowModal1} className={`ml-3 py-2 px-3 rounded-md text-white font-semibold 
+                  ${agreedToTerms1 ? 'bg-indigo-600 border border-indigo-600 hover:text-indigo-600 hover:bg-white transition ease-in-out duration-300' : 'bg-gray-400 hover:bg-indigo-600'}`}>
+                  LiQuest 이용약관 (필수)
+                </button>
               </div>
               {showModal1 && (
                 <div className="modal" onClick={handleModalClick1}>
                   <div className="modal-content" style={{ maxHeight: '400px', overflowY: 'auto' }}>
-                  <TermsDetails />
-                  <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center' }}>
-                  {!confirmation1 && (
-                      <label>
-                        <input type="checkbox" checked={agreedToTerms1} onChange={handleAgreeToTerms1} />
-                        동의 하시겠습니까?
-                      </label>
-                    )}
-                    {confirmation1 && (
-                    <label>
-                        <input type="checkbox" checked={agreedToTerms1} onChange={handleAgreeToTerms1} />
-                        동의 하셨습니다.
-                      </label>)}
+                    <TermsDetails />
+                    <div style={{ display : 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center' }}>
+                      {!confirmation1 && (
+                        <label>
+                          <input type="checkbox" checked={agreedToTerms1} onChange={handleAgreeToTerms1} />
+                          동의 하시겠습니까?
+                        </label>
+                      )}
+                      {confirmation1 && (
+                        <label>
+                          <input type="checkbox" checked={agreedToTerms1} onChange={handleAgreeToTerms1} />
+                          동의 하셨습니다.
+                        </label>
+                      )}
+                    </div>
                   </div>
                 </div>
-                </div>
               )}
-              <div class="flex flex-wrap -mx-3 mb-4">
-              <button onClick={handleShowModal2} className='py-2 w-full px-3 rounded-md text-white font-semibold bg-indigo-600 border border-indigo-600 hover:text-indigo-600 hover:bg-white'>{['개인정보 수집 및 이용 동의', agreedToTerms2 && ' 완료']}</button>
+              <div className="flex flex-wrap -mx-3 mb-4 items-center">
+                <input type="checkbox" checked={agreedToTerms2} onChange={handleAgreeToTerms2} />
+                <button onClick={handleShowModal2} className={`ml-3 py-2 px-3 rounded-md text-white font-semibold 
+                  ${agreedToTerms2 ? 'bg-indigo-600 border border-indigo-600 hover:text-indigo-600 hover:bg-white transition ease-in-out duration-300' : 'bg-gray-400 hover:bg-indigo-600'}`}>
+                  개인정보 수집 및 이용 동의 (필수)  
+                </button>
               </div>
               {showModal2 && (
                 <div className="modal" onClick={handleModalClick2}>
                   <div className="modal-content" style={{ maxHeight: '400px', overflowY: 'auto' }}>
-                  <Table data={data} />
-            <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center' }}>
-                  {!confirmation2 && (
-                      <label>
-                        <input type="checkbox" checked={agreedToTerms2} onChange={handleAgreeToTerms2} />
-                        동의 하시겠습니까?
-                      </label>
-                    )}
-                    {confirmation2 && (
-                    <label>
-                        <input type="checkbox" checked={agreedToTerms2} onChange={handleAgreeToTerms2} />
-                        동의 하셨습니다.
-                      </label>)}
+                    <Table data={data} />
+                    <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center' }}><br/>
+                      {!confirmation2 && (
+                        <label>
+                          <input type="checkbox" checked={agreedToTerms2} onChange={handleAgreeToTerms2} />
+                          동의 하시겠습니까?
+                        </label>
+                      )}
+                      {confirmation2 && (
+                        <label>
+                          <input type="checkbox" checked={agreedToTerms2} onChange={handleAgreeToTerms2} />
+                          동의 하셨습니다.
+                        </label>
+                      )}
+                    </div>
                   </div>
                 </div>
-                </div>
               )}
-              <div class="flex flex-wrap -mx-3 mb-4">
-              <button
-                onClick={handleNextButtonClick}
-                className={`py-2 w-full px-3 rounded-md text-white font-semibold 
-                  ${agreedToTerms1 && agreedToTerms2 
-                    ? 'bg-indigo-600 border border-indigo-600 hover:text-indigo-600 hover:bg-white transition ease-in-out duration-300' 
-                    : 'bg-gray-400 cursor-not-allowed'}`}
-                disabled={!agreedToTerms1 || !agreedToTerms2}
-              >
-                다음
-              </button>
+              <div className="flex flex-wrap -mx-3 mb-4">
+                <button
+                  onClick={handleNextButtonClick}
+                  className={`py-2 w-full px-3 rounded-md text-white font-semibold 
+                    ${agreedToTerms1 && agreedToTerms2 
+                      ? 'bg-indigo-600 border border-indigo-600 hover:text-indigo-600 hover:bg-white transition ease-in-out duration-300' 
+                      : 'bg-gray-400 cursor-not-allowed'}`}
+                  disabled={!agreedToTerms1 || !agreedToTerms2}
+                >
+                  다음
+                </button>
               </div>
             </div>
           )}
@@ -191,6 +194,6 @@ const Table = ({ data }) => {
       </section>
     </div>
   );
-}
+} 
 
 export default SignupPage;
