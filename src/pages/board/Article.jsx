@@ -151,7 +151,7 @@ function Article() {
 
 
   return (
-    <div data-color-mode="light" style={{padding:'63px', paddingLeft:'270px', paddingRight:'270px'}}>
+    <div data-color-mode="light" style={{padding:'63px', paddingLeft:'270px', paddingRight:'270px', fontFamily: 'JalnanGothic'}}>
       <div style={{paddingBottom:'63px'}}>
         <div>
           <h1 style={{fontSize: "3em", fontWeight: 'bold'}}>{articleData.title}</h1>

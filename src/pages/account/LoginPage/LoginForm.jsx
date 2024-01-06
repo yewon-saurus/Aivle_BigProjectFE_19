@@ -46,7 +46,7 @@ function LoginForm({setIsLogin}) {
     return (
         <div style={{ 
             alignItems: 'center', justifyContent: 'center', 
-            display:'flex', flexDirection:'column' }}
+            display:'flex', flexDirection:'column', fontFamily:'JalnanGothic'}}
             className='lg:w-[50%] w-full p-2'>
             
             <h3 className="font-semibold">환영합니다!</h3>
