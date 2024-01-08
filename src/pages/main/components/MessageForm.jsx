@@ -412,7 +412,7 @@ const MessageForm = ({ quizId, word, quiz,
     }
     
     const endOfLearning = () => {
-        addAiMessage(`${Date()}, 학습을 종료합니다.`);
+        addAiMessage(`${Date()}, 학습을 종료합니다.`, step=0);
     }
     
     return (
