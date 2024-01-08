@@ -39,7 +39,6 @@ const MessageForm = ({ quizId, word, quiz,
                 endOfReading();
                 break;
             case 401: // 400: 작문
-                setUpdateSolvedDateDidMount(true);
                 isItTurnToWriting();
                 break;
             case 402:
@@ -49,6 +48,7 @@ const MessageForm = ({ quizId, word, quiz,
                 studyWriting2();
                 break;
             case 501: // 500: 학습 끝
+                setUpdateSolvedDateDidMount(true);
                 endOfLearning();
                 break;
             default:
