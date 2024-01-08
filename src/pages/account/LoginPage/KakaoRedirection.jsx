@@ -14,7 +14,7 @@ function KakaoRedirection({setIsLogin}) {
         )
             .then((res) => {
                 sessionStorage.setItem('aivle19_username', res.data.user.username);
-                sessionStorage.setItem('aivle19_token', res.data.access);
+                sessionStorage.setItem('aivle19_token', res.data.token);
                 setIsLogin(true);
                 nav('/');
             }).catch(err => {
