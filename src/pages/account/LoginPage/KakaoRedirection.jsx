@@ -13,7 +13,9 @@ function KakaoRedirection({setIsLogin}) {
         axios.get(`http://127.0.0.1:8000/accounts/kakao/callback/?code=${code}`, config
         )
             .then((res) => {
-                sessionStorage.setItem('aivle19_username', res.data.user.username);
+                const email = res.data.user.email
+                const username = email.split('@')[0]
+                sessionStorage.setItem('aivle19_username', username);
                 sessionStorage.setItem('aivle19_token', res.data.token);
                 setIsLogin(true);
                 nav('/');
