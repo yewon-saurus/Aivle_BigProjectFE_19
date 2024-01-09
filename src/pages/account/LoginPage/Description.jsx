@@ -27,9 +27,9 @@ function Description() {
     ref.current.forEach(clearTimeout)
     ref.current = []
     set([])
-    ref.current.push(setTimeout(() => set(['Liquest', 'aivle', '아름답다']), 2000))
-    ref.current.push(setTimeout(() => set(['Liquest', '아름답다']), 5000))
-    ref.current.push(setTimeout(() => set(['Liquest', '토리', '아름답다']), 8000))
+    ref.current.push(setTimeout(() => set(['Liquest', 'aivle', '아름답다']), 500))
+    ref.current.push(setTimeout(() => set(['Liquest', '아름답다']), 3500))
+    ref.current.push(setTimeout(() => set(['Liquest', '토리', '아름답다']), 6500))
   }, [])
 
   useEffect(() => {
