@@ -1,17 +1,17 @@
 {
   "files": {
-    "main.css": "https://yewon-saurus.github.io/Aivle_BigProjectFE_19/static/css/main.c113b7c5.css",
-    "main.js": "https://yewon-saurus.github.io/Aivle_BigProjectFE_19/static/js/main.f5bb24dc.js",
-    "static/js/787.11ba4111.chunk.js": "https://yewon-saurus.github.io/Aivle_BigProjectFE_19/static/js/787.11ba4111.chunk.js",
-    "static/media/MainGraphic.jpg": "https://yewon-saurus.github.io/Aivle_BigProjectFE_19/static/media/MainGraphic.370598bc1c796bf73284.jpg",
-    "index.html": "https://yewon-saurus.github.io/Aivle_BigProjectFE_19/index.html",
-    "static/media/KakaoSymbol.svg": "https://yewon-saurus.github.io/Aivle_BigProjectFE_19/static/media/KakaoSymbol.ba4b85223e44aa4fe129042816ad1239.svg",
-    "main.c113b7c5.css.map": "https://yewon-saurus.github.io/Aivle_BigProjectFE_19/static/css/main.c113b7c5.css.map",
-    "main.f5bb24dc.js.map": "https://yewon-saurus.github.io/Aivle_BigProjectFE_19/static/js/main.f5bb24dc.js.map",
-    "787.11ba4111.chunk.js.map": "https://yewon-saurus.github.io/Aivle_BigProjectFE_19/static/js/787.11ba4111.chunk.js.map"
+    "main.css": "http://localhost:3000/static/css/main.297f2aa5.css",
+    "main.js": "http://localhost:3000/static/js/main.05837c0f.js",
+    "static/js/787.11ba4111.chunk.js": "http://localhost:3000/static/js/787.11ba4111.chunk.js",
+    "static/media/MainGraphic.jpg": "http://localhost:3000/static/media/MainGraphic.370598bc1c796bf73284.jpg",
+    "index.html": "http://localhost:3000/index.html",
+    "static/media/KakaoSymbol.svg": "http://localhost:3000/static/media/KakaoSymbol.ba4b85223e44aa4fe129042816ad1239.svg",
+    "main.297f2aa5.css.map": "http://localhost:3000/static/css/main.297f2aa5.css.map",
+    "main.05837c0f.js.map": "http://localhost:3000/static/js/main.05837c0f.js.map",
+    "787.11ba4111.chunk.js.map": "http://localhost:3000/static/js/787.11ba4111.chunk.js.map"
   },
   "entrypoints": [
-    "static/css/main.c113b7c5.css",
-    "static/js/main.f5bb24dc.js"
+    "static/css/main.297f2aa5.css",
+    "static/js/main.05837c0f.js"
   ]
 }
