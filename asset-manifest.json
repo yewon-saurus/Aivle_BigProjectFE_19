@@ -1,17 +1,22 @@
 {
   "files": {
-    "main.css": "/Aivle_BigProjectFE_19/static/css/main.3a7d4255.css",
-    "main.js": "/Aivle_BigProjectFE_19/static/js/main.fdd8326a.js",
+    "main.css": "/Aivle_BigProjectFE_19/static/css/main.f654c2b5.css",
+    "main.js": "/Aivle_BigProjectFE_19/static/js/main.aca00d13.js",
     "static/js/787.11ba4111.chunk.js": "/Aivle_BigProjectFE_19/static/js/787.11ba4111.chunk.js",
     "static/media/MainGraphic.jpg": "/Aivle_BigProjectFE_19/static/media/MainGraphic.370598bc1c796bf73284.jpg",
+    "static/media/hyunsu01.jpg": "/Aivle_BigProjectFE_19/static/media/hyunsu01.1e325472db786fa71175.jpg",
+    "static/media/koeyhnujeel.png": "/Aivle_BigProjectFE_19/static/media/koeyhnujeel.e5bfc97d2c8124ed1f47.png",
+    "static/media/6eom9eun.png": "/Aivle_BigProjectFE_19/static/media/6eom9eun.daf46c549393b01e9ddf.png",
+    "static/media/hdong08.jpg": "/Aivle_BigProjectFE_19/static/media/hdong08.0382fe6712722508f7fd.jpg",
+    "static/media/Kiruchoco.jpg": "/Aivle_BigProjectFE_19/static/media/Kiruchoco.bc8f99286232b235f64d.jpg",
     "index.html": "/Aivle_BigProjectFE_19/index.html",
     "static/media/KakaoSymbol.svg": "/Aivle_BigProjectFE_19/static/media/KakaoSymbol.ba4b85223e44aa4fe129042816ad1239.svg",
-    "main.3a7d4255.css.map": "/Aivle_BigProjectFE_19/static/css/main.3a7d4255.css.map",
-    "main.fdd8326a.js.map": "/Aivle_BigProjectFE_19/static/js/main.fdd8326a.js.map",
+    "main.f654c2b5.css.map": "/Aivle_BigProjectFE_19/static/css/main.f654c2b5.css.map",
+    "main.aca00d13.js.map": "/Aivle_BigProjectFE_19/static/js/main.aca00d13.js.map",
     "787.11ba4111.chunk.js.map": "/Aivle_BigProjectFE_19/static/js/787.11ba4111.chunk.js.map"
   },
   "entrypoints": [
-    "static/css/main.3a7d4255.css",
-    "static/js/main.fdd8326a.js"
+    "static/css/main.f654c2b5.css",
+    "static/js/main.aca00d13.js"
   ]
 }
