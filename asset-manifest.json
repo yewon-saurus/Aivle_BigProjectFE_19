@@ -1,7 +1,7 @@
 {
   "files": {
     "main.css": "/Aivle_BigProjectFE_19/static/css/main.f654c2b5.css",
-    "main.js": "/Aivle_BigProjectFE_19/static/js/main.c169480a.js",
+    "main.js": "/Aivle_BigProjectFE_19/static/js/main.443f7ca8.js",
     "static/js/787.11ba4111.chunk.js": "/Aivle_BigProjectFE_19/static/js/787.11ba4111.chunk.js",
     "static/media/MainGraphic.jpg": "/Aivle_BigProjectFE_19/static/media/MainGraphic.370598bc1c796bf73284.jpg",
     "static/media/mingweon.png": "/Aivle_BigProjectFE_19/static/media/mingweon.1c0d4213d5ad92341308.png",
@@ -14,11 +14,11 @@
     "index.html": "/Aivle_BigProjectFE_19/index.html",
     "static/media/KakaoSymbol.svg": "/Aivle_BigProjectFE_19/static/media/KakaoSymbol.ba4b85223e44aa4fe129042816ad1239.svg",
     "main.f654c2b5.css.map": "/Aivle_BigProjectFE_19/static/css/main.f654c2b5.css.map",
-    "main.c169480a.js.map": "/Aivle_BigProjectFE_19/static/js/main.c169480a.js.map",
+    "main.443f7ca8.js.map": "/Aivle_BigProjectFE_19/static/js/main.443f7ca8.js.map",
     "787.11ba4111.chunk.js.map": "/Aivle_BigProjectFE_19/static/js/787.11ba4111.chunk.js.map"
   },
   "entrypoints": [
     "static/css/main.f654c2b5.css",
-    "static/js/main.c169480a.js"
+    "static/js/main.443f7ca8.js"
   ]
 }
