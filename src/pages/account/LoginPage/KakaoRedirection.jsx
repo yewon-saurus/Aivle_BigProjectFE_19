@@ -27,7 +27,11 @@ function KakaoRedirection({setIsLogin}) {
             })
     }, []);
   
-    return <div className='pt-[63px] min-h-screen' style={{fontFamily: 'JalnanGothic'}}>로그인 중입니다.</div>;
+    return (
+        <div className='pt-[63px] h-screen m-auto flex justify-center items-center text-3xl' style={{fontFamily: 'JalnanGothic'}}>
+            로그인 중입니다..
+        </div>
+    );
 
   };
 
