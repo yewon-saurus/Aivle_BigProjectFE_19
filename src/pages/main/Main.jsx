@@ -2,19 +2,24 @@ import style from "./style.css";
 import React, {useState, useEffect, useRef } from 'react';
 import { useParams } from 'react-router-dom';
 import axios from 'axios';
+
 import { MessageForm, MessageList } from './components';
 import GoToLatestAndQuizList from '../../components/GoToLatestAndQuizList';
+
+import { useSelector, useDispatch } from "react-redux";
+import { changeAiTalking } from "../../redux/modules/quiz";
 
 const Main = () => {
     const token = sessionStorage.getItem('aivle19_token');
 
     const params = useParams();
 
+    const dispatch = useDispatch();
+
     const scrollRef = useRef();
     const messageFormRef = useRef();
     
     const [createQuizDidMount, setCreateQuizDidMount] = useState(false);
-    const [aiIsTalking, setAiIsTalking] = useState(true);
     const [step, setStep] = useState(0);
     const [quizId, setQuizId] = useState(0);
     const [word, setWord] = useState('');
@@ -44,7 +49,7 @@ const Main = () => {
         }
         else {
             // 전에 풀던/풀이 완료한 문제 입장
-            setAiIsTalking(false);
+            dispatch(changeAiTalking(false));
             importPrevQuiz();
         }
     }, []);
@@ -81,7 +86,7 @@ const Main = () => {
                     isUser: false, id: Date.now(), step: step
                 },
             ]);
-            setAiIsTalking(false);
+            dispatch(changeAiTalking(false));
         }
     }, [word, quiz]);
 
@@ -137,7 +142,6 @@ const Main = () => {
                         scrollRef={scrollRef}
                         step={step}
                         setStep={setStep}
-                        setAiIsTalking={setAiIsTalking}
                         writingWords={writingWords}
                         setWritingWords={setWritingWords}
                     />
@@ -158,8 +162,6 @@ const Main = () => {
                         messageFormRef={messageFormRef}
                         step={step}
                         setStep={setStep}
-                        aiIsTalking={aiIsTalking}
-                        setAiIsTalking={setAiIsTalking}
                         writingWords={writingWords}
                     />
                     {/* <div> */}

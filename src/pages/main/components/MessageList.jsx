@@ -1,10 +1,9 @@
 import React, { useEffect } from 'react';
 import { MessageItem } from './';
 import axios from 'axios';
-import Typing from 'react-kr-typing-anim';
 
 const MessageList = ({ token, quizId, studySentence,
-    messages, setMessages, scrollRef, step, setStep, setAiIsTalking, writingWords, setWritingWords }) => {
+    messages, setMessages, scrollRef, step, setStep, writingWords, setWritingWords }) => {
     useEffect(() => {
         if (scrollRef.current) scrollRef.current.scrollIntoView({behavior: "smooth", block: "end"});
         if ((step !== -1) && (step !== 501)) updateChatLog();
@@ -43,7 +42,7 @@ const MessageList = ({ token, quizId, studySentence,
                         message={message} setMessages={setMessages} quizId={quizId}
                         studySentence={studySentence}
                         step={step} setStep={setStep}
-                        setAiIsTalking={setAiIsTalking} writingWords={writingWords} setWritingWords={setWritingWords} />
+                        writingWords={writingWords} setWritingWords={setWritingWords} />
                     <div className='relative -bottom-5' ref={scrollRef}></div>
                 </div>
             )}

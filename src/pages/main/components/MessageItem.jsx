@@ -1,9 +1,14 @@
 import axios from 'axios';
 import React, { useState, useRef, useEffect } from 'react';
 
+import { useSelector, useDispatch } from 'react-redux';
+import { changeAiTalking } from '../../../redux/modules/quiz';
+
 const MessageItem = ({ message, setMessages, quizId, studySentence,
-    step, setStep, setAiIsTalking, writingWords, setWritingWords }) => {
+    step, setStep, writingWords, setWritingWords }) => {
     const token = sessionStorage.getItem('aivle19_token');
+
+    const dispatch = useDispatch();
 
     const [imgFile, setImageFile] = useState("");
     const [stream, setStream] = useState();
@@ -38,7 +43,7 @@ const MessageItem = ({ message, setMessages, quizId, studySentence,
             ...prevMessages, // 이전 메시지들
             { text: `제출 완료`, isUser: true, id: Date.now(), step: step },
         ]);
-        setAiIsTalking(true);
+        dispatch(changeAiTalking(true));
         setMessages((prevMessages) => [
             ...prevMessages,
             { text: `확인 중입니다.`, isUser: false, id: Date.now(), step: step},
@@ -62,7 +67,7 @@ const MessageItem = ({ message, setMessages, quizId, studySentence,
             ...prevMessages, // 이전 메시지들
             { text: `제출 완료`, isUser: true, id: Date.now(), step: step },
         ]);
-        setAiIsTalking(true);
+        dispatch(changeAiTalking(true));
         setMessages((prevMessages) => [
             ...prevMessages,
             { text: `확인 중입니다.`, isUser: false, id: Date.now(), step: step},
