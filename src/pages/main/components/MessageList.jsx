@@ -3,8 +3,9 @@ import { MessageItem } from './';
 import axios from 'axios';
 import { useSelector } from 'react-redux';
 
-const MessageList = ({ token, quizId, messages, setMessages, scrollRef, writingWords, setWritingWords }) => {
+const MessageList = ({ token, quizId, scrollRef, writingWords, setWritingWords }) => {
     const step = useSelector((state) => state.quiz.step);
+    const messages = useSelector((state) => state.quiz.messages);
     
     useEffect(() => {
         if (scrollRef.current) scrollRef.current.scrollIntoView({behavior: "smooth", block: "end"});
@@ -38,8 +39,7 @@ const MessageList = ({ token, quizId, messages, setMessages, scrollRef, writingW
             {messages.map((message, idx) =>
                 <div className={`message ${judgeChatStyle(message)}`}>
                     <MessageItem key={'message_item_' + idx}
-                        message={message} setMessages={setMessages} quizId={quizId}
-                        writingWords={writingWords} setWritingWords={setWritingWords} />
+                        message={message} quizId={quizId} writingWords={writingWords} setWritingWords={setWritingWords} />
                     <div className='relative -bottom-5' ref={scrollRef}></div>
                 </div>
             )}

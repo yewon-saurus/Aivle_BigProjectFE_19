@@ -2,9 +2,13 @@ import axios from 'axios';
 import React, { useState, useRef, useEffect } from 'react';
 
 import { useSelector, useDispatch } from 'react-redux';
-import { changeAiTalking, updateStep } from '../../../redux/modules/quiz';
+import {
+    changeAiTalking,
+    updateStep,
+    updateMessages,
+} from '../../../redux/modules/quiz';
 
-const MessageItem = ({ message, setMessages, quizId, writingWords, setWritingWords }) => {
+const MessageItem = ({ message, quizId, writingWords, setWritingWords }) => {
     const token = sessionStorage.getItem('aivle19_token');
 
     const dispatch = useDispatch();
@@ -40,22 +44,14 @@ const MessageItem = ({ message, setMessages, quizId, writingWords, setWritingWor
     
     const handleSubmitImgFile = async () => {
         // TODO: OCR 모듈 request, response에 따라 재시도 하도록 유도하거나 통과 처리 할 수 있도록 조치할 것
-        setMessages((prevMessages) => [
-            ...prevMessages, // 이전 메시지들
-            { text: `제출 완료`, isUser: true, id: Date.now(), step: step },
-        ]);
+        dispatch(updateMessages({ text: `제출 완료`, isUser: true, id: Date.now(), step: step }));
         dispatch(changeAiTalking(true));
-        setMessages((prevMessages) => [
-            ...prevMessages,
-            { text: `확인 중입니다.`, isUser: false, id: Date.now(), step: step},
-        ]);
+
+        dispatch(updateMessages({ text: `확인 중입니다.`, isUser: false, id: Date.now(), step: step }));
         const response = checkWithOCR();
         if ((await response).status === 200 || (await response).status === 201) {
             const textResults = (await response).data.text_results;
-            setMessages((prevMessages) => [
-                ...prevMessages,
-                { text: `인식 결과는 다음과 같습니다:\n\n${textResults.map((ele => ele)).join(' ')}`, isUser: false, id: Date.now(), step: step},
-            ]);
+            dispatch(updateMessages({ text: `인식 결과는 다음과 같습니다:\n\n${textResults.map((ele => ele)).join(' ')}`, isUser: false, id: Date.now(), step: step }));
             const gradingResult = (await response).data.answer;
             // 채점 결과 좋으면 301, 채점 결과 별로면 202
             if (gradingResult) dispatch(updateStep(301));
@@ -64,23 +60,15 @@ const MessageItem = ({ message, setMessages, quizId, writingWords, setWritingWor
     }
 
     const handleSubmitAudioFile = async () => {
-        setMessages((prevMessages) => [
-            ...prevMessages, // 이전 메시지들
-            { text: `제출 완료`, isUser: true, id: Date.now(), step: step },
-        ]);
+        dispatch(updateMessages({ text: `제출 완료`, isUser: true, id: Date.now(), step: step }));
         dispatch(changeAiTalking(true));
-        setMessages((prevMessages) => [
-            ...prevMessages,
-            { text: `확인 중입니다.`, isUser: false, id: Date.now(), step: step},
-        ]);
+
+        dispatch(updateMessages({ text: `확인 중입니다.`, isUser: false, id: Date.now(), step: step }));
         checkWithSTT();
         const response = checkWithSTT();
         if ((await response).status === 200) {
             const textResult = (await response).data.text;
-            setMessages((prevMessages) => [
-                ...prevMessages,
-                { text: `인식 결과는 다음과 같습니다:\n\n${textResult}`, isUser: false, id: Date.now(), step: step},
-            ]);
+            dispatch(updateMessages({ text: `인식 결과는 다음과 같습니다:\n\n${textResult}`, isUser: false, id: Date.now(), step: step }));
             const gradingResult = (await response).data.answer;
             // 채점 결과 좋으면 303, 채점 결과 별로면 302
             if (gradingResult) dispatch(updateStep(303));

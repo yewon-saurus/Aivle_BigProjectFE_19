@@ -13,6 +13,7 @@ import {
     updateWord,
     updateQuiz,
     updateCorrectAnswer,
+    updateMessages,
 } from "../../redux/modules/quiz";
 
 const Main = () => {
@@ -24,26 +25,13 @@ const Main = () => {
     const step = useSelector((state) => state.quiz.step);
     const word = useSelector((state) => state.quiz.word);
     const quiz = useSelector((state) => state.quiz.quiz);
+    const messages = useSelector((state) => state.quiz.quiz);
 
     const scrollRef = useRef();
     const messageFormRef = useRef();
     
     const [quizId, setQuizId] = useState(0);
     const [createQuizDidMount, setCreateQuizDidMount] = useState(false);
-    const [messages, setMessages] = useState([
-        {
-            text: `어서오세요.\n생성형 AI를 통한 문해력 향상 학습 서비스에 입장하셨습니다.`,
-            isUser: false, isTyping: false, id: Date.now()
-        },
-        {
-            text: `학습은 다음과 같은 단계를 거쳐 진행됩니다.\n\n1. 랜덤 단어 퀴즈 풀기\n2. 단어 연습(퀴즈 오답 시 필수, 정답 시 선택 사항)\n3. 학습한 단어를 활용해 작문 해보기`,
-            isUser: false, isTyping: false, id: Date.now()
-        },
-        {
-            text: `문제 생성을 시작합니다. 문제가 생성될 때까지 잠시 기다려 주세요.`,
-            isUser: false, isTyping: false, id: Date.now()
-        }
-    ]); // 모든 채팅 메시지 저장
     const [writingWords, setWritingWords] = useState([]);
     
     useEffect(() => {
@@ -79,17 +67,14 @@ const Main = () => {
 
     useEffect(() => {
         if (word !== '' && messages[messages.length - 1].text === '문제 생성을 시작합니다. 문제가 생성될 때까지 잠시 기다려 주세요.') {
-            setMessages((prevMessages) => [
-                ...prevMessages, // 이전 메시지들
-                {
-                    text: `이번에 학습하실 단어는 "${word}" 입니다.`,
-                    isUser: false, id: Date.now(), step: step
-                },
-                {
-                    text: `입력창에 "${word}"를 입력하시면 단어 퀴즈가 시작됩니다.`,
-                    isUser: false, id: Date.now(), step: step
-                },
-            ]);
+            dispatch(updateMessages({
+                text: `이번에 학습하실 단어는 "${word}" 입니다.`,
+                isUser: false, id: Date.now(), step: step
+            },
+            {
+                text: `입력창에 "${word}"를 입력하시면 단어 퀴즈가 시작됩니다.`,
+                isUser: false, id: Date.now(), step: step
+            },));
             dispatch(changeAiTalking(false));
         }
     }, [word, quiz]);
@@ -116,12 +101,12 @@ const Main = () => {
                 dispatch(updateWord(tmpWord));
                 dispatch(updateStep(tmpStep));
                 if (tmpStep !== -1) {
-                    setMessages([...tmpMessages, {
+                    dispatch(updateMessages({
                         text: `${Date()}\n[${tmpQuizId}회차 학습: ${tmpWord}] 재입장 하셨습니다.`,
                         mode: 'reEnter', id: Date.now(), step: tmpStep
-                    }]);
+                    }));
                 }
-                else setMessages(tmpMessages);
+                else dispatch(updateMessages(tmpMessages));
             }
         })
         .catch(error => {
@@ -140,8 +125,6 @@ const Main = () => {
                     <MessageList
                         token={token}
                         quizId={quizId}
-                        messages={messages}
-                        setMessages={setMessages}
                         scrollRef={scrollRef}
                         writingWords={writingWords}
                         setWritingWords={setWritingWords}
@@ -152,8 +135,6 @@ const Main = () => {
                     {/* 프롬프트 창 */}
                     <MessageForm
                         quizId={quizId}
-                        messages={messages}
-                        setMessages={setMessages}
                         messageFormRef={messageFormRef}
                         writingWords={writingWords}
                     />

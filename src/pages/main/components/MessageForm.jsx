@@ -10,9 +10,10 @@ import {
     updateStep,
     updateCorrectAnswer,
     updateStudySentence,
+    updateMessages,
 } from '../../../redux/modules/quiz';
 
-const MessageForm = ({ quizId, messages, setMessages, messageFormRef, writingWords }) => {
+const MessageForm = ({ quizId, messageFormRef, writingWords }) => {
     const token = sessionStorage.getItem('aivle19_token');
     const username = sessionStorage.getItem('aivle19_username');
 
@@ -23,6 +24,7 @@ const MessageForm = ({ quizId, messages, setMessages, messageFormRef, writingWor
     const quiz = useSelector((state) => state.quiz.quiz);
     const correctAnswer = useSelector((state) => state.quiz.correctAnswer);
     const studySentence = useSelector((state) => state.quiz.studySentence);
+    const messages = useSelector((state) => state.quiz.messages);
 
     const [message, setMessage] = useState('');
     const [audioUrl, setAudioUrl] = useState();
@@ -68,11 +70,7 @@ const MessageForm = ({ quizId, messages, setMessages, messageFormRef, writingWor
     
     const handleSendMessage = (message) => {
         // message: 사용자가 form에 입력한 내용
-        setMessages((prevMessages) => [
-            ...prevMessages, // 이전 메시지들
-            { text: message, isUser: true, id: Date.now(), step: step }, // 사용자의 메시지
-            // { text: `Your message is: "${message}"`, isUser: false, isTyping: true, id: Date.now() },
-        ]);
+        dispatch(updateMessages({ text: message, isUser: true, id: Date.now(), step: step }));
         userInputJudge();
     };
 
@@ -83,10 +81,7 @@ const MessageForm = ({ quizId, messages, setMessages, messageFormRef, writingWor
     };
     
     const addAiMessage = (aiSay, currStep=step) => {
-        setMessages((prevMessages) => [
-            ...prevMessages, // 이전 메시지들
-            { text: `${aiSay}`, isUser: false, id: Date.now(), step: currStep},
-        ]);
+        dispatch(updateMessages({ text: `${aiSay}`, isUser: false, id: Date.now(), step: currStep}));
     }
     
     const userInputJudge = async () => {
@@ -201,19 +196,13 @@ const MessageForm = ({ quizId, messages, setMessages, messageFormRef, writingWor
                 const tmpAudioBlob = new Blob([(await ttsResponse).data]);
                 const tmpAudioUrl = URL.createObjectURL(tmpAudioBlob);
                 setAudioUrl(tmpAudioUrl);
-                setMessages((prevMessages) => [
-                    ...prevMessages,
-                    { text: `📝 "${tmpSentence}"`, isUser: false, mode: 'tts', audioUrl: tmpAudioUrl, id: Date.now(), step: step },
-                ]);
+                dispatch(updateMessages({ text: `📝 "${tmpSentence}"`, isUser: false, mode: 'tts', audioUrl: tmpAudioUrl, id: Date.now(), step: step }));
                 URL.revokeObjectURL(tmpAudioBlob); // 리소스 해제
             }
         }
         dispatch(changeAiTalking(false));
         
-        setMessages((prevMessages) => [
-            ...prevMessages,
-            { isUser: false, mode: 'handwriting', id: Date.now(), step: step },
-        ]);
+        dispatch(updateMessages({ isUser: false, mode: 'handwriting', id: Date.now(), step: step }));
     }
 
     const studyHandWriting2 = async () => {
@@ -221,11 +210,9 @@ const MessageForm = ({ quizId, messages, setMessages, messageFormRef, writingWor
         addAiMessage(`사진에서 해당 문장을 찾지 못했습니다. 재작성하거나 재촬영 후 재업로드 해주세요.`);
         dispatch(changeAiTalking(false));
 
-        setMessages((prevMessages) => [
-            ...prevMessages,
-            { text: `📝 "${studySentence}"`, isUser: false, mode: 'tts', audioUrl: audioUrl, id: Date.now(), step: step },
-            { isUser: false, mode: 'handwriting', id: Date.now(), step: step - 1 },
-        ]); // 사용자 편의를 위해 문장에 대한 내용 다시 노출
+        dispatch(updateMessages({ text: `📝 "${studySentence}"`, isUser: false, mode: 'tts', audioUrl: audioUrl, id: Date.now(), step: step },
+            { isUser: false, mode: 'handwriting', id: Date.now(), step: step - 1 }));
+        // 사용자 편의를 위해 문장에 대한 내용 다시 노출
         dispatch(updateStep(200));
     }
     
@@ -249,19 +236,13 @@ const MessageForm = ({ quizId, messages, setMessages, messageFormRef, writingWor
                 const tmpAudioBlob = new Blob([(await ttsResponse).data]);
                 const tmpAudioUrl = URL.createObjectURL(tmpAudioBlob);
                 setAudioUrl(tmpAudioUrl);
-                setMessages((prevMessages) => [
-                    ...prevMessages,
-                    { text: `🎙️ "${tmpSentence}"`, isUser: false, mode: 'tts', audioUrl: tmpAudioUrl, id: Date.now(), step: step },
-                ]);
+                dispatch(updateMessages({ text: `🎙️ "${tmpSentence}"`, isUser: false, mode: 'tts', audioUrl: tmpAudioUrl, id: Date.now(), step: step }));
                 URL.revokeObjectURL(tmpAudioBlob); // 리소스 해제
             }
         }
         dispatch(changeAiTalking(false));
         
-        setMessages((prevMessages) => [
-            ...prevMessages,
-            { isUser: false, mode: 'reading', id: Date.now(), step: step },
-        ]);
+        dispatch(updateMessages({ isUser: false, mode: 'reading', id: Date.now(), step: step }));
     }
 
     const studyReading2 = async () => {
@@ -269,11 +250,9 @@ const MessageForm = ({ quizId, messages, setMessages, messageFormRef, writingWor
         addAiMessage(`음성에서 해당 문장을 인식하지 못했습니다. 재녹음 후 재업로드 해주세요.`);
         dispatch(changeAiTalking(false));
 
-        setMessages((prevMessages) => [
-            ...prevMessages,
-            { text: `🎙️ "${studySentence}"`, isUser: false, mode: 'tts', audioUrl: audioUrl, id: Date.now(), step: step },
-            { isUser: false, mode: 'reading', id: Date.now(), step: step - 1 },
-        ]); // 사용자 편의를 위해 문장에 대한 내용 다시 노출
+        dispatch(updateMessages({ text: `🎙️ "${studySentence}"`, isUser: false, mode: 'tts', audioUrl: audioUrl, id: Date.now(), step: step },
+            { isUser: false, mode: 'reading', id: Date.now(), step: step - 1 }));
+        // 사용자 편의를 위해 문장에 대한 내용 다시 노출
         dispatch(updateStep(300));
     }
     
@@ -304,10 +283,7 @@ const MessageForm = ({ quizId, messages, setMessages, messageFormRef, writingWor
             addAiMessage(`이어서 '작문하기'를 수행하시겠습니까?`);
             await delay();
             
-            setMessages((prevMessages) => [
-                ...prevMessages,
-                { isUser: false, mode: 'areYouWantToWriting', id: Date.now(), step: step },
-            ]);
+            dispatch(updateMessages({ isUser: false, mode: 'areYouWantToWriting', id: Date.now(), step: step }));
         }
         else {
             dispatch(updateStep(501));
@@ -315,10 +291,7 @@ const MessageForm = ({ quizId, messages, setMessages, messageFormRef, writingWor
     }
 
     const studyWriting = async () => {
-        setMessages((prevMessages) => [
-            ...prevMessages, // 이전 메시지들
-            { text: `네, 작문하기를 시작합니다.`, isUser: true, id: Date.now(), step: step },
-        ]);
+        dispatch(updateMessages({ text: `네, 작문하기를 시작합니다.`, isUser: true, id: Date.now(), step: step }));
 
         dispatch(changeAiTalking(true));
         addAiMessage(`'작문하기' 과정을 진행합니다.`);
@@ -327,19 +300,13 @@ const MessageForm = ({ quizId, messages, setMessages, messageFormRef, writingWor
         const response = getRecentLearnedWords();
         if ((await response).status === 200) {
             const recentLearnedWords = (await response).data.quiz_words;
-            setMessages((prevMessages) => [
-                ...prevMessages,
-                { isUser: false, mode: 'writing', recentLearnedWords: recentLearnedWords, id: Date.now(), step: step },
-            ]);
+            dispatch(updateMessages({ isUser: false, mode: 'writing', recentLearnedWords: recentLearnedWords, id: Date.now(), step: step }));
         }
         dispatch(changeAiTalking(false));
     }
     
     const studyWriting2 = async () => {
-        setMessages((prevMessages) => [
-            ...prevMessages, // 이전 메시지들
-            { text: `선택 완료`, isUser: true, id: Date.now(), step: step - 1 },
-        ]);
+        dispatch(updateMessages({ text: `선택 완료`, isUser: true, id: Date.now(), step: step - 1 }));
 
         dispatch(changeAiTalking(true));
         addAiMessage(`확인 중입니다.`, step - 1);

@@ -5,6 +5,20 @@ const initialState = {
     quiz: {},
     correctAnswer: '',
     studySentence: '',
+    messages: [
+        {
+            text: `어서오세요.\n생성형 AI를 통한 문해력 향상 학습 서비스에 입장하셨습니다.`,
+            isUser: false, isTyping: false, id: Date.now()
+        },
+        {
+            text: `학습은 다음과 같은 단계를 거쳐 진행됩니다.\n\n1. 랜덤 단어 퀴즈 풀기\n2. 단어 연습(퀴즈 오답 시 필수, 정답 시 선택 사항)\n3. 학습한 단어를 활용해 작문 해보기`,
+            isUser: false, isTyping: false, id: Date.now()
+        },
+        {
+            text: `문제 생성을 시작합니다. 문제가 생성될 때까지 잠시 기다려 주세요.`,
+            isUser: false, isTyping: false, id: Date.now()
+        },
+    ],
 }
 
 const CHANGE_AI_TALKING = "QUIZ/CHANGE_AI_TALKING";
@@ -13,6 +27,7 @@ const UPDATE_WORD = "QUIZ/UPDATE_WORD";
 const UPDATE_QUIZ = "QUIZ/UPDATE_QUIZ";
 const UPDATE_CORRECT_ANSWER = "QUIZ/UPDATE_CORRECT_ANSWER";
 const UPDATE_STUDY_SENTENCE = "QUIZ/UPDATE_STUDY_SENTENCE";
+const UPDATE_MESSAGES = "QUIZ/UPDATE_MESSAGES";
 
 export const changeAiTalking = (newAiIsTalking) => {
     return {
@@ -56,6 +71,13 @@ export const updateStudySentence = (newStudySentence) => {
     }
 }
 
+export const updateMessages = (newMassage) => {
+    return {
+        type: UPDATE_MESSAGES,
+        newMassage: newMassage,
+    }
+}
+
 export default function (state=initialState, action) {
     switch (action.type) {
         case CHANGE_AI_TALKING: {
@@ -92,6 +114,15 @@ export default function (state=initialState, action) {
             return {
                 ...state,
                 studySentence: action.newStudySentence,
+            }
+        }
+        case UPDATE_MESSAGES: {
+            return {
+                ...state,
+                messages: [
+                    ...state.messages,
+                    action.newMassage,
+                ],
             }
         }
         
