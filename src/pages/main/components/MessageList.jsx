@@ -1,9 +1,11 @@
 import React, { useEffect } from 'react';
 import { MessageItem } from './';
 import axios from 'axios';
+import { useSelector } from 'react-redux';
 
-const MessageList = ({ token, quizId, studySentence,
-    messages, setMessages, scrollRef, step, setStep, writingWords, setWritingWords }) => {
+const MessageList = ({ token, quizId, studySentence, messages, setMessages, scrollRef, writingWords, setWritingWords }) => {
+    const step = useSelector((state) => state.quiz.step);
+    
     useEffect(() => {
         if (scrollRef.current) scrollRef.current.scrollIntoView({behavior: "smooth", block: "end"});
         if ((step !== -1) && (step !== 501)) updateChatLog();
@@ -41,7 +43,6 @@ const MessageList = ({ token, quizId, studySentence,
                     <MessageItem
                         message={message} setMessages={setMessages} quizId={quizId}
                         studySentence={studySentence}
-                        step={step} setStep={setStep}
                         writingWords={writingWords} setWritingWords={setWritingWords} />
                     <div className='relative -bottom-5' ref={scrollRef}></div>
                 </div>

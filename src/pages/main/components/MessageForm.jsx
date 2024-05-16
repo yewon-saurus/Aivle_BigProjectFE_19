@@ -5,17 +5,15 @@ import { IoSend } from "react-icons/io5";
 import axios from 'axios';
 
 import { useSelector, useDispatch } from 'react-redux';
-import { changeAiTalking } from '../../../redux/modules/quiz';
+import { changeAiTalking, updateStep } from '../../../redux/modules/quiz';
 
-const MessageForm = ({ quizId, word, quiz,
-    correctAnswer, setCorrectAnswer, studySentence, setStudySentence,
-    messages, setMessages, messageFormRef, step, setStep,
-    writingWords }) => {
+const MessageForm = ({ quizId, word, quiz, correctAnswer, setCorrectAnswer, studySentence, setStudySentence, messages, setMessages, messageFormRef, writingWords }) => {
     const token = sessionStorage.getItem('aivle19_token');
     const username = sessionStorage.getItem('aivle19_username');
 
     const dispatch = useDispatch();
     const aiIsTalking = useSelector((state) => state.quiz.aiIsTalking);
+    const step = useSelector((state) => state.quiz.step);
 
     const [message, setMessage] = useState('');
     const [audioUrl, setAudioUrl] = useState();
@@ -83,14 +81,14 @@ const MessageForm = ({ quizId, word, quiz,
     }
     
     const userInputJudge = async () => {
-        if (step === 0 && message === word) setStep(101);
+        if (step === 0 && message === word) dispatch(updateStep(101));
         else if (step === 101) correctJudge();
         else if (step === 102) {
             if (message === word) {
-                setStep(201);
+                dispatch(updateStep(201));
             }
             else {
-                setStep(401);
+                dispatch(updateStep(401));
             }
         }
         else if (step === 403) examineWriting();
@@ -116,7 +114,7 @@ const MessageForm = ({ quizId, word, quiz,
     const correctJudge = async () => {
         if (message === correctAnswer) {
             // 사용자가 원한다면 -> 학습 사이클 진행
-            setStep(102);
+            dispatch(updateStep(102));
         }
         else {
             // 오답이었음과 정답이 뭐였는지 공개한 후, 학습 사이클 진행
@@ -128,7 +126,7 @@ const MessageForm = ({ quizId, word, quiz,
             addAiMessage(`퀴즈의 정답을 맞히지 못한 단어에 대해서는 쓰기/읽기 학습을 수행해야 합니다.`);
             await delay();
             dispatch(changeAiTalking(true));
-            setStep(201);
+            dispatch(updateStep(201));
         }
     }
     
@@ -219,7 +217,7 @@ const MessageForm = ({ quizId, word, quiz,
             { text: `📝 "${studySentence}"`, isUser: false, mode: 'tts', audioUrl: audioUrl, id: Date.now(), step: step },
             { isUser: false, mode: 'handwriting', id: Date.now(), step: step - 1 },
         ]); // 사용자 편의를 위해 문장에 대한 내용 다시 노출
-        setStep(200);
+        dispatch(updateStep(200));
     }
     
     const studyReading = async () => {
@@ -267,7 +265,7 @@ const MessageForm = ({ quizId, word, quiz,
             { text: `🎙️ "${studySentence}"`, isUser: false, mode: 'tts', audioUrl: audioUrl, id: Date.now(), step: step },
             { isUser: false, mode: 'reading', id: Date.now(), step: step - 1 },
         ]); // 사용자 편의를 위해 문장에 대한 내용 다시 노출
-        setStep(300);
+        dispatch(updateStep(300));
     }
     
     const endOfReading = async () => {
@@ -279,7 +277,7 @@ const MessageForm = ({ quizId, word, quiz,
         addAiMessage(`👏`);
         await delay();
         dispatch(changeAiTalking(false));
-        setStep(401);
+        dispatch(updateStep(401));
     }
 
     const isItTurnToWriting = async () => {
@@ -303,7 +301,7 @@ const MessageForm = ({ quizId, word, quiz,
             ]);
         }
         else {
-            setStep(501);
+            dispatch(updateStep(501));
         }
     }
 
@@ -381,12 +379,12 @@ const MessageForm = ({ quizId, word, quiz,
             addAiMessage(`완벽합니다! 모든 학습의 수행을 완료하셨습니다.`, step - 1);
             await delay();
             dispatch(changeAiTalking(false));
-            setStep(501);
+            dispatch(updateStep(501));
         }
     }
     
     const endOfLearning = async () => {
-        addAiMessage(`${Date()}, 학습을 종료합니다.`, step=-1);
+        addAiMessage(`${Date()}, 학습을 종료합니다.`, -1);
 
         const jsonString = JSON.stringify([
             ...messages,

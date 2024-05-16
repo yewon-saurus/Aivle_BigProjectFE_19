@@ -7,7 +7,7 @@ import { MessageForm, MessageList } from './components';
 import GoToLatestAndQuizList from '../../components/GoToLatestAndQuizList';
 
 import { useSelector, useDispatch } from "react-redux";
-import { changeAiTalking } from "../../redux/modules/quiz";
+import { changeAiTalking, updateStep } from "../../redux/modules/quiz";
 
 const Main = () => {
     const token = sessionStorage.getItem('aivle19_token');
@@ -15,12 +15,12 @@ const Main = () => {
     const params = useParams();
 
     const dispatch = useDispatch();
+    const step = useSelector((state) => state.quiz.step);
 
     const scrollRef = useRef();
     const messageFormRef = useRef();
     
     const [createQuizDidMount, setCreateQuizDidMount] = useState(false);
-    const [step, setStep] = useState(0);
     const [quizId, setQuizId] = useState(0);
     const [word, setWord] = useState('');
     const [quiz, setQuiz] = useState({});
@@ -110,7 +110,7 @@ const Main = () => {
                     }
                 }
                 setWord(tmpWord);
-                setStep(tmpStep);
+                dispatch(updateStep(tmpStep));
                 if (tmpStep !== -1) {
                     setMessages([...tmpMessages, {
                         text: `${Date()}\n[${tmpQuizId}회차 학습: ${tmpWord}] 재입장 하셨습니다.`,
@@ -140,8 +140,6 @@ const Main = () => {
                         messages={messages}
                         setMessages={setMessages}
                         scrollRef={scrollRef}
-                        step={step}
-                        setStep={setStep}
                         writingWords={writingWords}
                         setWritingWords={setWritingWords}
                     />
@@ -160,8 +158,6 @@ const Main = () => {
                         messages={messages}
                         setMessages={setMessages}
                         messageFormRef={messageFormRef}
-                        step={step}
-                        setStep={setStep}
                         writingWords={writingWords}
                     />
                     {/* <div> */}
