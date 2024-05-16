@@ -7,7 +7,7 @@ import { MessageForm, MessageList } from './components';
 import GoToLatestAndQuizList from '../../components/GoToLatestAndQuizList';
 
 import { useSelector, useDispatch } from "react-redux";
-import { changeAiTalking, updateStep } from "../../redux/modules/quiz";
+import { changeAiTalking, updateStep, updateWord } from "../../redux/modules/quiz";
 
 const Main = () => {
     const token = sessionStorage.getItem('aivle19_token');
@@ -16,13 +16,13 @@ const Main = () => {
 
     const dispatch = useDispatch();
     const step = useSelector((state) => state.quiz.step);
+    const word = useSelector((state) => state.quiz.word);
 
     const scrollRef = useRef();
     const messageFormRef = useRef();
     
     const [createQuizDidMount, setCreateQuizDidMount] = useState(false);
     const [quizId, setQuizId] = useState(0);
-    const [word, setWord] = useState('');
     const [quiz, setQuiz] = useState({});
     const [correctAnswer, setCorrectAnswer] = useState('');
     const [studySentence, setStudySentence] = useState('');
@@ -63,7 +63,7 @@ const Main = () => {
             }).then(response => {
                 if (response.status === 200) {
                     setQuizId(response.data.quiz_id);
-                    setWord(response.data.word);
+                    dispatch(updateWord(response.data.word));
                     setQuiz(JSON.parse(response.data.quiz).questions[0]);
                 }
             })
@@ -109,7 +109,7 @@ const Main = () => {
                         setCorrectAnswer(tmpQuiz.answers[i].answer);
                     }
                 }
-                setWord(tmpWord);
+                dispatch(updateWord(tmpWord));
                 dispatch(updateStep(tmpStep));
                 if (tmpStep !== -1) {
                     setMessages([...tmpMessages, {
@@ -149,7 +149,6 @@ const Main = () => {
                     {/* 프롬프트 창 */}
                     <MessageForm
                         quizId={quizId}
-                        word={word}
                         quiz={quiz}
                         correctAnswer={correctAnswer}
                         setCorrectAnswer={setCorrectAnswer}
