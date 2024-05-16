@@ -7,7 +7,13 @@ import { MessageForm, MessageList } from './components';
 import GoToLatestAndQuizList from '../../components/GoToLatestAndQuizList';
 
 import { useSelector, useDispatch } from "react-redux";
-import { changeAiTalking, updateStep, updateWord, updateQuiz } from "../../redux/modules/quiz";
+import {
+    changeAiTalking,
+    updateStep,
+    updateWord,
+    updateQuiz,
+    updateCorrectAnswer,
+} from "../../redux/modules/quiz";
 
 const Main = () => {
     const token = sessionStorage.getItem('aivle19_token');
@@ -22,9 +28,8 @@ const Main = () => {
     const scrollRef = useRef();
     const messageFormRef = useRef();
     
-    const [createQuizDidMount, setCreateQuizDidMount] = useState(false);
     const [quizId, setQuizId] = useState(0);
-    const [correctAnswer, setCorrectAnswer] = useState('');
+    const [createQuizDidMount, setCreateQuizDidMount] = useState(false);
     const [studySentence, setStudySentence] = useState('');
     const [messages, setMessages] = useState([
         {
@@ -106,7 +111,7 @@ const Main = () => {
                 dispatch(updateQuiz(tmpQuiz));
                 for (let i = 0; i < tmpQuiz.answers.length; i++) {
                     if (tmpQuiz.answers[i].correct === true) {
-                        setCorrectAnswer(tmpQuiz.answers[i].answer);
+                        dispatch(updateCorrectAnswer(tmpQuiz.answers[i].answer));
                     }
                 }
                 dispatch(updateWord(tmpWord));
@@ -149,8 +154,6 @@ const Main = () => {
                     {/* 프롬프트 창 */}
                     <MessageForm
                         quizId={quizId}
-                        correctAnswer={correctAnswer}
-                        setCorrectAnswer={setCorrectAnswer}
                         studySentence={studySentence}
                         setStudySentence={setStudySentence}
                         messages={messages}

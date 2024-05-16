@@ -5,9 +5,13 @@ import { IoSend } from "react-icons/io5";
 import axios from 'axios';
 
 import { useSelector, useDispatch } from 'react-redux';
-import { changeAiTalking, updateStep } from '../../../redux/modules/quiz';
+import {
+    changeAiTalking,
+    updateStep,
+    updateCorrectAnswer,
+} from '../../../redux/modules/quiz';
 
-const MessageForm = ({ quizId, correctAnswer, setCorrectAnswer, studySentence, setStudySentence, messages, setMessages, messageFormRef, writingWords }) => {
+const MessageForm = ({ quizId, studySentence, setStudySentence, messages, setMessages, messageFormRef, writingWords }) => {
     const token = sessionStorage.getItem('aivle19_token');
     const username = sessionStorage.getItem('aivle19_username');
 
@@ -16,6 +20,7 @@ const MessageForm = ({ quizId, correctAnswer, setCorrectAnswer, studySentence, s
     const step = useSelector((state) => state.quiz.step);
     const word = useSelector((state) => state.quiz.word);
     const quiz = useSelector((state) => state.quiz.quiz);
+    const correctAnswer = useSelector((state) => state.quiz.correctAnswer);
 
     const [message, setMessage] = useState('');
     const [audioUrl, setAudioUrl] = useState();
@@ -97,12 +102,12 @@ const MessageForm = ({ quizId, correctAnswer, setCorrectAnswer, studySentence, s
     }
 
     const startQuiz = async () => {
+        dispatch(changeAiTalking(true));
         for (let i = 0; i < quiz.answers.length; i++) {
             if (quiz.answers[i].correct === true) {
-                setCorrectAnswer(quiz.answers[i].answer);
+                dispatch(updateCorrectAnswer(quiz.answers[i].answer));
             }
         }
-        dispatch(changeAiTalking(true));
         addAiMessage(`다음은 "${word}"를 사용한 문장입니다.`);
         await delay();
         addAiMessage(`"${quiz.Sentence}"`);

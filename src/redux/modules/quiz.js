@@ -3,12 +3,14 @@ const initialState = {
     step: 0,
     word: '',
     quiz: {},
+    correctAnswer: '',
 }
 
 const CHANGE_AI_TALKING = "QUIZ/CHANGE_AI_TALKING";
 const UPDATE_STEP = "QUIZ/UPDATE_STEP";
 const UPDATE_WORD = "QUIZ/UPDATE_WORD";
 const UPDATE_QUIZ = "QUIZ/UPDATE_QUIZ";
+const UPDATE_CORRECT_ANSWER = "QUIZ/UPDATE_CORRECT_ANSWER";
 
 export const changeAiTalking = (newAiIsTalking) => {
     return {
@@ -38,6 +40,13 @@ export const updateQuiz = (newQuiz) => {
     }
 }
 
+export const updateCorrectAnswer = (newCorrectAnswer) => {
+    return {
+        type: UPDATE_CORRECT_ANSWER,
+        newCorrectAnswer: newCorrectAnswer,
+    }
+}
+
 export default function (state=initialState, action) {
     switch (action.type) {
         case CHANGE_AI_TALKING: {
@@ -62,6 +71,12 @@ export default function (state=initialState, action) {
             return {
                 ...state,
                 quiz: action.newQuiz,
+            }
+        }
+        case UPDATE_CORRECT_ANSWER: {
+            return {
+                ...state,
+                correctAnswer: action.newCorrectAnswer,
             }
         }
             
