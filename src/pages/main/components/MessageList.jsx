@@ -20,10 +20,7 @@ const MessageList = ({ token, quizId, studySentence, messages, setMessages, scro
                 'Authorization': `Token ${token}`,
                 'Content-Type': 'multipart/form-data'
             }
-        }).then(response => {
-            if (response.status === 200) console.log('chat log is updated.'); // console.log(JSON.parse(response.data.chat_log)); 테스트 해보니 잘 파싱 됨
-        })
-        .catch(error => {
+        }).catch(error => {
             console.error(error);
         });
     }
@@ -38,9 +35,9 @@ const MessageList = ({ token, quizId, studySentence, messages, setMessages, scro
 
     return (
         <div className="messages-list">
-            {messages.map((message) =>
+            {messages.map((message, idx) =>
                 <div className={`message ${judgeChatStyle(message)}`}>
-                    <MessageItem
+                    <MessageItem key={'message_item_' + idx}
                         message={message} setMessages={setMessages} quizId={quizId}
                         studySentence={studySentence}
                         writingWords={writingWords} setWritingWords={setWritingWords} />
