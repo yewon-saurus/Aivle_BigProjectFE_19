@@ -25,7 +25,7 @@ const Main = () => {
     const step = useSelector((state) => state.quiz.step);
     const word = useSelector((state) => state.quiz.word);
     const quiz = useSelector((state) => state.quiz.quiz);
-    const messages = useSelector((state) => state.quiz.quiz);
+    const messages = useSelector((state) => state.quiz.messages);
 
     const scrollRef = useRef();
     const messageFormRef = useRef();
