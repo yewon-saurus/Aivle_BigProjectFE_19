@@ -4,11 +4,12 @@ import React, { useState, useRef, useEffect } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
 import { changeAiTalking, updateStep } from '../../../redux/modules/quiz';
 
-const MessageItem = ({ message, setMessages, quizId, studySentence, writingWords, setWritingWords }) => {
+const MessageItem = ({ message, setMessages, quizId, writingWords, setWritingWords }) => {
     const token = sessionStorage.getItem('aivle19_token');
 
     const dispatch = useDispatch();
     const step = useSelector((state) => state.quiz.step);
+    const studySentence = useSelector((state) => state.quiz.studySentence);
 
     const [imgFile, setImageFile] = useState("");
     const [stream, setStream] = useState();

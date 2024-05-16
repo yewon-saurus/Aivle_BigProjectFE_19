@@ -3,7 +3,7 @@ import { MessageItem } from './';
 import axios from 'axios';
 import { useSelector } from 'react-redux';
 
-const MessageList = ({ token, quizId, studySentence, messages, setMessages, scrollRef, writingWords, setWritingWords }) => {
+const MessageList = ({ token, quizId, messages, setMessages, scrollRef, writingWords, setWritingWords }) => {
     const step = useSelector((state) => state.quiz.step);
     
     useEffect(() => {
@@ -39,7 +39,6 @@ const MessageList = ({ token, quizId, studySentence, messages, setMessages, scro
                 <div className={`message ${judgeChatStyle(message)}`}>
                     <MessageItem key={'message_item_' + idx}
                         message={message} setMessages={setMessages} quizId={quizId}
-                        studySentence={studySentence}
                         writingWords={writingWords} setWritingWords={setWritingWords} />
                     <div className='relative -bottom-5' ref={scrollRef}></div>
                 </div>

@@ -9,9 +9,10 @@ import {
     changeAiTalking,
     updateStep,
     updateCorrectAnswer,
+    updateStudySentence,
 } from '../../../redux/modules/quiz';
 
-const MessageForm = ({ quizId, studySentence, setStudySentence, messages, setMessages, messageFormRef, writingWords }) => {
+const MessageForm = ({ quizId, messages, setMessages, messageFormRef, writingWords }) => {
     const token = sessionStorage.getItem('aivle19_token');
     const username = sessionStorage.getItem('aivle19_username');
 
@@ -21,6 +22,7 @@ const MessageForm = ({ quizId, studySentence, setStudySentence, messages, setMes
     const word = useSelector((state) => state.quiz.word);
     const quiz = useSelector((state) => state.quiz.quiz);
     const correctAnswer = useSelector((state) => state.quiz.correctAnswer);
+    const studySentence = useSelector((state) => state.quiz.studySentence);
 
     const [message, setMessage] = useState('');
     const [audioUrl, setAudioUrl] = useState();
@@ -190,7 +192,7 @@ const MessageForm = ({ quizId, studySentence, setStudySentence, messages, setMes
         // generate Sentence And Provide TTS
         const response = generateSentence();
         if ((await response).status === 200) {
-            setStudySentence((await response).data.sentence);
+            dispatch(updateStudySentence((await response).data.sentence));
             const tmpSentence = (await response).data.sentence;
 
             // tts 요청
@@ -238,7 +240,7 @@ const MessageForm = ({ quizId, studySentence, setStudySentence, messages, setMes
         // generate Sentence And Provide TTS
         const response = generateSentence();
         if ((await response).status === 200) {
-            setStudySentence((await response).data.sentence);
+            dispatch(updateStudySentence((await response).data.sentence));
             const tmpSentence = (await response).data.sentence;
 
             // tts 요청

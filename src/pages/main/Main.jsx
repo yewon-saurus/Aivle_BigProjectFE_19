@@ -30,7 +30,6 @@ const Main = () => {
     
     const [quizId, setQuizId] = useState(0);
     const [createQuizDidMount, setCreateQuizDidMount] = useState(false);
-    const [studySentence, setStudySentence] = useState('');
     const [messages, setMessages] = useState([
         {
             text: `어서오세요.\n생성형 AI를 통한 문해력 향상 학습 서비스에 입장하셨습니다.`,
@@ -141,7 +140,6 @@ const Main = () => {
                     <MessageList
                         token={token}
                         quizId={quizId}
-                        studySentence={studySentence}
                         messages={messages}
                         setMessages={setMessages}
                         scrollRef={scrollRef}
@@ -154,8 +152,6 @@ const Main = () => {
                     {/* 프롬프트 창 */}
                     <MessageForm
                         quizId={quizId}
-                        studySentence={studySentence}
-                        setStudySentence={setStudySentence}
                         messages={messages}
                         setMessages={setMessages}
                         messageFormRef={messageFormRef}
