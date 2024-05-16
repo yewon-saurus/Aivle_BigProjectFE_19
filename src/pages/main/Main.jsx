@@ -7,7 +7,7 @@ import { MessageForm, MessageList } from './components';
 import GoToLatestAndQuizList from '../../components/GoToLatestAndQuizList';
 
 import { useSelector, useDispatch } from "react-redux";
-import { changeAiTalking, updateStep, updateWord } from "../../redux/modules/quiz";
+import { changeAiTalking, updateStep, updateWord, updateQuiz } from "../../redux/modules/quiz";
 
 const Main = () => {
     const token = sessionStorage.getItem('aivle19_token');
@@ -17,13 +17,13 @@ const Main = () => {
     const dispatch = useDispatch();
     const step = useSelector((state) => state.quiz.step);
     const word = useSelector((state) => state.quiz.word);
+    const quiz = useSelector((state) => state.quiz.quiz);
 
     const scrollRef = useRef();
     const messageFormRef = useRef();
     
     const [createQuizDidMount, setCreateQuizDidMount] = useState(false);
     const [quizId, setQuizId] = useState(0);
-    const [quiz, setQuiz] = useState({});
     const [correctAnswer, setCorrectAnswer] = useState('');
     const [studySentence, setStudySentence] = useState('');
     const [messages, setMessages] = useState([
@@ -64,7 +64,7 @@ const Main = () => {
                 if (response.status === 200) {
                     setQuizId(response.data.quiz_id);
                     dispatch(updateWord(response.data.word));
-                    setQuiz(JSON.parse(response.data.quiz).questions[0]);
+                    dispatch(updateQuiz(JSON.parse(response.data.quiz).questions[0]));
                 }
             })
             .catch(error => {
@@ -103,7 +103,7 @@ const Main = () => {
                 const tmpStep = JSON.parse(response.data.chat_log)[JSON.parse(response.data.chat_log).length - 1].step;
                 const tmpMessages = JSON.parse(response.data.chat_log);
                 setQuizId(tmpQuizId);
-                setQuiz(tmpQuiz);
+                dispatch(updateQuiz(tmpQuiz));
                 for (let i = 0; i < tmpQuiz.answers.length; i++) {
                     if (tmpQuiz.answers[i].correct === true) {
                         setCorrectAnswer(tmpQuiz.answers[i].answer);
@@ -149,7 +149,6 @@ const Main = () => {
                     {/* 프롬프트 창 */}
                     <MessageForm
                         quizId={quizId}
-                        quiz={quiz}
                         correctAnswer={correctAnswer}
                         setCorrectAnswer={setCorrectAnswer}
                         studySentence={studySentence}

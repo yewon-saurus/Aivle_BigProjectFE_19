@@ -7,7 +7,7 @@ import axios from 'axios';
 import { useSelector, useDispatch } from 'react-redux';
 import { changeAiTalking, updateStep } from '../../../redux/modules/quiz';
 
-const MessageForm = ({ quizId, quiz, correctAnswer, setCorrectAnswer, studySentence, setStudySentence, messages, setMessages, messageFormRef, writingWords }) => {
+const MessageForm = ({ quizId, correctAnswer, setCorrectAnswer, studySentence, setStudySentence, messages, setMessages, messageFormRef, writingWords }) => {
     const token = sessionStorage.getItem('aivle19_token');
     const username = sessionStorage.getItem('aivle19_username');
 
@@ -15,6 +15,7 @@ const MessageForm = ({ quizId, quiz, correctAnswer, setCorrectAnswer, studySente
     const aiIsTalking = useSelector((state) => state.quiz.aiIsTalking);
     const step = useSelector((state) => state.quiz.step);
     const word = useSelector((state) => state.quiz.word);
+    const quiz = useSelector((state) => state.quiz.quiz);
 
     const [message, setMessage] = useState('');
     const [audioUrl, setAudioUrl] = useState();
