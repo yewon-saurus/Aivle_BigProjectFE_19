@@ -13,7 +13,7 @@ import {
     updateMessages,
 } from '../../../redux/modules/quiz';
 
-const MessageForm = ({ quizId, messageFormRef, writingWords }) => {
+const MessageForm = ({ quizId, messageFormRef }) => {
     const token = sessionStorage.getItem('aivle19_token');
     const username = sessionStorage.getItem('aivle19_username');
 
@@ -25,6 +25,7 @@ const MessageForm = ({ quizId, messageFormRef, writingWords }) => {
     const correctAnswer = useSelector((state) => state.quiz.correctAnswer);
     const studySentence = useSelector((state) => state.quiz.studySentence);
     const messages = useSelector((state) => state.quiz.messages);
+    const writingWords = useSelector((state) => state.quiz.writingWords);
 
     const [message, setMessage] = useState('');
     const [audioUrl, setAudioUrl] = useState();

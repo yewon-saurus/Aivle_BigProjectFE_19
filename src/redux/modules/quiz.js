@@ -19,6 +19,7 @@ const initialState = {
             isUser: false, isTyping: false, id: Date.now()
         },
     ],
+    writingWords: [],
 }
 
 const CHANGE_AI_TALKING = "QUIZ/CHANGE_AI_TALKING";
@@ -28,6 +29,8 @@ const UPDATE_QUIZ = "QUIZ/UPDATE_QUIZ";
 const UPDATE_CORRECT_ANSWER = "QUIZ/UPDATE_CORRECT_ANSWER";
 const UPDATE_STUDY_SENTENCE = "QUIZ/UPDATE_STUDY_SENTENCE";
 const UPDATE_MESSAGES = "QUIZ/UPDATE_MESSAGES";
+const UPDATE_WRITING_WORDS = "QUIZ/UPDATE_WRITING_WORDS";
+const ADD_WRITING_WORD = "QUIZ/ADD_WRITING_WORD";
 
 export const changeAiTalking = (newAiIsTalking) => {
     return {
@@ -78,6 +81,20 @@ export const updateMessages = (newMassage) => {
     }
 }
 
+export const updateWritingWords = (newWritingWords) => {
+    return {
+        type: UPDATE_WRITING_WORDS,
+        newWritingWords: newWritingWords,
+    }
+}
+
+export const addWritingWord = (newWritingWord) => {
+    return {
+        type: ADD_WRITING_WORD,
+        newWritingWord: newWritingWord
+    }
+}
+
 export default function (state=initialState, action) {
     switch (action.type) {
         case CHANGE_AI_TALKING: {
@@ -122,6 +139,21 @@ export default function (state=initialState, action) {
                 messages: [
                     ...state.messages,
                     action.newMassage,
+                ],
+            }
+        }
+        case UPDATE_WRITING_WORDS: {
+            return {
+                ...state,
+                writingWords: action.newWritingWords,
+            }
+        }
+        case ADD_WRITING_WORD: {
+            return {
+                ...state,
+                writingWords: [
+                    ...state.writingWords,
+                    action.newWord,
                 ],
             }
         }

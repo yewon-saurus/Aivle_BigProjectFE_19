@@ -32,7 +32,6 @@ const Main = () => {
     
     const [quizId, setQuizId] = useState(0);
     const [createQuizDidMount, setCreateQuizDidMount] = useState(false);
-    const [writingWords, setWritingWords] = useState([]);
     
     useEffect(() => {
         if (params.key === undefined) {
@@ -126,8 +125,6 @@ const Main = () => {
                         token={token}
                         quizId={quizId}
                         scrollRef={scrollRef}
-                        writingWords={writingWords}
-                        setWritingWords={setWritingWords}
                     />
                 </div>
                 <div className="control">
@@ -136,7 +133,6 @@ const Main = () => {
                     <MessageForm
                         quizId={quizId}
                         messageFormRef={messageFormRef}
-                        writingWords={writingWords}
                     />
                     {/* <div> */}
                         {/* 양 방향 화살표 버튼(이전 회차, 다음 회차) */}

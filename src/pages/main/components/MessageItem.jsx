@@ -6,14 +6,17 @@ import {
     changeAiTalking,
     updateStep,
     updateMessages,
+    updateWritingWords,
+    addWritingWord,
 } from '../../../redux/modules/quiz';
 
-const MessageItem = ({ message, quizId, writingWords, setWritingWords }) => {
+const MessageItem = ({ message, quizId }) => {
     const token = sessionStorage.getItem('aivle19_token');
 
     const dispatch = useDispatch();
     const step = useSelector((state) => state.quiz.step);
     const studySentence = useSelector((state) => state.quiz.studySentence);
+    const writingWords = useSelector((state) => state.quiz.writingWords);
 
     const [imgFile, setImageFile] = useState("");
     const [stream, setStream] = useState();
@@ -77,11 +80,8 @@ const MessageItem = ({ message, quizId, writingWords, setWritingWords }) => {
     }
     
     const handleChangeWritingWords = (checked, item, word) => {
-        if (checked) setWritingWords((prev) => [
-            ...prev,
-            { id: item, word: word }
-        ]);
-        else setWritingWords(writingWords.filter((ele) => ele.id !== item));
+        if (checked) dispatch(addWritingWord({ id: item, word: word }));
+        else dispatch(updateWritingWords(writingWords.filter((ele) => ele.id !== item)));
     }
 
     const checkWithOCR = async () => {
