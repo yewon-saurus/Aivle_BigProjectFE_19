@@ -220,7 +220,7 @@ export default function (state=initialState, action) {
                 ...state,
                 writingWords: [
                     ...state.writingWords,
-                    action.newWord,
+                    action.newWritingWord,
                 ],
             }
         }
