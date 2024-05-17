@@ -9,11 +9,11 @@ import GoToLatestAndQuizList from '../../components/GoToLatestAndQuizList';
 import { useSelector, useDispatch } from "react-redux";
 import {
     changeAiTalking,
-    updateStep,
+    updateQuizId,
     updateWord,
     updateQuiz,
-    updateCorrectAnswer,
     updateMessages,
+    importPrevQuiz,
 } from "../../redux/modules/quiz";
 
 const Main = () => {
@@ -22,6 +22,7 @@ const Main = () => {
     const params = useParams();
 
     const dispatch = useDispatch();
+    const quizId = useSelector((state) => state.quiz.quizId);
     const step = useSelector((state) => state.quiz.step);
     const word = useSelector((state) => state.quiz.word);
     const quiz = useSelector((state) => state.quiz.quiz);
@@ -30,7 +31,6 @@ const Main = () => {
     const scrollRef = useRef();
     const messageFormRef = useRef();
     
-    const [quizId, setQuizId] = useState(0);
     const [createQuizDidMount, setCreateQuizDidMount] = useState(false);
     
     useEffect(() => {
@@ -41,7 +41,7 @@ const Main = () => {
         else {
             // 전에 풀던/풀이 완료한 문제 입장
             dispatch(changeAiTalking(false));
-            importPrevQuiz();
+            dispatch(importPrevQuiz(params.key, token));
         }
     }, []);
 
@@ -53,7 +53,7 @@ const Main = () => {
                 }
             }).then(response => {
                 if (response.status === 200) {
-                    setQuizId(response.data.quiz_id);
+                    dispatch(updateQuizId(response.data.quiz_id));
                     dispatch(updateWord(response.data.word));
                     dispatch(updateQuiz(JSON.parse(response.data.quiz).questions[0]));
                 }
@@ -77,41 +77,6 @@ const Main = () => {
             dispatch(changeAiTalking(false));
         }
     }, [word, quiz]);
-
-    const importPrevQuiz = async () => {
-        await axios.get(process.env.REACT_APP_API_URL + '/study/quiz/' + params.key + '/', {
-            headers: {
-                'Authorization': `Token ${token}`,
-            }
-        }).then(response => {
-            if (response.status === 200) {
-                const tmpQuizId = response.data.quiz_id;
-                const tmpQuiz = JSON.parse(response.data.quiz).questions[0];
-                const tmpWord = response.data.word;
-                const tmpStep = JSON.parse(response.data.chat_log)[JSON.parse(response.data.chat_log).length - 1].step;
-                const tmpMessages = JSON.parse(response.data.chat_log);
-                setQuizId(tmpQuizId);
-                dispatch(updateQuiz(tmpQuiz));
-                for (let i = 0; i < tmpQuiz.answers.length; i++) {
-                    if (tmpQuiz.answers[i].correct === true) {
-                        dispatch(updateCorrectAnswer(tmpQuiz.answers[i].answer));
-                    }
-                }
-                dispatch(updateWord(tmpWord));
-                dispatch(updateStep(tmpStep));
-                if (tmpStep !== -1) {
-                    dispatch(updateMessages({
-                        text: `${Date()}\n[${tmpQuizId}회차 학습: ${tmpWord}] 재입장 하셨습니다.`,
-                        mode: 'reEnter', id: Date.now(), step: tmpStep
-                    }));
-                }
-                else dispatch(updateMessages(tmpMessages));
-            }
-        })
-        .catch(error => {
-            console.error(error);
-        });
-    }
 
     return (
         <div className='flex'>

@@ -1,5 +1,8 @@
+import axios from "axios";
+
 const initialState = {
     aiIsTalking: true,
+    quizId: 0,
     step: 0,
     word: '',
     quiz: {},
@@ -23,6 +26,7 @@ const initialState = {
 }
 
 const CHANGE_AI_TALKING = "QUIZ/CHANGE_AI_TALKING";
+const UPDATE_QUIZ_ID = "QUIZ/UPDATE_QUIZ_ID";
 const UPDATE_STEP = "QUIZ/UPDATE_STEP";
 const UPDATE_WORD = "QUIZ/UPDATE_WORD";
 const UPDATE_QUIZ = "QUIZ/UPDATE_QUIZ";
@@ -31,11 +35,19 @@ const UPDATE_STUDY_SENTENCE = "QUIZ/UPDATE_STUDY_SENTENCE";
 const UPDATE_MESSAGES = "QUIZ/UPDATE_MESSAGES";
 const UPDATE_WRITING_WORDS = "QUIZ/UPDATE_WRITING_WORDS";
 const ADD_WRITING_WORD = "QUIZ/ADD_WRITING_WORD";
+const IMPORT_PREV_QUIZ = "QUIZ/IMPORT_PREV_QUIZ";
 
 export const changeAiTalking = (newAiIsTalking) => {
     return {
         type: CHANGE_AI_TALKING,
         newAiIsTalking: newAiIsTalking,
+    }
+}
+
+export const updateQuizId = (newQuizId) => {
+    return {
+        type: UPDATE_QUIZ_ID,
+        newQuizId: newQuizId,
     }
 }
 
@@ -95,12 +107,67 @@ export const addWritingWord = (newWritingWord) => {
     }
 }
 
+export const importPrevQuiz = (key, token) => async (dispatch) => {
+    try {
+        await axios.get(process.env.REACT_APP_API_URL + '/study/quiz/' + key + '/', {
+            headers: {
+                'Authorization': `Token ${token}`,
+            }
+        }).then(response => {
+            const tmpQuizId = response.data.quiz_id;
+            const tmpQuiz = JSON.parse(response.data.quiz).questions[0];
+            const tmpWord = response.data.word;
+            const tmpStep = JSON.parse(response.data.chat_log)[JSON.parse(response.data.chat_log).length - 1].step;
+            const tmpMessages = JSON.parse(response.data.chat_log);
+            let tmpCorrectAnswer;
+            for (let i = 0; i < tmpQuiz.answers.length; i++) {
+                if (tmpQuiz.answers[i].correct === true) {
+                    tmpCorrectAnswer = tmpQuiz.answers[i].answer;
+                }
+            }
+
+            if (tmpStep !== -1) dispatch({
+                type: IMPORT_PREV_QUIZ,
+                tmpQuizId: tmpQuizId,
+                tmpQuiz: tmpQuiz,
+                tmpWord: tmpWord,
+                tmpStep: tmpStep,
+                tmpMessages: [
+                    ...tmpMessages,
+                    {
+                        text: `${Date()}\n[${tmpQuizId}회차 학습: ${tmpWord}] 재입장 하셨습니다.`,
+                        mode: 'reEnter', id: Date.now(), step: tmpStep
+                    }
+                ],
+                tmpCorrectAnswer: tmpCorrectAnswer,
+            });
+            else dispatch({
+                type: IMPORT_PREV_QUIZ,
+                tmpQuizId: tmpQuizId,
+                tmpQuiz: tmpQuiz,
+                tmpWord: tmpWord,
+                tmpStep: tmpStep,
+                tmpMessages: tmpMessages,
+                tmpCorrectAnswer: tmpCorrectAnswer,
+            });
+        })
+    } catch (e) {
+        console.error(e);
+    }
+}
+
 export default function (state=initialState, action) {
     switch (action.type) {
         case CHANGE_AI_TALKING: {
             return {
                 ...state,
                 aiIsTalking: action.newAiIsTalking,
+            }
+        }
+        case UPDATE_QUIZ_ID: {
+            return {
+                ...state,
+                quizId: action.newQuizId,
             }
         }
         case UPDATE_STEP: {
@@ -155,6 +222,17 @@ export default function (state=initialState, action) {
                     ...state.writingWords,
                     action.newWord,
                 ],
+            }
+        }
+        case IMPORT_PREV_QUIZ: {
+            return {
+                ...state,
+                quizId: action.tmpQuizId,
+                quiz: action.tmpQuiz,
+                word: action.tmpWord,
+                step: action.tmpStep,
+                messages: action.tmpMessages,
+                correctAnswer: action.tmpCorrectAnswer,
             }
         }
         
