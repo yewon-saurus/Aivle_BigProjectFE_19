@@ -102,6 +102,15 @@ export const createNewQuiz = (token) => async (dispatch) => {
                     tmpQuizId: tmpQuizId,
                     tmpWord: tmpWord,
                     tmpQuiz: tmpQuiz,
+                    guideMessage: [
+                        {
+                            text: `이번에 학습하실 단어는 "${tmpWord}" 입니다.`,
+                            isUser: false, id: Date.now(), step: 0
+                        }, {
+                            text: `입력창에 "${tmpWord}"를 입력하시면 단어 퀴즈가 시작됩니다.`,
+                            isUser: false, id: Date.now(), step: 0
+                        }
+                    ],
                 });
             }
         })
@@ -215,6 +224,11 @@ export default function (state=initialState, action) {
                 quizId: action.tmpQuizId,
                 word: action.tmpWord,
                 quiz: action.tmpQuiz,
+                messages: [
+                    ...state.messages,
+                    ...action.guideMessage,
+                ],
+                aiIsTalking: false,
             }
         }
         case IMPORT_PREV_QUIZ: {

@@ -8,7 +8,6 @@ import GoToLatestAndQuizList from '../../components/GoToLatestAndQuizList';
 import { useSelector, useDispatch } from "react-redux";
 import {
     changeAiTalking,
-    updateMessages,
     createNewQuiz,
     importPrevQuiz,
 } from "../../redux/modules/quiz";
@@ -20,10 +19,6 @@ const Main = () => {
 
     const dispatch = useDispatch();
     const quizId = useSelector((state) => state.quiz.quizId);
-    const step = useSelector((state) => state.quiz.step);
-    const word = useSelector((state) => state.quiz.word);
-    const quiz = useSelector((state) => state.quiz.quiz);
-    const messages = useSelector((state) => state.quiz.messages);
 
     const scrollRef = useRef();
     const messageFormRef = useRef();
@@ -45,20 +40,6 @@ const Main = () => {
     useEffect(() => {
         if (createQuizDidMount) dispatch(createNewQuiz(token));
     }, [createQuizDidMount])
-
-    useEffect(() => {
-        if (word !== '' && messages[messages.length - 1].text === '문제 생성을 시작합니다. 문제가 생성될 때까지 잠시 기다려 주세요.') {
-            dispatch(updateMessages({
-                text: `이번에 학습하실 단어는 "${word}" 입니다.`,
-                isUser: false, id: Date.now(), step: step
-            }));
-            dispatch(updateMessages({
-                text: `입력창에 "${word}"를 입력하시면 단어 퀴즈가 시작됩니다.`,
-                isUser: false, id: Date.now(), step: step
-            }));
-            dispatch(changeAiTalking(false));
-        }
-    }, [word, quiz]);
 
     return (
         <div className='flex'>
