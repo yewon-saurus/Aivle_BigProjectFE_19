@@ -5,7 +5,7 @@ import { useParams } from 'react-router-dom';
 import { MessageForm, MessageList } from './components';
 import GoToLatestAndQuizList from '../../components/GoToLatestAndQuizList';
 
-import { useSelector, useDispatch } from "react-redux";
+import { useDispatch } from "react-redux";
 import {
     changeAiTalking,
     createNewQuiz,
@@ -18,7 +18,6 @@ const Main = () => {
     const params = useParams();
 
     const dispatch = useDispatch();
-    const quizId = useSelector((state) => state.quiz.quizId);
 
     const scrollRef = useRef();
     const messageFormRef = useRef();
@@ -51,7 +50,6 @@ const Main = () => {
                     {/* 대화 형식으로 나타난 학습 로그 */}
                     <MessageList
                         token={token}
-                        quizId={quizId}
                         scrollRef={scrollRef}
                     />
                 </div>
@@ -59,7 +57,6 @@ const Main = () => {
                     {/* fixed 된 프롬프트 창 + 양 방향 화살표 버튼 */}
                     {/* 프롬프트 창 */}
                     <MessageForm
-                        quizId={quizId}
                         messageFormRef={messageFormRef}
                     />
                     {/* <div> */}

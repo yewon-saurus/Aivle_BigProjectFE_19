@@ -13,12 +13,13 @@ import {
     updateMessages,
 } from '../../../redux/modules/quiz';
 
-const MessageForm = ({ quizId, messageFormRef }) => {
+const MessageForm = ({ messageFormRef }) => {
     const token = sessionStorage.getItem('aivle19_token');
     const username = sessionStorage.getItem('aivle19_username');
 
     const dispatch = useDispatch();
     const aiIsTalking = useSelector((state) => state.quiz.aiIsTalking);
+    const quizId = useSelector((state) => state.quiz.quizId);
     const step = useSelector((state) => state.quiz.step);
     const word = useSelector((state) => state.quiz.word);
     const quiz = useSelector((state) => state.quiz.quiz);

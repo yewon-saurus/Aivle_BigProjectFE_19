@@ -3,7 +3,8 @@ import { MessageItem } from './';
 import axios from 'axios';
 import { useSelector } from 'react-redux';
 
-const MessageList = ({ token, quizId, scrollRef }) => {
+const MessageList = ({ token, scrollRef }) => {
+    const quizId = useSelector((state) => state.quiz.quizId);
     const step = useSelector((state) => state.quiz.step);
     const messages = useSelector((state) => state.quiz.messages);
     
