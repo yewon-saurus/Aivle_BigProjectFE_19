@@ -26,10 +26,7 @@ const initialState = {
 }
 
 const CHANGE_AI_TALKING = "QUIZ/CHANGE_AI_TALKING";
-const UPDATE_QUIZ_ID = "QUIZ/UPDATE_QUIZ_ID";
 const UPDATE_STEP = "QUIZ/UPDATE_STEP";
-const UPDATE_WORD = "QUIZ/UPDATE_WORD";
-const UPDATE_QUIZ = "QUIZ/UPDATE_QUIZ";
 const UPDATE_CORRECT_ANSWER = "QUIZ/UPDATE_CORRECT_ANSWER";
 const UPDATE_STUDY_SENTENCE = "QUIZ/UPDATE_STUDY_SENTENCE";
 const UPDATE_MESSAGES = "QUIZ/UPDATE_MESSAGES";
@@ -47,31 +44,10 @@ export const changeAiTalking = (newAiIsTalking) => {
     }
 }
 
-export const updateQuizId = (newQuizId) => {
-    return {
-        type: UPDATE_QUIZ_ID,
-        newQuizId: newQuizId,
-    }
-}
-
 export const updateStep = (newStep) => {
     return {
         type: UPDATE_STEP,
         newStep: newStep,
-    }
-}
-
-export const updateWord = (newWord) => {
-    return {
-        type: UPDATE_WORD,
-        newWord: newWord,
-    }
-}
-
-export const updateQuiz = (newQuiz) => {
-    return {
-        type: UPDATE_QUIZ,
-        newQuiz: newQuiz,
     }
 }
 
@@ -191,28 +167,10 @@ export default function (state=initialState, action) {
                 aiIsTalking: action.newAiIsTalking,
             }
         }
-        case UPDATE_QUIZ_ID: {
-            return {
-                ...state,
-                quizId: action.newQuizId,
-            }
-        }
         case UPDATE_STEP: {
             return {
                 ...state,
                 step: action.newStep,
-            }
-        }
-        case UPDATE_WORD: {
-            return {
-                ...state,
-                word: action.newWord,
-            }
-        }
-        case UPDATE_QUIZ: {
-            return {
-                ...state,
-                quiz: action.newQuiz,
             }
         }
         case UPDATE_CORRECT_ANSWER: {
