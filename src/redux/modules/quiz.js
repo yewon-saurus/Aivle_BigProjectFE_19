@@ -33,8 +33,11 @@ const UPDATE_QUIZ = "QUIZ/UPDATE_QUIZ";
 const UPDATE_CORRECT_ANSWER = "QUIZ/UPDATE_CORRECT_ANSWER";
 const UPDATE_STUDY_SENTENCE = "QUIZ/UPDATE_STUDY_SENTENCE";
 const UPDATE_MESSAGES = "QUIZ/UPDATE_MESSAGES";
+
 const UPDATE_WRITING_WORDS = "QUIZ/UPDATE_WRITING_WORDS";
 const ADD_WRITING_WORD = "QUIZ/ADD_WRITING_WORD";
+
+const CREATE_NEW_QUIZ = "QUIZ/CREATE_NEW_QUIZ";
 const IMPORT_PREV_QUIZ = "QUIZ/IMPORT_PREV_QUIZ";
 
 export const changeAiTalking = (newAiIsTalking) => {
@@ -104,6 +107,30 @@ export const addWritingWord = (newWritingWord) => {
     return {
         type: ADD_WRITING_WORD,
         newWritingWord: newWritingWord
+    }
+}
+
+export const createNewQuiz = (token) => async (dispatch) => {
+    try {
+        axios.get(process.env.REACT_APP_API_URL + '/study/quiz/', {
+            headers: {
+                'Authorization': `Token ${token}`
+            }
+        }).then(response => {
+            if (response.status === 200) {
+                const tmpQuizId = response.data.quiz_id;
+                const tmpWord = response.data.word;
+                const tmpQuiz = JSON.parse(response.data.quiz).questions[0];
+                dispatch({
+                    type: CREATE_NEW_QUIZ,
+                    tmpQuizId: tmpQuizId,
+                    tmpWord: tmpWord,
+                    tmpQuiz: tmpQuiz,
+                });
+            }
+        })
+    } catch (e) {
+        console.error(e);
     }
 }
 
@@ -222,6 +249,14 @@ export default function (state=initialState, action) {
                     ...state.writingWords,
                     action.newWritingWord,
                 ],
+            }
+        }
+        case CREATE_NEW_QUIZ: {
+            return {
+                ...state,
+                quizId: action.tmpQuizId,
+                word: action.tmpWord,
+                quiz: action.tmpQuiz,
             }
         }
         case IMPORT_PREV_QUIZ: {

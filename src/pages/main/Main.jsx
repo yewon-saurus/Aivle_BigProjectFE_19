@@ -1,7 +1,6 @@
 import style from "./style.css";
 import React, {useState, useEffect, useRef } from 'react';
 import { useParams } from 'react-router-dom';
-import axios from 'axios';
 
 import { MessageForm, MessageList } from './components';
 import GoToLatestAndQuizList from '../../components/GoToLatestAndQuizList';
@@ -9,10 +8,8 @@ import GoToLatestAndQuizList from '../../components/GoToLatestAndQuizList';
 import { useSelector, useDispatch } from "react-redux";
 import {
     changeAiTalking,
-    updateQuizId,
-    updateWord,
-    updateQuiz,
     updateMessages,
+    createNewQuiz,
     importPrevQuiz,
 } from "../../redux/modules/quiz";
 
@@ -46,22 +43,7 @@ const Main = () => {
     }, []);
 
     useEffect(() => {
-        if (createQuizDidMount) {
-            axios.get(process.env.REACT_APP_API_URL + '/study/quiz/', {
-                headers: {
-                    'Authorization': `Token ${token}`
-                }
-            }).then(response => {
-                if (response.status === 200) {
-                    dispatch(updateQuizId(response.data.quiz_id));
-                    dispatch(updateWord(response.data.word));
-                    dispatch(updateQuiz(JSON.parse(response.data.quiz).questions[0]));
-                }
-            })
-            .catch(error => {
-                console.error(error);
-            });
-        }
+        if (createQuizDidMount) dispatch(createNewQuiz(token));
     }, [createQuizDidMount])
 
     useEffect(() => {
@@ -69,11 +51,11 @@ const Main = () => {
             dispatch(updateMessages({
                 text: `이번에 학습하실 단어는 "${word}" 입니다.`,
                 isUser: false, id: Date.now(), step: step
-            },
-            {
+            }));
+            dispatch(updateMessages({
                 text: `입력창에 "${word}"를 입력하시면 단어 퀴즈가 시작됩니다.`,
                 isUser: false, id: Date.now(), step: step
-            },));
+            }));
             dispatch(changeAiTalking(false));
         }
     }, [word, quiz]);
