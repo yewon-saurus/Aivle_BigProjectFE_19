@@ -1,9 +1,22 @@
 import axios from 'axios';
 import React, { useState, useRef, useEffect } from 'react';
 
-const MessageItem = ({ message, setMessages, quizId, studySentence,
-    step, setStep, setAiIsTalking, writingWords, setWritingWords }) => {
+import { useSelector, useDispatch } from 'react-redux';
+import {
+    changeAiTalking,
+    updateStep,
+    updateMessages,
+    updateWritingWords,
+    addWritingWord,
+} from '../../../redux/modules/quiz';
+
+const MessageItem = ({ message, quizId }) => {
     const token = sessionStorage.getItem('aivle19_token');
+
+    const dispatch = useDispatch();
+    const step = useSelector((state) => state.quiz.step);
+    const studySentence = useSelector((state) => state.quiz.studySentence);
+    const writingWords = useSelector((state) => state.quiz.writingWords);
 
     const [imgFile, setImageFile] = useState("");
     const [stream, setStream] = useState();
@@ -34,60 +47,41 @@ const MessageItem = ({ message, setMessages, quizId, studySentence,
     
     const handleSubmitImgFile = async () => {
         // TODO: OCR 모듈 request, response에 따라 재시도 하도록 유도하거나 통과 처리 할 수 있도록 조치할 것
-        setMessages((prevMessages) => [
-            ...prevMessages, // 이전 메시지들
-            { text: `제출 완료`, isUser: true, id: Date.now(), step: step },
-        ]);
-        setAiIsTalking(true);
-        setMessages((prevMessages) => [
-            ...prevMessages,
-            { text: `확인 중입니다.`, isUser: false, id: Date.now(), step: step},
-        ]);
+        dispatch(updateMessages({ text: `제출 완료`, isUser: true, id: Date.now(), step: step }));
+        dispatch(changeAiTalking(true));
+
+        dispatch(updateMessages({ text: `확인 중입니다.`, isUser: false, id: Date.now(), step: step }));
         const response = checkWithOCR();
         if ((await response).status === 200 || (await response).status === 201) {
             const textResults = (await response).data.text_results;
-            setMessages((prevMessages) => [
-                ...prevMessages,
-                { text: `인식 결과는 다음과 같습니다:\n\n${textResults.map((ele => ele)).join(' ')}`, isUser: false, id: Date.now(), step: step},
-            ]);
+            dispatch(updateMessages({ text: `인식 결과는 다음과 같습니다:\n\n${textResults.map((ele => ele)).join(' ')}`, isUser: false, id: Date.now(), step: step }));
             const gradingResult = (await response).data.answer;
-            // 채점 결과 좋으면 setStep(301), 채점 결과 별로면 setStep(202)
-            if (gradingResult) setStep(301);
-            else setStep(202);
+            // 채점 결과 좋으면 301, 채점 결과 별로면 202
+            if (gradingResult) dispatch(updateStep(301));
+            else dispatch(updateStep(202));
         }
     }
 
     const handleSubmitAudioFile = async () => {
-        setMessages((prevMessages) => [
-            ...prevMessages, // 이전 메시지들
-            { text: `제출 완료`, isUser: true, id: Date.now(), step: step },
-        ]);
-        setAiIsTalking(true);
-        setMessages((prevMessages) => [
-            ...prevMessages,
-            { text: `확인 중입니다.`, isUser: false, id: Date.now(), step: step},
-        ]);
+        dispatch(updateMessages({ text: `제출 완료`, isUser: true, id: Date.now(), step: step }));
+        dispatch(changeAiTalking(true));
+
+        dispatch(updateMessages({ text: `확인 중입니다.`, isUser: false, id: Date.now(), step: step }));
         checkWithSTT();
         const response = checkWithSTT();
         if ((await response).status === 200) {
             const textResult = (await response).data.text;
-            setMessages((prevMessages) => [
-                ...prevMessages,
-                { text: `인식 결과는 다음과 같습니다:\n\n${textResult}`, isUser: false, id: Date.now(), step: step},
-            ]);
+            dispatch(updateMessages({ text: `인식 결과는 다음과 같습니다:\n\n${textResult}`, isUser: false, id: Date.now(), step: step }));
             const gradingResult = (await response).data.answer;
-            // 채점 결과 좋으면 setStep(303), 채점 결과 별로면 setStep(302)
-            if (gradingResult) setStep(303);
-            else setStep(302);
+            // 채점 결과 좋으면 303, 채점 결과 별로면 302
+            if (gradingResult) dispatch(updateStep(303));
+            else dispatch(updateStep(302));
         }
     }
     
     const handleChangeWritingWords = (checked, item, word) => {
-        if (checked) setWritingWords((prev) => [
-            ...prev,
-            { id: item, word: word }
-        ]);
-        else setWritingWords(writingWords.filter((ele) => ele.id !== item));
+        if (checked) dispatch(addWritingWord({ id: item, word: word }));
+        else dispatch(updateWritingWords(writingWords.filter((ele) => ele.id !== item)));
     }
 
     const checkWithOCR = async () => {
@@ -247,8 +241,8 @@ const MessageItem = ({ message, setMessages, quizId, studySentence,
                 {
                     step === 401 && 
                     <div>
-                        <button className='text-sm mt-2 w-[100%] p-2 bg-[var(--color-primary-500)] hover:bg-[var(--color-primary-600)] transition-colors text-white rounded-full' onClick={() => {setStep(402);}}>네, 작문하기를 시작합니다.</button>
-                        <button className='text-sm mt-2 w-[100%] p-2 bg-[var(--color-primary-500)] hover:bg-[var(--color-primary-600)] transition-colors text-white rounded-full' onClick={() => {setStep(501);}}>아니오, 오늘은 이만 마치겠습니다.</button>
+                        <button className='text-sm mt-2 w-[100%] p-2 bg-[var(--color-primary-500)] hover:bg-[var(--color-primary-600)] transition-colors text-white rounded-full' onClick={() => {dispatch(updateStep(402));}}>네, 작문하기를 시작합니다.</button>
+                        <button className='text-sm mt-2 w-[100%] p-2 bg-[var(--color-primary-500)] hover:bg-[var(--color-primary-600)] transition-colors text-white rounded-full' onClick={() => {dispatch(updateStep(501));}}>아니오, 오늘은 이만 마치겠습니다.</button>
                     </div>
                 }
             </div>
@@ -269,7 +263,7 @@ const MessageItem = ({ message, setMessages, quizId, studySentence,
                         </div>
                     )
                 }
-                {step === 402 && <button className={`text-sm mt-6 w-[100%] p-2 bg-[var(--color-primary-500)] hover:bg-[var(--color-primary-600)] transition-colors text-white rounded-full ${disabled ? 'bg-gray-200 text-white border-0' : ''}`} type='button' onClick={() => {setStep(403);}} disabled={disabled}>선택 완료</button>}
+                {step === 402 && <button className={`text-sm mt-6 w-[100%] p-2 bg-[var(--color-primary-500)] hover:bg-[var(--color-primary-600)] transition-colors text-white rounded-full ${disabled ? 'bg-gray-200 text-white border-0' : ''}`} type='button' onClick={() => {dispatch(updateStep(403));}} disabled={disabled}>선택 완료</button>}
             </form>
         );
     }

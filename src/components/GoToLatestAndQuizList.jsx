@@ -53,8 +53,8 @@ const GoToLatestAndQuizList = () => {
                 </div>
                 <div className="history">
                     {
-                        quizlist.map((ele) =>
-                            <QuizItem data={ele} />
+                        quizlist.map((ele, idx) =>
+                            <QuizItem key={'quiz_item_' + idx} data={ele} />
                         )
                     }
                 </div>

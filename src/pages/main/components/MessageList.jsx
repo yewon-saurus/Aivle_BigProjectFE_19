@@ -1,10 +1,13 @@
 import React, { useEffect } from 'react';
 import { MessageItem } from './';
 import axios from 'axios';
-import Typing from 'react-kr-typing-anim';
+import { useSelector } from 'react-redux';
 
-const MessageList = ({ token, quizId, studySentence,
-    messages, setMessages, scrollRef, step, setStep, setAiIsTalking, writingWords, setWritingWords }) => {
+const MessageList = ({ token, scrollRef }) => {
+    const quizId = useSelector((state) => state.quiz.quizId);
+    const step = useSelector((state) => state.quiz.step);
+    const messages = useSelector((state) => state.quiz.messages);
+    
     useEffect(() => {
         if (scrollRef.current) scrollRef.current.scrollIntoView({behavior: "smooth", block: "end"});
         if ((step !== -1) && (step !== 501)) updateChatLog();
@@ -19,10 +22,7 @@ const MessageList = ({ token, quizId, studySentence,
                 'Authorization': `Token ${token}`,
                 'Content-Type': 'multipart/form-data'
             }
-        }).then(response => {
-            if (response.status === 200) console.log('chat log is updated.'); // console.log(JSON.parse(response.data.chat_log)); 테스트 해보니 잘 파싱 됨
-        })
-        .catch(error => {
+        }).catch(error => {
             console.error(error);
         });
     }
@@ -37,13 +37,10 @@ const MessageList = ({ token, quizId, studySentence,
 
     return (
         <div className="messages-list">
-            {messages.map((message) =>
+            {messages.map((message, idx) =>
                 <div className={`message ${judgeChatStyle(message)}`}>
-                    <MessageItem
-                        message={message} setMessages={setMessages} quizId={quizId}
-                        studySentence={studySentence}
-                        step={step} setStep={setStep}
-                        setAiIsTalking={setAiIsTalking} writingWords={writingWords} setWritingWords={setWritingWords} />
+                    <MessageItem key={'message_item_' + idx}
+                        message={message} quizId={quizId} />
                     <div className='relative -bottom-5' ref={scrollRef}></div>
                 </div>
             )}
