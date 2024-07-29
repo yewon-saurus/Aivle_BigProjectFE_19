@@ -100,7 +100,7 @@ const Developers = () => {
                     </div>
                 </div>
             </div>
-            <div className='section w-full min-h-[100vh] flex flex-col lg:flex-row justify-center items-center lg:gap-32 bg-[var(--color-primary-400)] py-10'>
+            <div className='section w-full min-h-[100vh] flex flex-col lg:flex-row justify-center items-center lg:gap-32 bg-[var(--color-primary-500)] py-10'>
                 <div className='text-white introduce'>
                 </div>
                 <div className='min-w-[50vh] min-h-[50vh] flex flex-col lg:flex-row justify-center items-center lg:gap-20 gap-5'>
