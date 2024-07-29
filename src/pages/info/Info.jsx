@@ -1,7 +1,7 @@
 import style from "./style.css";
 import React, { useRef } from 'react';
 import { useNavigate } from 'react-router-dom';
-import useScrollNextSection from "../hooks/useScrollNextSection.js";
+import useScrollNextSection from "../../hooks/useScrollNextSection.js";
 import InfoItem from './InfoItem.jsx';
 
 import { MdOutlineQuiz } from "react-icons/md";
