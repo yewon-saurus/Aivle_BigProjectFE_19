@@ -1,4 +1,4 @@
-import axios from "axios";
+import httpRequest from "../../network/request";
 
 const initialState = {
     aiIsTalking: true,
@@ -86,13 +86,9 @@ export const addWritingWord = (newWritingWord) => {
     }
 }
 
-export const createNewQuiz = (token) => async (dispatch) => {
+export const createNewQuiz = () => async (dispatch) => {
     try {
-        axios.get(process.env.REACT_APP_API_URL + '/study/quiz/', {
-            headers: {
-                'Authorization': `Token ${token}`
-            }
-        }).then(response => {
+        httpRequest('GET', '/study/quiz/').then(response => {
             if (response.status === 200) {
                 const tmpQuizId = response.data.quiz_id;
                 const tmpWord = response.data.word;
@@ -119,13 +115,9 @@ export const createNewQuiz = (token) => async (dispatch) => {
     }
 }
 
-export const importPrevQuiz = (key, token) => async (dispatch) => {
+export const importPrevQuiz = (key) => async (dispatch) => {
     try {
-        await axios.get(process.env.REACT_APP_API_URL + '/study/quiz/' + key + '/', {
-            headers: {
-                'Authorization': `Token ${token}`,
-            }
-        }).then(response => {
+        httpRequest('GET', `/study/quiz/${key}/`).then(response => {
             const tmpQuizId = response.data.quiz_id;
             const tmpQuiz = JSON.parse(response.data.quiz).questions[0];
             const tmpWord = response.data.word;

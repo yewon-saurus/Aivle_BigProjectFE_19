@@ -13,8 +13,6 @@ import {
 } from "../../redux/modules/quiz";
 
 const Main = () => {
-    const token = sessionStorage.getItem('aivle19_token');
-
     const params = useParams();
 
     const dispatch = useDispatch();
@@ -32,12 +30,12 @@ const Main = () => {
         else {
             // 전에 풀던/풀이 완료한 문제 입장
             dispatch(changeAiTalking(false));
-            dispatch(importPrevQuiz(params.key, token));
+            dispatch(importPrevQuiz(params.key));
         }
     }, []);
 
     useEffect(() => {
-        if (createQuizDidMount) dispatch(createNewQuiz(token));
+        if (createQuizDidMount) dispatch(createNewQuiz());
     }, [createQuizDidMount])
 
     return (
@@ -48,17 +46,12 @@ const Main = () => {
             <div className='page bg-[var(--color-primary-200)]'>
                 <div>
                     {/* 대화 형식으로 나타난 학습 로그 */}
-                    <MessageList
-                        token={token}
-                        scrollRef={scrollRef}
-                    />
+                    <MessageList scrollRef={scrollRef} />
                 </div>
                 <div className="control">
                     {/* fixed 된 프롬프트 창 + 양 방향 화살표 버튼 */}
                     {/* 프롬프트 창 */}
-                    <MessageForm
-                        messageFormRef={messageFormRef}
-                    />
+                    <MessageForm messageFormRef={messageFormRef} />
                     {/* <div> */}
                         {/* 양 방향 화살표 버튼(이전 회차, 다음 회차) */}
                         {/* <div>⬅️</div> */}
