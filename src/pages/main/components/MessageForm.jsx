@@ -1,8 +1,8 @@
 import React, { useEffect, useState } from 'react';
 import { delay, dateToTimestamp } from '../../../utils';
+import httpRequest from '../../../network/request';
 
 import { IoSend } from "react-icons/io5";
-import axios from 'axios';
 
 import { useSelector, useDispatch } from 'react-redux';
 import {
@@ -14,7 +14,6 @@ import {
 } from '../../../redux/modules/quiz';
 
 const MessageForm = ({ messageFormRef }) => {
-    const token = sessionStorage.getItem('aivle19_token');
     const username = sessionStorage.getItem('aivle19_username');
 
     const dispatch = useDispatch();
@@ -145,32 +144,19 @@ const MessageForm = ({ messageFormRef }) => {
         const formData = new FormData();
         formData.append('word', word);
         formData.append('meaning', correctAnswer);
-        return await axios.post(process.env.REACT_APP_API_URL + '/study/quiz/' + quizId + '/sentence/', formData, {
-            headers: {
-                'Authorization': `Token ${token}`,
-                'Content-Type': 'multipart/form-data'
-            }
-        });
+        return await httpRequest('POST', `/study/quiz/${quizId}/sentence/`, formData);
     }
     
     const textToSpeech = async (text) => {
         const formData = new FormData();
         formData.append('text', text);
-        return await axios.post(process.env.REACT_APP_API_URL + '/study/quiz/' + quizId + '/tts/', formData, {
+        return await httpRequest('POST', `/study/quiz/${quizId}/tts/`, formData, {
             responseType: 'blob',
-            headers: {
-                'Authorization': `Token ${token}`,
-            }
         });
     }
 
     const getRecentLearnedWords = async () => {
-        return await axios.get(process.env.REACT_APP_API_URL + '/study/writing/', {
-            headers: {
-                'Authorization': `Token ${token}`,
-                'Content-Type': 'multipart/form-data'
-            }
-        });
+        return await httpRequest('GET', '/study/writing/');
     }
         
     const studyHandWriting = async () => {
@@ -255,11 +241,7 @@ const MessageForm = ({ messageFormRef }) => {
 
     const isItTurnToWriting = async () => {
         // 사용자가 작문을 할 수 있는 조건이 되는 지 확인하기
-        const response = await axios.get(process.env.REACT_APP_API_URL + '/study/writing/', {
-            headers: {
-                'Authorization': `Token ${token}`,
-            }
-        });
+        const response = await httpRequest('GET', '/study/writing/');
         if ((await response).status === 200) {
             await addAiMessage(`잠시만요!`);
             await addAiMessage(`${username} 님은 최근에 다섯 개 이상의 단어를 학습했고, 이제 '작문하기' 단계에 도전할 준비가 된 상태입니다.`);
@@ -311,19 +293,13 @@ const MessageForm = ({ messageFormRef }) => {
         const formData = new FormData();
         formData.append('selected_words', JSON.stringify(writingWordsId));
         formData.append('composition_text', message);
-        await axios.post(process.env.REACT_APP_API_URL + '/study/writing/', formData, {
-            headers: {
-                'Authorization': `Token ${token}`,
-                'Content-Type': 'multipart/form-data'
-            }
-        }).then(response => {
+        await httpRequest('POST', '/study/writing/').then(response => {
             if (response.status === 200) {
                 writingAnswer = response.data.composition_result.answer;
                 addAiMessage(`${response.data.composition_result.text}`, step - 1);
                 dispatch(changeAiTalking(false));
             }
-        })
-        .catch(error => {
+        }).catch(error => {
             console.error(error);
         });
         
@@ -346,12 +322,7 @@ const MessageForm = ({ messageFormRef }) => {
         const formData = new FormData();
         formData.append('chat_log', jsonString);
         formData.append('solved_date', today);
-        const response = await axios.patch(process.env.REACT_APP_API_URL + '/study/quiz/' + quizId + '/', formData, {
-            headers: {
-                'Authorization': `Token ${token}`,
-                'Content-Type': 'multipart/form-data'
-            }
-        });
+        const response = await httpRequest('PATCH', `/study/quiz/${quizId}/`, formData);
         if (response.status === 200) console.log('solved date is updated.'); // console.log(JSON.parse(response.data.chat_log)); 테스트 해보니 잘 파싱 됨
     }
     

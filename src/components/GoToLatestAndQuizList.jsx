@@ -1,12 +1,10 @@
 import React, { useState, useEffect } from "react";
 import QuizItem from "./QuizItem";
-import axios from 'axios';
+import httpRequest from "../network/request";
 
 import { IoCreateOutline, IoRefresh } from "react-icons/io5";
 
 const GoToLatestAndQuizList = () => {
-    const token = sessionStorage.getItem('aivle19_token');
-
     const [quizlist, setQuizlist] = useState([]);
 
     useEffect(() => {
@@ -14,11 +12,7 @@ const GoToLatestAndQuizList = () => {
     }, []);
 
     const callQuizHistory = () => {
-        axios.get(process.env.REACT_APP_API_URL + '/study/', {
-            headers: {
-                'Authorization': `Token ${token}`
-            }
-        }).then(response => {
+        httpRequest('GET', /study/).then(response => {
             if (response.status === 200) {
                 setQuizlist(response.data);
             }

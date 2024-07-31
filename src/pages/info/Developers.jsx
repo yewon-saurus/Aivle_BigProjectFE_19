@@ -1,6 +1,6 @@
 import style from "./style.css";
 import React from 'react';
-import useScrollNextSection from "../hooks/useScrollNextSection.js";
+import useScrollNextSection from "../../hooks/useScrollNextSection.js";
 import InfoItem from './InfoItem.jsx';
 
 import Developer1 from "./developersProfile/Kiruchoco.jpg";

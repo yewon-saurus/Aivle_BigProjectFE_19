@@ -2,11 +2,9 @@ import style from "./style.css";
 import { Sidebar, ConfirmPopup } from "./";
 import { useState, useEffect } from "react";
 import { useNavigate } from 'react-router-dom';
-import axios from 'axios';
 
 import { LuMenu } from "react-icons/lu";
 import { IoMdLogOut } from "react-icons/io";
-import { FaRankingStar } from "react-icons/fa6";
 
 function Header(props) {
     const nav = useNavigate();

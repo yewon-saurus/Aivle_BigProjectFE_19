@@ -1,9 +1,9 @@
 import React, { useEffect } from 'react';
 import { MessageItem } from './';
-import axios from 'axios';
 import { useSelector } from 'react-redux';
+import httpRequest from '../../../network/request';
 
-const MessageList = ({ token, scrollRef }) => {
+const MessageList = ({ scrollRef }) => {
     const quizId = useSelector((state) => state.quiz.quizId);
     const step = useSelector((state) => state.quiz.step);
     const messages = useSelector((state) => state.quiz.messages);
@@ -17,12 +17,7 @@ const MessageList = ({ token, scrollRef }) => {
         const jsonString = JSON.stringify(messages);
         const formData = new FormData();
         formData.append('chat_log', jsonString);
-        axios.patch(process.env.REACT_APP_API_URL + '/study/quiz/' + quizId + '/', formData, {
-            headers: {
-                'Authorization': `Token ${token}`,
-                'Content-Type': 'multipart/form-data'
-            }
-        }).catch(error => {
+        httpRequest('PATCH', `/study/quiz/${quizId}/`, formData).catch(error => {
             console.error(error);
         });
     }

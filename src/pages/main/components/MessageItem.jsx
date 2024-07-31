@@ -1,4 +1,3 @@
-import axios from 'axios';
 import React, { useState, useRef, useEffect } from 'react';
 
 import { useSelector, useDispatch } from 'react-redux';
@@ -9,10 +8,9 @@ import {
     updateWritingWords,
     addWritingWord,
 } from '../../../redux/modules/quiz';
+import httpRequest from '../../../network/request';
 
 const MessageItem = ({ message, quizId }) => {
-    const token = sessionStorage.getItem('aivle19_token');
-
     const dispatch = useDispatch();
     const step = useSelector((state) => state.quiz.step);
     const studySentence = useSelector((state) => state.quiz.studySentence);
@@ -88,12 +86,7 @@ const MessageItem = ({ message, quizId }) => {
         const formData = new FormData();
         formData.append('image', imgRef.current.files[0]);
         formData.append('text', studySentence);
-        return await axios.post(process.env.REACT_APP_API_URL + '/study/quiz/' + quizId + '/ocr/', formData, {
-            headers: {
-                'Authorization': `Token ${token}`,
-                'Content-Type': 'multipart/form-data'
-            }
-        });
+        return await httpRequest('POST', `/study/quiz/${quizId}/ocr/`, formData);
     }
 
     const checkWithSTT = async () => {
@@ -106,12 +99,7 @@ const MessageItem = ({ message, quizId }) => {
         const formData = new FormData();
         formData.append('audio', audio);
         formData.append('text', studySentence);
-        return await axios.post(process.env.REACT_APP_API_URL + '/study/quiz/' + quizId + '/stt/', formData, {
-            headers: {
-                'Authorization': `Token ${token}`,
-                'Content-Type': 'multipart/form-data'
-            }
-        });
+        return await httpRequest('POST', `/study/quiz/${quizId}/stt/`, formData);
     }
 
     const onRecAudio = () => {

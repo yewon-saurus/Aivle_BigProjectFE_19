@@ -4,7 +4,8 @@ import React, { Component, useEffect, useState } from 'react';
 import { BrowserRouter, Routes, Route } from 'react-router-dom';
 // import NotFound from './NotFound';
 
-import { Header, Footer, PrivateRoute } from './components';
+import PrivateRoute from './utils/PrivateRoute';
+import { Header, Footer } from './components';
 import Main from './pages/main/Main';
 import Info from './pages/info/Info';
 import LoginPage from './pages/account/LoginPage/LoginPage';
