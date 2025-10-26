@@ -1,7 +1,7 @@
 {
   "files": {
     "main.css": "http://localhost:3000/static/css/main.3f24ee14.css",
-    "main.js": "http://localhost:3000/static/js/main.87f61751.js",
+    "main.js": "http://localhost:3000/static/js/main.a2c6321a.js",
     "static/js/787.11ba4111.chunk.js": "http://localhost:3000/static/js/787.11ba4111.chunk.js",
     "static/media/MainGraphic.jpg": "http://localhost:3000/static/media/MainGraphic.370598bc1c796bf73284.jpg",
     "static/media/mingweon.png": "http://localhost:3000/static/media/mingweon.1c0d4213d5ad92341308.png",
@@ -14,11 +14,11 @@
     "index.html": "http://localhost:3000/index.html",
     "static/media/KakaoSymbol.svg": "http://localhost:3000/static/media/KakaoSymbol.ba4b85223e44aa4fe129042816ad1239.svg",
     "main.3f24ee14.css.map": "http://localhost:3000/static/css/main.3f24ee14.css.map",
-    "main.87f61751.js.map": "http://localhost:3000/static/js/main.87f61751.js.map",
+    "main.a2c6321a.js.map": "http://localhost:3000/static/js/main.a2c6321a.js.map",
     "787.11ba4111.chunk.js.map": "http://localhost:3000/static/js/787.11ba4111.chunk.js.map"
   },
   "entrypoints": [
     "static/css/main.3f24ee14.css",
-    "static/js/main.87f61751.js"
+    "static/js/main.a2c6321a.js"
   ]
 }
